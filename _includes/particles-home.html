@@ -24,6 +24,9 @@
       {% if site.social.github %}
       <a class="particles-icon" href="https://github.com/{{ site.social.github }}">{% include svg/github.svg %}</a>
       {% endif %}
+      {% if site.social.cv %}
+      <a class="particles-icon" href="{{ site.social.cv | relative_url }}">{% include svg/cv-circled.svg %}</a>
+      {% endif %}
     </div>
   </div>
   <div class="particles-scroll">
