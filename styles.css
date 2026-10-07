@@ -1,0 +1,1684 @@
+/* ============================================================================
+   PORTFOLIO — DESIGN SPEC v2.0.0 (two themes: Paper light + Night dark)
+   ----------------------------------------------------------------------------
+   Two palettes, one layout. Paper is the light theme and the default; Night
+   carries over the previously-canonical dark palette unchanged. Typography,
+   spacing, geometry and motion are shared — only the ground and the accent
+   change, so toggling the theme never re-flows the page.
+
+   THEME ARCHITECTURE
+   Every colour is declared exactly once, as a --l-* (light) and --d-* (dark)
+   pair. Selecting a theme means mapping one set onto the active custom
+   properties, and that mapping happens in exactly three places below. A
+   palette change is therefore one edit, never a hunt.
+
+     :root                                → light default
+     :root[data-theme="dark"]             → explicit choice: dark
+     @media dark :root:not([data-theme…]) → OS preference, unless overridden
+
+   Anti-cliché constraints honored by this sheet:
+     · no gradients, no glass, no glow, no shadows
+     · no oversized radii — Paper is square, Night keeps 4px/6px
+     · no purple wash, no warm beige ground
+     · no accent-coloured left borders on cards
+     · status is never carried by colour alone
+   ========================================================================= */
+
+/* ============================================================================
+   OD-LAYOUT-PRIMITIVES v1 — structure only: display, flex/grid, overflow, wrapping, ratio.
+   Put this @layer first; product CSS outside the layer always wins.
+   ========================================================================= */
+@layer od-layout {
+  :where(.od-stack,.od-row,.od-row-top,.od-cluster,.od-grid,.od-field,.od-stat,.od-cell,.od-tile) > :where(*) { min-width: 0; }
+
+  /* containers */
+  .od-stack   { display: flex; flex-direction: column; gap: var(--od-gap, 8px); }
+  .od-row     { display: flex; align-items: center; gap: var(--od-gap, 8px); }
+  .od-row-top { display: flex; align-items: flex-start; gap: var(--od-gap, 8px); }
+  .od-cluster { display: flex; flex-wrap: wrap; align-items: center; gap: var(--od-gap, 8px); }
+  .od-fill    { flex: 1 1 0; min-width: 0; }
+  .od-fixed   { flex: none; }
+  .od-grid    { display: grid; gap: var(--od-gap, 12px); grid-template-columns: repeat(var(--od-cols, 3), minmax(0, 1fr)); }
+
+  /* stacked information: each piece is its own line — never sibling inline spans */
+  .od-stat, .od-field, .od-cell { display: grid; gap: var(--od-gap, 2px); }
+  :where(.od-stat,.od-field,.od-cell) > :where(*) { display: block; }
+  .od-tile { display: grid; grid-template-rows: auto 1fr; }
+  :where(.od-tile) > :where(*) { display: block; }
+
+  /* media keeps its intrinsic ratio by default; never a distorted or cropped
+     cover by accident. height:auto lets the ratio win over an <img height="…">
+     attribute. Cropping to a uniform box is an explicit opt-in: set --od-ratio
+     AND add .od-media-cover together (per the core rule, only where a crop is
+     deliberate — tile thumbs, decorative fills — never on full-frame content). */
+  .od-media { display: block; width: 100%; height: auto; aspect-ratio: var(--od-ratio, auto); }
+  .od-media-cover { object-fit: cover; }
+
+  /* data text only — authored copy is rewritten to its budget instead */
+  .od-truncate { display: block; max-width: 100%; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+  .od-clamp-2, .od-clamp-3 { display: -webkit-box; -webkit-box-orient: vertical; overflow: hidden; overflow-wrap: anywhere; }
+  .od-clamp-2 { -webkit-line-clamp: 2; }
+  .od-clamp-3 { -webkit-line-clamp: 3; }
+  .od-lines-2 { min-height: calc(2 * 1.4em); }   /* block-level reservation for a shared baseline */
+  .od-nowrap  { white-space: nowrap; }           /* 数字+单位 · 价格+起 · 日期+星期 */
+  .od-keep    { word-break: keep-all; overflow-wrap: anywhere; } /* CJK labels break at spaces / <wbr> first */
+
+  /* screen skeleton (optional): bars take their own space, the middle scrolls — no padding guessed for chrome */
+  .od-screen { display: grid; grid-template-rows: auto minmax(0, 1fr) auto; height: 100%; }
+  .od-scroll { overflow-y: auto; overscroll-behavior: contain; min-height: 0; }
+
+  /* horizontal rail: the next item peeks at the edge; trailing room survives overflow */
+  .od-rail { display: flex; gap: var(--od-gap, 8px); overflow-x: auto; scroll-snap-type: x proximity; scrollbar-width: none;
+             padding-inline: var(--od-rail-pad, 16px); scroll-padding-inline: var(--od-rail-pad, 16px); }
+  .od-rail::-webkit-scrollbar { display: none; }
+  :where(.od-rail) > :where(*) { flex: none; scroll-snap-align: start; }
+  :where(.od-rail) > :where(:last-child) { margin-inline-end: var(--od-rail-pad, 16px); }
+
+  .od-spacer { flex: none; visibility: hidden; pointer-events: none; }
+  .od-touch  { min-width: 44px; min-height: 44px; }
+}
+/* /OD-LAYOUT-PRIMITIVES v1 */
+
+
+/* ============================================================================
+   1. PALETTE — every colour value, declared exactly once
+   ========================================================================= */
+:root {
+  /* ---- Paper (light) ---- */
+  --l-ground: #ffffff;
+  --l-surface: #f5f6f7;
+  --l-surface-raised: #eceef0;
+  --l-border: #dfe2e5;
+  --l-border-strong: #b9bfc5;
+  --l-rule: #101418;
+  --l-text: #101418;
+  --l-text-muted: #5b6672;
+  --l-accent: #0f7a4a;
+  --l-accent-strong: #0b5f39;
+  --l-accent-muted: #2f6b52;
+  --l-scrim: rgba(16, 20, 24, 0.06);
+
+  /* ---- Night (dark) — the previously-canonical palette, unchanged ---- */
+  --d-ground: #0b0e11;
+  --d-surface: #14181d;
+  --d-surface-raised: #1b2127;
+  --d-border: #242c34;
+  --d-border-strong: #36414c;
+  --d-rule: #4a555f;
+  --d-text: #e8ecef;
+  --d-text-muted: #93a1ad;
+  --d-accent: #5fd39a;
+  --d-accent-strong: #8ae6ba;
+  --d-accent-muted: #3d8f68;
+  --d-scrim: rgba(255, 255, 255, 0.06);
+}
+
+/* ============================================================================
+   2. THEME SELECTION — the only three places a theme is chosen
+   ========================================================================= */
+
+/* default: Paper */
+:root {
+  color-scheme: light;
+
+  --ground: var(--l-ground);
+  --surface: var(--l-surface);
+  --surface-raised: var(--l-surface-raised);
+  --border: var(--l-border);
+  --border-strong: var(--l-border-strong);
+  --rule: var(--l-rule);
+  --text: var(--l-text);
+  --text-muted: var(--l-text-muted);
+  --accent: var(--l-accent);
+  --accent-strong: var(--l-accent-strong);
+  --accent-muted: var(--l-accent-muted);
+  --scrim: var(--l-scrim);
+
+  /* Paper is square: no rounded cards, no rounded controls. */
+  --r-control: 0px;
+  --r-card: 0px;
+}
+
+/* explicit visitor choice: Night */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --ground: var(--d-ground);
+  --surface: var(--d-surface);
+  --surface-raised: var(--d-surface-raised);
+  --border: var(--d-border);
+  --border-strong: var(--d-border-strong);
+  --rule: var(--d-rule);
+  --text: var(--d-text);
+  --text-muted: var(--d-text-muted);
+  --accent: var(--d-accent);
+  --accent-strong: var(--d-accent-strong);
+  --accent-muted: var(--d-accent-muted);
+  --scrim: var(--d-scrim);
+
+  --r-control: 4px;
+  --r-card: 6px;
+}
+
+/* OS preference — applies only while no explicit choice is in force */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+
+    --ground: var(--d-ground);
+    --surface: var(--d-surface);
+    --surface-raised: var(--d-surface-raised);
+    --border: var(--d-border);
+    --border-strong: var(--d-border-strong);
+    --rule: var(--d-rule);
+    --text: var(--d-text);
+    --text-muted: var(--d-text-muted);
+    --accent: var(--d-accent);
+    --accent-strong: var(--d-accent-strong);
+    --accent-muted: var(--d-accent-muted);
+    --scrim: var(--d-scrim);
+
+    --r-control: 4px;
+    --r-card: 6px;
+  }
+}
+
+/* ============================================================================
+   3. TYPOGRAPHY / SPACING / MOTION — shared by both themes
+   ========================================================================= */
+:root {
+  --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas,
+    "Liberation Mono", monospace;
+  --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue",
+    Arial, sans-serif;
+
+  --fs-name: clamp(2.5rem, 1.3rem + 5vw, 4.25rem);
+  --fs-stat: clamp(1.625rem, 1.1rem + 2vw, 2.25rem);
+  --fs-title: clamp(1.5rem, 1.15rem + 1.4vw, 2.125rem);
+  --fs-lede: 1.0625rem;
+  --fs-body: 1rem;
+  --fs-small: 0.875rem;
+  --fs-meta: 0.8125rem;
+  --fs-label: 0.6875rem;
+
+  --lh-heading: 1.3;
+  --lh-body: 1.65;
+
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-6: 24px;
+  --sp-8: 32px;
+  --sp-12: 48px;
+  --sp-16: 64px;
+
+  --wrap: 1080px;
+  --topbar-h: 57px;
+
+  /* backing tile for white-ink raster marks — belongs to the mark itself, not
+     to either theme, which is why it sits here with the shared tokens. */
+  --mark-tile: #0b0e11;
+
+  --dur-enter: 160ms;
+  --dur-exit: 110ms;
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+/* ============================================================================
+   4. RESET / BASE
+   ========================================================================= */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+  scroll-padding-top: calc(var(--topbar-h) + var(--sp-4));
+}
+
+body {
+  margin: 0;
+  background: var(--ground);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  /* Deliberately NO background/color transition on body. A theme switch that
+     fades the ground reports the OLD ground to getComputedStyle for the whole
+     animation, which is exactly how every brand mark kept the treatment it
+     had on the theme we just left. Switching is instant by design. */
+}
+
+h1,
+h2,
+h3,
+h4 {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-weight: 600;
+  line-height: var(--lh-heading);
+  letter-spacing: -0.01em;
+}
+
+p {
+  margin: 0;
+}
+
+ul,
+ol,
+dl,
+dd {
+  margin: 0;
+  padding: 0;
+}
+
+li {
+  list-style: none;
+}
+
+code {
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+  color: var(--accent);
+  background: var(--scrim);
+  border: 1px solid var(--border);
+  border-radius: var(--r-control);
+  padding: 0.05em 0.35em;
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--accent-strong);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: var(--r-control);
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--ground);
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: absolute;
+  left: var(--sp-4);
+  top: -64px;
+  z-index: 100;
+  padding: var(--sp-2) var(--sp-4);
+  background: var(--accent);
+  color: var(--ground);
+  font-family: var(--font-sans);
+  font-size: var(--fs-meta);
+  font-weight: 600;
+  transition: top var(--dur-enter) var(--ease-out);
+}
+
+.skip-link:focus {
+  top: var(--sp-2);
+  color: var(--ground);
+  text-decoration: none;
+}
+
+.icon {
+  width: 16px;
+  height: 16px;
+  flex: none;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.wrap {
+  width: 100%;
+  max-width: var(--wrap);
+  margin-inline: auto;
+  padding-inline: var(--sp-6);
+}
+
+/* ============================================================================
+   5. BUTTONS
+   ========================================================================= */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-2);
+  min-height: 40px;
+  padding: var(--sp-2) var(--sp-4);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-control);
+  background: transparent;
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: var(--fs-meta);
+  font-weight: 500;
+  line-height: 1.2;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background var(--dur-enter) var(--ease-out),
+    border-color var(--dur-enter) var(--ease-out),
+    color var(--dur-enter) var(--ease-out);
+}
+
+.btn:hover {
+  background: var(--scrim);
+  border-color: var(--accent);
+  color: var(--text);
+  text-decoration: none;
+}
+
+.btn:active {
+  background: var(--surface-raised);
+}
+
+.btn-primary {
+  background: var(--text);
+  border-color: var(--text);
+  color: var(--ground);
+  font-weight: 600;
+}
+
+.btn-primary:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--ground);
+}
+
+.btn[disabled],
+.btn[aria-disabled="true"] {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.btn.is-copied {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* ============================================================================
+   6. TOP BAR + THEME CONTROL
+   ========================================================================= */
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: var(--ground);
+  border-bottom: 1px solid var(--border);
+}
+
+.topbar-inner {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-6);
+  height: var(--topbar-h);
+  max-width: var(--wrap);
+  margin-inline: auto;
+  padding-inline: var(--sp-6);
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-family: var(--font-sans);
+  font-size: var(--fs-meta);
+  font-weight: 600;
+  color: var(--text);
+  min-width: 0;
+}
+
+.brand:hover {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+/* the terminal prompt glyph — the one deliberate piece of mono */
+.brand-mark {
+  font-family: var(--font-mono);
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.brand-name {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.nav {
+  margin-left: auto;
+  min-width: 0;
+}
+
+.nav-list {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4);
+}
+
+.nav-link {
+  display: inline-block;
+  padding: var(--sp-1) 0;
+  font-family: var(--font-sans);
+  font-size: var(--fs-meta);
+  color: var(--text-muted);
+  border-bottom: 1px solid transparent;
+  transition: color var(--dur-enter) var(--ease-out),
+    border-color var(--dur-enter) var(--ease-out);
+}
+
+.nav-link:hover {
+  color: var(--text);
+  text-decoration: none;
+  border-bottom-color: var(--border-strong);
+}
+
+.nav-link[aria-current="true"] {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+
+/* ---- the theme switch -----------------------------------------------------
+   One control, one job. The label states the ACTION ("switch to night mode"),
+   not the current state, so a screen reader announces what the press will do.
+   Both glyphs are always in the DOM; CSS shows the one for the inactive theme. */
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-control);
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: background var(--dur-enter) var(--ease-out),
+    border-color var(--dur-enter) var(--ease-out),
+    color var(--dur-enter) var(--ease-out);
+}
+
+.theme-toggle .icon {
+  width: 20px;
+  height: 20px;
+  stroke-width: 1.4;
+}
+
+.theme-toggle:hover {
+  background: var(--scrim);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.theme-toggle .icon-sun,
+.theme-toggle .icon-moon {
+  display: none;
+}
+
+:root:not([data-theme="dark"]) .theme-toggle .icon-moon {
+  display: block;
+}
+
+:root[data-theme="dark"] .theme-toggle .icon-sun {
+  display: block;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .theme-toggle .icon-moon {
+    display: none;
+  }
+  :root:not([data-theme="light"]) .theme-toggle .icon-sun {
+    display: block;
+  }
+}
+
+/* ============================================================================
+   7. SECTION SHELL
+   ========================================================================= */
+.section {
+  padding-block: var(--sp-16);
+  border-top: 1px solid var(--border);
+  scroll-margin-top: var(--topbar-h);
+}
+
+.hero {
+  padding-block: var(--sp-16) var(--sp-12);
+  border-top: 0;
+}
+
+.section-head {
+  margin-bottom: var(--sp-12);
+}
+
+.section-index {
+  font-family: var(--font-sans);
+  font-size: var(--fs-label);
+  letter-spacing: 0.16em;
+  color: var(--accent-muted);
+  margin-bottom: var(--sp-2);
+}
+
+.section-title {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: var(--fs-title);
+  letter-spacing: -0.03em;
+  margin-bottom: var(--sp-4);
+}
+
+.section-lede {
+  color: var(--text-muted);
+  font-size: var(--fs-lede);
+  max-width: 58ch;
+}
+
+.section-empty {
+  font-family: var(--font-sans);
+  font-size: var(--fs-small);
+  color: var(--text-muted);
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--r-card);
+  padding: var(--sp-6);
+}
+
+/* ============================================================================
+   8. HERO
+   ========================================================================= */
+.hero-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--sp-12);
+}
+
+.hero-name {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: var(--fs-name);
+  letter-spacing: -0.035em;
+  margin-bottom: var(--sp-3);
+  word-break: break-word;
+}
+
+.hero-role {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--sp-2);
+  font-family: var(--font-sans);
+  margin-bottom: var(--sp-6);
+}
+
+.hero-role-title {
+  font-size: 1rem;
+  color: var(--accent);
+}
+
+.sep {
+  color: var(--border-strong);
+}
+
+.hero-role-tagline {
+  font-size: var(--fs-small);
+  color: var(--text-muted);
+  min-width: 0;
+}
+
+.hero-summary {
+  max-width: 46ch;
+  font-size: 1.25rem;
+  line-height: 1.5;
+  margin-bottom: var(--sp-4);
+}
+
+.hero-approach {
+  max-width: 46ch;
+  font-family: var(--font-sans);
+  font-size: var(--fs-small);
+  color: var(--text-muted);
+  margin-bottom: var(--sp-8);
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-3);
+  margin-bottom: var(--sp-8);
+}
+
+.hero-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-3) var(--sp-6);
+}
+
+.hero-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-family: var(--font-sans);
+  font-size: var(--fs-small);
+  color: var(--text-muted);
+}
+
+.hero-link:hover {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+/* ============================================================================
+   9. PROOF — a figure-and-detail table, not a stack of cards
+   ========================================================================= */
+.proof-list {
+  display: grid;
+  gap: var(--sp-6);
+}
+
+.proof-item {
+  display: grid;
+  grid-template-columns: 180px minmax(0, 1fr);
+  gap: var(--sp-2) var(--sp-8);
+  align-items: baseline;
+  padding-bottom: var(--sp-6);
+  border-bottom: 1px solid var(--border);
+}
+
+.proof-item:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.proof-item .od-stat {
+  grid-row: 1 / span 3;
+  align-self: start;
+}
+
+.proof-value {
+  font-family: var(--font-sans);
+  font-size: var(--fs-stat);
+  font-weight: 600;
+  line-height: 1.1;
+  color: var(--accent);
+  letter-spacing: -0.02em;
+}
+
+.proof-label {
+  font-family: var(--font-sans);
+  font-size: var(--fs-label);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.proof-title {
+  font-family: var(--font-sans);
+  font-size: 1.0625rem;
+  color: var(--text);
+}
+
+.proof-detail {
+  font-size: var(--fs-small);
+  color: var(--text-muted);
+}
+
+.proof-link {
+  font-family: var(--font-sans);
+  font-size: var(--fs-label);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* ============================================================================
+   10. PANEL
+   ========================================================================= */
+.panel {
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: var(--r-card);
+  padding: var(--sp-6);
+}
+
+.panel-title {
+  font-family: var(--font-sans);
+  font-size: var(--fs-label);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  font-weight: 500;
+  margin-bottom: var(--sp-4);
+}
+
+.panel-title-spaced {
+  margin-top: var(--sp-6);
+  padding-top: var(--sp-4);
+  border-top: 1px solid var(--border);
+}
+
+/* ============================================================================
+   11. LOGO BAND
+   ========================================================================= */
+.logo-band {
+  margin-top: var(--sp-12);
+  padding-top: var(--sp-6);
+  border-top: 1px solid var(--rule);
+}
+
+.rail-title {
+  font-family: var(--font-sans);
+  font-size: var(--fs-label);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  font-weight: 500;
+  margin-bottom: var(--sp-4);
+}
+
+.logo-rail {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-3) var(--sp-6);
+}
+
+.logo-mark {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-width: 0;
+}
+
+.logo-mark img {
+  width: 32px;
+  height: 32px;
+  flex: none;
+}
+
+.logo-name {
+  font-family: var(--font-sans);
+  font-size: var(--fs-label);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.chip-mark {
+  width: 18px;
+  height: 18px;
+  flex: none;
+}
+
+/* Marks that need to read at size: protocol and institution logos beside a
+   role, a project, or a degree. */
+.chip-mark.mark-lg {
+  width: 36px;
+  height: 36px;
+}
+
+/* A white-ink raster cannot be recoloured without falsifying it, so it gets
+   an opaque backing tile instead. The tile is the page's own dark ground: on
+   Night it merges into the page, on Paper it reads as a logo tile. The box
+   size never changes, so nothing shifts when a theme flips. */
+.mark-tile {
+  display: inline-flex;
+  flex: none;
+}
+
+.chip-mark.is-tiled {
+  background: var(--mark-tile);
+  padding: 4px;
+  border-radius: 4px;
+}
+
+/* organisation line: protocol mark + name, as one row */
+.org-line,
+.card-name-wrap {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-width: 0;
+}
+
+/* The whole mark + name is one link. It keeps the accent colour the name
+   already had, so turning a role into a link changes no colour on the page. */
+.org-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-width: 0;
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.org-link:hover {
+  color: var(--accent-strong);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.org-line .role-company {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.chip-name {
+  min-width: 0;
+}
+
+/* ============================================================================
+   12. EXPERIENCE
+   ========================================================================= */
+.timeline {
+  display: grid;
+  gap: var(--sp-8);
+}
+
+.role {
+  display: grid;
+  grid-template-columns: 20px minmax(0, 1fr);
+  gap: var(--sp-4);
+  padding-bottom: var(--sp-8);
+  border-bottom: 1px solid var(--border);
+}
+
+.role:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.role-marker {
+  font-family: var(--font-mono);
+  font-size: var(--fs-small);
+  line-height: 1.7;
+  color: var(--accent-muted);
+  user-select: none;
+}
+
+.role-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--sp-2) var(--sp-4);
+  margin-bottom: var(--sp-2);
+}
+
+.role-title {
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 1.0625rem;
+}
+
+.role-company {
+  font-family: var(--font-sans);
+  font-size: var(--fs-small);
+  color: var(--accent);
+}
+
+.role-period {
+  font-family: var(--font-sans);
+  font-size: var(--fs-meta);
+  color: var(--text-muted);
+}
+
+.role-meta {
+  font-family: var(--font-sans);
+  font-size: var(--fs-meta);
+  color: var(--text-muted);
+  margin-bottom: var(--sp-3);
+}
+
+.role-summary {
+  color: var(--text);
+  margin-bottom: var(--sp-3);
+  max-width: var(--measure, 68ch);
+}
+
+.bullets {
+  display: grid;
+  gap: var(--sp-2);
+  margin-bottom: var(--sp-3);
+  max-width: 68ch;
+}
+
+.bullet {
+  position: relative;
+  padding-left: var(--sp-4);
+  color: var(--text-muted);
+  font-size: var(--fs-small);
+}
+
+.bullet::before {
+  content: "–";
+  position: absolute;
+  left: 0;
+  color: var(--accent-muted);
+}
+
+.role-entries {
+  display: grid;
+  gap: var(--sp-3);
+  margin: var(--sp-4) 0;
+  padding-left: var(--sp-4);
+  border-left: 1px solid var(--border);
+}
+
+.role-entry {
+  display: grid;
+  gap: var(--sp-1);
+}
+
+.role-entry-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--sp-2) var(--sp-3);
+}
+
+.role-entry-title {
+  font-family: var(--font-sans);
+  font-size: var(--fs-small);
+  color: var(--text);
+}
+
+.role-entry-period {
+  font-family: var(--font-sans);
+  font-size: var(--fs-label);
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.role-entry-detail {
+  font-size: var(--fs-small);
+  color: var(--text-muted);
+  max-width: 68ch;
+}
+
+/* ============================================================================
+   13. CHIPS
+   ========================================================================= */
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+  align-items: center;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: 2px var(--sp-2);
+  border: 1px solid transparent;
+  border-radius: var(--r-control);
+  background: transparent;
+  font-family: var(--font-sans);
+  font-size: var(--fs-label);
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.chips .chip + .chip {
+  padding-left: var(--sp-3);
+  border-left-color: var(--border);
+}
+
+/* ============================================================================
+   14. PROJECT CARDS
+   ========================================================================= */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: var(--sp-8);
+}
+
+.card {
+  display: grid;
+  grid-template-rows: auto auto 1fr auto;
+  gap: var(--sp-3);
+  background: transparent;
+  border: 0;
+  border-top: 2px solid var(--rule);
+  padding: var(--sp-6) 0 0;
+  min-width: 0;
+}
+
+.card:hover {
+  border-top-color: var(--accent);
+}
+
+.card-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--sp-2) var(--sp-4);
+}
+
+.card-name {
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 1.0625rem;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.card-kind {
+  font-family: var(--font-sans);
+  font-size: var(--fs-label);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  text-align: right;
+}
+
+.card-body {
+  display: grid;
+  gap: var(--sp-3);
+  align-content: start;
+  min-width: 0;
+}
+
+.card-desc {
+  font-size: var(--fs-small);
+  color: var(--text-muted);
+}
+
+.card-more {
+  grid-column: 1 / -1;
+  display: grid;
+  gap: var(--sp-2);
+  padding: var(--sp-3) 0 0;
+  border-top: 1px solid var(--border);
+}
+
+.card-more[hidden] {
+  display: none;
+}
+
+.card-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-3);
+}
+
+.disclosure {
+  min-height: 32px;
+  padding: var(--sp-1) var(--sp-3);
+  font-size: var(--fs-label);
+}
+
+.disclosure .chev {
+  transition: transform var(--dur-enter) var(--ease-out);
+}
+
+.disclosure[aria-expanded="true"] .chev {
+  transform: rotate(180deg);
+}
+
+.card-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-3);
+}
+
+.card-link {
+  font-family: var(--font-sans);
+  font-size: var(--fs-label);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* ============================================================================
+   15. SKILL FILTER BAR
+   ========================================================================= */
+.filterbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-3);
+  margin-bottom: var(--sp-4);
+}
+
+.rail {
+  --od-gap: var(--sp-2);
+  --od-rail-pad: 0;
+  flex: 1 1 320px;
+  min-width: 0;
+}
+
+.filter-chip {
+  min-height: 36px;
+  padding: var(--sp-1) var(--sp-3);
+  border: 1px solid var(--border);
+  border-radius: var(--r-control);
+  background: transparent;
+  color: var(--text-muted);
+  font-family: var(--font-sans);
+  font-size: var(--fs-meta);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background var(--dur-enter) var(--ease-out),
+    color var(--dur-enter) var(--ease-out),
+    border-color var(--dur-enter) var(--ease-out);
+}
+
+.filter-chip:hover {
+  background: var(--scrim);
+  color: var(--text);
+  border-color: var(--border-strong);
+}
+
+.filter-chip[aria-pressed="true"] {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--ground);
+  font-weight: 600;
+}
+
+.search {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  flex: 0 1 240px;
+  min-width: 0;
+  min-height: 36px;
+  padding-inline: var(--sp-3);
+  border: 1px solid var(--border);
+  border-radius: var(--r-control);
+  background: transparent;
+  color: var(--text-muted);
+}
+
+.search:focus-within {
+  border-color: var(--accent);
+}
+
+.search input {
+  flex: 1 1 0;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: var(--fs-meta);
+  min-height: 34px;
+}
+
+.search input::placeholder {
+  color: var(--text-muted);
+}
+
+.search input:focus {
+  outline: none;
+}
+
+.filter-status {
+  font-family: var(--font-sans);
+  font-size: var(--fs-meta);
+  color: var(--text-muted);
+  margin-bottom: var(--sp-6);
+  min-height: 1.5em;
+}
+
+/* ============================================================================
+   16. SKILL GROUPS
+   ========================================================================= */
+.skill-groups {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--sp-8);
+}
+
+.skill-group {
+  background: transparent;
+  border: 0;
+  border-top: 1px solid var(--border-strong);
+  padding: var(--sp-6) 0 0;
+  min-width: 0;
+}
+
+.skill-group[hidden] {
+  display: none;
+}
+
+.skill-group-title {
+  font-family: var(--font-sans);
+  font-size: var(--fs-label);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  font-weight: 500;
+  padding-bottom: var(--sp-3);
+  margin-bottom: var(--sp-4);
+  border-bottom: 1px solid var(--border);
+}
+
+.skill-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2) var(--sp-4);
+}
+
+/* ============================================================================
+   17. EMPTY STATE
+   ========================================================================= */
+.empty-state {
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--r-card);
+  padding: var(--sp-12) var(--sp-6);
+  text-align: center;
+}
+
+.empty-title {
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  margin-bottom: var(--sp-2);
+}
+
+.empty-body {
+  color: var(--text-muted);
+  font-size: var(--fs-small);
+  max-width: 44ch;
+  margin-inline: auto;
+  margin-bottom: var(--sp-6);
+}
+
+/* ============================================================================
+   18. EDUCATION
+   ========================================================================= */
+.edu-list {
+  display: grid;
+  gap: var(--sp-4);
+  max-width: 68ch;
+}
+
+.edu-row {
+  display: grid;
+  grid-template-columns: 20px minmax(0, 1fr);
+  gap: var(--sp-4);
+  padding-bottom: var(--sp-4);
+  border-bottom: 1px solid var(--border);
+}
+
+/* Exactly one content child for the second grid column. The degree row, its
+   mark and the school line all live in here, so nothing can wrap onto a new
+   grid row and get squeezed into the 20px marker column. */
+.edu-body {
+  min-width: 0;
+}
+
+.edu-row:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.edu-marker {
+  font-family: var(--font-mono);
+  font-size: var(--fs-small);
+  line-height: 1.7;
+  color: var(--accent-muted);
+  user-select: none;
+}
+
+.edu-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2) var(--sp-4);
+}
+
+.edu-degree {
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: var(--fs-small);
+  color: var(--text);
+}
+
+.edu-period {
+  font-family: var(--font-sans);
+  font-size: var(--fs-meta);
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.edu-school {
+  font-size: var(--fs-small);
+  color: var(--text-muted);
+}
+
+/* ============================================================================
+   19. CONTACT
+   ========================================================================= */
+.contact-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  gap: var(--sp-8);
+  align-items: start;
+}
+
+.contact-list {
+  display: grid;
+  gap: var(--sp-3);
+}
+
+.contact-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-3) var(--sp-4);
+  padding: var(--sp-3) 0;
+  border-bottom: 1px solid var(--border);
+}
+
+/* contact-row marks sit slightly larger than chip marks */
+.contact-row .chip-mark {
+  width: 20px;
+  height: 20px;
+}
+
+.contact-label {
+  font-family: var(--font-sans);
+  font-size: var(--fs-label);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  width: 84px;
+  flex: none;
+}
+
+.contact-value {
+  flex: 1 1 180px;
+  min-width: 0;
+  font-family: var(--font-sans);
+  font-size: var(--fs-small);
+  color: var(--text);
+  overflow-wrap: anywhere;
+}
+
+.contact-row .btn {
+  margin-left: auto;
+  min-height: 30px;
+  padding: var(--sp-1) var(--sp-3);
+  font-size: var(--fs-label);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.glance-row {
+  display: grid;
+  grid-template-columns: 108px minmax(0, 1fr);
+  gap: var(--sp-3);
+  padding-block: var(--sp-2);
+  border-bottom: 1px solid var(--border);
+}
+
+.glance-row:last-child {
+  border-bottom: 0;
+}
+
+.glance-row dt {
+  font-family: var(--font-sans);
+  font-size: var(--fs-label);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  padding-top: 3px;
+}
+
+.glance-row dd {
+  font-size: var(--fs-small);
+  color: var(--text);
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.lang-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+}
+
+.lang-item {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--sp-2);
+  padding: 2px var(--sp-3);
+  border: 1px solid var(--border);
+  border-radius: var(--r-control);
+}
+
+.lang-name {
+  font-family: var(--font-sans);
+  font-size: var(--fs-meta);
+  color: var(--text);
+}
+
+.lang-level {
+  font-family: var(--font-sans);
+  font-size: var(--fs-label);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+/* ============================================================================
+   20. FOOTER / NOSCRIPT
+   ========================================================================= */
+.footer {
+  border-top: 1px solid var(--border);
+  padding-block: var(--sp-8);
+}
+
+.footer-inner {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--sp-2) var(--sp-6);
+}
+
+.footer-note,
+.footer-meta {
+  font-family: var(--font-sans);
+  font-size: var(--fs-label);
+  color: var(--text-muted);
+}
+
+/* Licence attribution for third-party marks. Full width so it reads as its
+   own line of small print rather than as part of the footer sentence. */
+.footer-credits {
+  flex-basis: 100%;
+  display: grid;
+  gap: var(--sp-1);
+  margin-top: var(--sp-3);
+  padding-top: var(--sp-3);
+  border-top: 1px solid var(--border);
+  font-family: var(--font-sans);
+  font-size: var(--fs-label);
+  line-height: 1.6;
+  color: var(--text-muted);
+}
+
+.footer-credits:empty {
+  display: none;
+}
+
+.noscript-note {
+  margin: var(--sp-6);
+  padding: var(--sp-4);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-card);
+  font-family: var(--font-sans);
+  font-size: var(--fs-small);
+}
+
+/* ============================================================================
+   21. RESPONSIVE — 1440 / 1024 / 768 / 640 / 375
+   ========================================================================= */
+@media (min-width: 1440px) {
+  :root {
+    --wrap: 1160px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .contact-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--sp-6);
+  }
+}
+
+/* the proof table must not push its own context off a phone screen */
+@media (max-width: 640px) {
+  .proof-item {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--sp-1);
+  }
+
+  .proof-item .od-stat {
+    grid-row: auto;
+    margin-bottom: var(--sp-2);
+  }
+}
+
+@media (max-width: 768px) {
+  .section {
+    padding-block: var(--sp-12);
+  }
+
+  .hero {
+    padding-block: var(--sp-8) var(--sp-12);
+  }
+
+  .section-head {
+    margin-bottom: var(--sp-8);
+  }
+
+  .topbar-inner {
+    gap: var(--sp-4);
+  }
+
+  .nav-list {
+    gap: var(--sp-3);
+    flex-wrap: wrap;
+    row-gap: 0;
+  }
+
+  .nav-link {
+    font-size: var(--fs-label);
+  }
+
+  .cards,
+  .skill-groups {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .search {
+    flex: 1 1 100%;
+  }
+
+  .role-head,
+  .edu-head,
+  .card-head {
+    gap: var(--sp-1);
+  }
+
+  .card-kind {
+    text-align: left;
+  }
+}
+
+@media (max-width: 480px) {
+  .wrap,
+  .topbar-inner {
+    padding-inline: var(--sp-4);
+  }
+
+  .brand-name {
+    display: none;
+  }
+
+  .nav {
+    margin-left: 0;
+  }
+
+  .hero-actions .btn {
+    flex: 1 1 100%;
+  }
+
+  .contact-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .contact-row .btn {
+    margin-left: 0;
+    width: 100%;
+  }
+
+  .contact-label {
+    width: auto;
+  }
+
+  .panel {
+    padding: var(--sp-4);
+  }
+
+  .glance-row {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--sp-1);
+  }
+}
+
+/* ============================================================================
+   22. MOTION
+   ========================================================================= */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .disclosure .chev {
+    transition: none;
+  }
+}
