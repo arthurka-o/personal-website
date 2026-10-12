@@ -852,12 +852,6 @@ window.PORTFOLIO = {
         { name: "MongoDB", logo: "mongodb" },
         "REST APIs",
         "The Graph",
-      ],
-    },
-    {
-      id: "rails",
-      label: "Ruby & Rails",
-      items: [
         { name: "Ruby on Rails", logo: "rubyonrails" },
         "RSpec",
         "Capybara",
