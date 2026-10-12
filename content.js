@@ -576,6 +576,7 @@ window.PORTFOLIO = {
         "Verified on-chain with 27,000+ transactions processed through it.",
         "Oracle redesign in the same codebase: TWAP from PancakeSwap V3 pools, made non-upgradeable and then fully immutable, resolving to the worst price available so it can never be manipulated in a borrower's favour.",
         "Invariant testing with Chimera on the staking/notional relationship, plus Foundry mainnet-fork tests for the oracle path.",
+        "Ported the Chainlink feed test suite from Python to Foundry so one toolchain verifies both sides of the interface, then covered the inputs that actually broke things: a zero price, and a macro window equal to the micro window.",
       ],
       stack: ["Solidity", "Foundry", "Ethereum", "BNB Chain", "OpenZeppelin"],
       links: [
@@ -593,9 +594,11 @@ window.PORTFOLIO = {
       description:
         "KUMO lends against carbon removal: a certified carbon credit is locked as collateral and stablecoins are drawn against it immediately, instead of waiting for the credit to be sold. I took over this fork and made it production-ready — the diamond upgrade, multi-asset support and the oracle work below were mine.",
       highlights: [
-        "Converted the protocol to the diamond pattern because its functions had outgrown the EVM's stack limit and the compiler was failing. Settlement moved into its own facet, which also let batch liquidation run many closures in a single transaction instead of hundreds.",
+        "Converted the protocol to the diamond pattern because its functions had outgrown the EVM's stack limit and the compiler was failing. Callers reach the same address they always did, and new facets can be added later without touching the ones already holding user funds.",
+        "Split settlement onto its own contract, which let batch liquidation close many underwater positions in a single transaction instead of paying gas hundreds of times, and added recovery mode for when the collateral backing everything drops below what the debts are worth.",
         "Made it multi-asset: threaded an asset parameter through 271 call sites across seven contracts that previously had none, plus a factory that creates a savings pool per asset rather than hand-copying deployed contracts.",
         "Added a per-asset cap on stablecoin creation, and fixed a bug where the \"how much room is left\" calculation wrapped around to report enormous headroom instead of none.",
+        "Thirty-plus commits repairing the existing test suite across the migration. The structural change is the interesting commit; the green suite afterwards is the work.",
         "Upstream contributor to the original protocol: added Tellor as a second price source alongside Chainlink so a single oracle outage or manipulation cannot sink the protocol.",
       ],
       stack: [

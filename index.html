@@ -92,7 +92,7 @@
             <p class="hero-approach" data-bind="approach">—</p>
 
             <div class="hero-actions">
-              <a class="btn btn-primary" href="#projects">See projects</a>
+              <a class="btn btn-primary" href="#work">See the work</a>
               <button
                 class="btn btn-ghost"
                 type="button"
@@ -158,23 +158,22 @@
             in <code>content.js</code>.
           </p>
 
-          <!-- Each role row links straight to the chapter for its employer,
-               so the role list above stays four scan targets and the detail
-               lives once, further down. Rendered by app.js. -->
-          <div class="chapters" data-bind="chapters" hidden></div>
+          <!-- Experience is the role list alone: employer, dates, and what the
+               role was. The shipped work lives in the Work section below, as
+               cards, so it is described once and only once. -->
 
         </div>
       </section>
 
-      <!-- =========================================================== projects -->
-      <section class="section" id="projects" aria-labelledby="projects-title">
+      <!-- ============================================================== work -->
+      <section class="section" id="work" aria-labelledby="work-title">
         <div class="wrap">
           <header class="section-head">
             <p class="section-index" aria-hidden="true">02</p>
-            <h2 class="section-title" id="projects-title">Projects</h2>
+            <h2 class="section-title" id="work-title">Work</h2>
             <p class="section-lede">
-              Contracts with verifiable addresses, and hackathon builds. Expand
-              a card for the detail.
+              What shipped, as contracts with verifiable addresses and hackathon
+              builds. Everything here was built and deployed, not planned.
             </p>
           </header>
 
