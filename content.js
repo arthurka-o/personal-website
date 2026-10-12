@@ -68,6 +68,27 @@ window.PORTFOLIO = {
        existing marks came from too. Each ships all three treatments: the brand
        colour for a ground it has contrast against, -inv (white) for the dark
        ground, and -mono (black) for a light ground the brand colour fails on. */
+    /* Iconify. Unlike the Simple Icons marks above, these are multi-colour -
+       Hardhat has four paints and Playwright six - so -inv and -mono are
+       silhouettes (every paint collapsed to one ink) rather than recoloured
+       brand marks. That is what the contrast switch falls back to when the
+       brand colour fails on a ground. */
+    hardhat: { title: "Hardhat", file: "hardhat", hex: "#FFEA00" },
+    playwright: { title: "Playwright", file: "playwright", hex: "#2EAD33" },
+    rspec: { title: "RSpec", file: "rspec", hex: "#FE405F" },
+    vitest: { title: "Vitest", file: "vitest", hex: "#729B1B" },
+
+    /* Foundry's own site ships its mark as a 300x300 raster, and the ink is
+       white on transparent (median pixel luminance 255), so it behaves like
+       Overlay: tile: true puts it on the page's dark ground, where it reads
+       on Paper and disappears into Night. */
+    foundry: {
+      title: "Foundry",
+      file: "foundry",
+      hex: "#ffffff",
+      tile: true,
+    },
+
     ethers: { title: "Ethers.js", file: "ethers", hex: "#2535A0" },
     nestjs: { title: "NestJS", file: "nestjs", hex: "#E0234E" },
     python: { title: "Python", file: "python", hex: "#3776AB" },
@@ -841,8 +862,8 @@ window.PORTFOLIO = {
       label: "Protocol",
       items: [
         { name: "Solidity", logo: "solidity" },
-        "Foundry",
-        "Hardhat",
+        { name: "Foundry", logo: "foundry" },
+        { name: "Hardhat", logo: "hardhat" },
         { name: "EVM", logo: "ethereum" },
         "UUPS",
         "Diamond Pattern",
@@ -894,11 +915,11 @@ window.PORTFOLIO = {
       label: "Testing",
       items: [
         { name: "Jest", logo: "jest" },
-        "Vitest",
+        { name: "Vitest", logo: "vitest" },
         { name: "Chai", logo: "chai" },
-        "Playwright",
+        { name: "Playwright", logo: "playwright" },
         "Supertest",
-        "RSpec",
+        { name: "RSpec", logo: "rspec" },
         "Capybara",
       ],
     },
