@@ -386,6 +386,17 @@
     });
   }
 
+  /* The order the "shipped" groups appear under each chapter. Entries carry
+     their own `group`; this only fixes the sequence. */
+  var groupOrder = [
+    "Protocol contracts",
+    "Risk & backend",
+    "Data, SDK & product",
+    "Lending protocol",
+    "Carbon-credit pilot",
+    "Deployment & tooling",
+  ];
+
   /* One open entry at a time, and one open role at a time. Escape unwinds the
      entry before the role, and focus always goes back to the control that
      opened whatever it just closed. */
@@ -427,10 +438,9 @@
     btn.setAttribute("aria-controls", panelId);
     btn.setAttribute(
       "aria-label",
-      [entry.title, spanLabel(entry)].filter(Boolean).join(" — ")
+      [entry.title].filter(Boolean).join("")
     );
     btn.appendChild(el("span", "shipped-entry-title", entry.title));
-    btn.appendChild(el("span", "shipped-entry-span od-nowrap", spanLabel(entry)));
 
     var chev = document.createElementNS("http://www.w3.org/2000/svg", "svg");
     chev.setAttribute("class", "icon chev");
@@ -676,8 +686,36 @@
         group.appendChild(gHead);
 
         var list = el("div", "shipped-list");
-        mine.forEach(function (entry) {
-          list.appendChild(buildShippedEntry(entry));
+
+        /* Grouped by the kind of work rather than listed flat. The role's own
+           dates already carry the chronology; per-entry month ranges were
+           21 mostly-overlapping spans the reader could not act on. Entries
+           keep their `start` so ordering inside a group stays chronological. */
+        var groups = [];
+        groupOrder.forEach(function (name) {
+          var inGroup = mine.filter(function (entry) {
+            return entry.group === name;
+          });
+          if (inGroup.length) groups.push({ name: name, entries: inGroup });
+        });
+        /* Anything without a group still renders, at the end, rather than
+           silently disappearing. */
+        var ungrouped = mine.filter(function (entry) {
+          return groups.every(function (g) {
+            return g.entries.indexOf(entry) === -1;
+          });
+        });
+        if (ungrouped.length) groups.push({ name: "", entries: ungrouped });
+
+        groups.forEach(function (g) {
+          if (g.name) {
+            var subHead = el("div", "shipped-group-head shipped-sub-head");
+            subHead.appendChild(el("span", "shipped-group-label", g.name));
+            list.appendChild(subHead);
+          }
+          g.entries.forEach(function (entry) {
+            list.appendChild(buildShippedEntry(entry));
+          });
         });
         group.appendChild(list);
         chapter.appendChild(group);

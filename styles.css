@@ -961,6 +961,16 @@ a:hover {
   display: grid;
 }
 
+/* A group heading inside the list. Reuses the "Shipped" label styling; the
+   top margin keeps it from reading as another entry. */
+.shipped-sub-head {
+  margin-top: var(--sp-4);
+}
+
+.shipped-sub-head:first-child {
+  margin-top: 0;
+}
+
 /* --- one entry: a single line, expandable -------------------------------- */
 .shipped-entry {
   border-top: 1px solid var(--border);
