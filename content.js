@@ -593,7 +593,7 @@ window.PORTFOLIO = {
       kind: "Protocol · Solidity 0.8.11 · Hardhat → Foundry",
       logo: "kumo",
       description:
-        "KUMO lends against carbon removal: a certified carbon credit is locked as collateral and stablecoins are drawn against it immediately, instead of waiting for the credit to be sold. I took over this fork and made it production-ready — the diamond upgrade, multi-asset support and the oracle work below were mine.",
+        "KUMO is a fork of the Liquity lending protocol, retargeted at carbon removal. A certified carbon credit is locked as collateral and stablecoins are drawn against it immediately, instead of waiting for the credit to be sold. I took over this fork and made it production-ready — the diamond upgrade, multi-asset support and the oracle work below were mine.",
       highlights: [
         "Converted the protocol to the diamond pattern because its functions had outgrown the EVM's stack limit and the compiler was failing. Callers reach the same address they always did, and new facets can be added later without touching the ones already holding user funds.",
         "Split settlement onto its own contract, which let batch liquidation close many underwater positions in a single transaction instead of paying gas hundreds of times, and added recovery mode for when the collateral backing everything drops below what the debts are worth.",
@@ -845,6 +845,7 @@ window.PORTFOLIO = {
         { name: "TypeScript", logo: "typescript" },
         { name: "Node.js", logo: "nodedotjs" },
         "Ethers.js",
+        "Viem",
         "Express",
         "GraphQL",
         { name: "PostgreSQL", logo: "postgresql" },
