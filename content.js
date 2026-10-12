@@ -43,8 +43,8 @@ window.PORTFOLIO = {
     role: "Solidity / Protocol Engineer",
     tagline: "Perps DEX to TGE · multi-asset lending · 2× hackathon prize winner",
     summary:
-      "Shipped a perps DEX from testnet to mainnet launch. 4+ years of Solidity, 8 years of production engineering.",
-    approach: "Heavy LLM-assisted workflow — shipping fast matters.",
+      "One of six core engineers on an exotic perps DEX, from testnet through TGE. Four years of Solidity, eight years of production engineering.",
+    approach: "I work with heavy AI assistance in the loop. I read every line I ship.",
     location: "Warsaw, Poland",
     email: "work@arthurka.eu",
   },
@@ -157,7 +157,7 @@ window.PORTFOLIO = {
       label: "on-chain transactions",
       title: "Shiva Router",
       detail:
-        "Contributed to the upgradeable proxy router that wraps the protocol's immutable core contracts, verified on-chain.",
+        "The upgradeable router in front of Overlay's immutable core contracts. Because the core can't change, the router is also where the protocol decides which systems may call which functions.",
       url: "https://bscscan.com/address/0xeB497c228F130BD91E7F13f81c312243961d894A",
       urlLabel: "BscScan",
     },
@@ -302,7 +302,7 @@ window.PORTFOLIO = {
         len: 8,
         title: "Protocol subgraph",
         detail: [
-          "The protocol's on-chain index, and the data layer the frontend and the analytics read from. Most of the indexing for the core contracts and the router is mine, including the referral address as an indexed entity so attribution is answered by the same subgraph rather than a second source that can disagree with it.",
+          "The protocol's on-chain index, and the data layer the frontend and the analytics read from. I rewrote the indexing so new factories and networks stopped being hand-edits to YAML, and made the index multichain, including Berachain mainnet.",
           "Also made it multichain, including Berachain mainnet, and replaced a hardcoded market address with generated per-factory config — previously every new factory or network was a hand-edit that could silently stop part of the protocol indexing.",
         ],
         stack: ["typescript", "ethereum"],
@@ -503,11 +503,11 @@ window.PORTFOLIO = {
       summary:
         "Exotic perps DEX on BSC. One of six core engineers, from testnet through TGE.",
       highlights: [
-        "Shiva Router Contract — contributed to a proxy router wrapping the protocol's immutable core contracts, enabling features like the funded trader system to interact with the protocol. Upgradeable proxy, verified on-chain, 27,000+ transactions processed.",
-        "Funded Trader System — built the program where sponsored users trade with protocol-provided USDT. Safe multisig wallets with Zodiac modules enforce that funds only interact with Overlay contracts and only invoke allowed functions. Off-chain monitoring detects drawdown past threshold, then programmatically closes all positions and pauses the Safe.",
-        "On-Chain Referral System — integrated an existing referral contract with off-chain signed messages and Merkle tree-based verification, wiring it to the protocol's on-chain state.",
+        "Shiva Router — contributed to the upgradeable proxy in front of Overlay's immutable core contracts. Rewrote the price oracle in the same codebase: TWAP from PancakeSwap V3 pools, made non-upgradeable and then fully immutable. 27,000+ transactions verified on-chain.",
+        "Funded Trader System — built the program where sponsored users trade with protocol-provided USDT. Safe multisig wallets with Zodiac modules enforce that funds interact only with Overlay contracts, and call only the allowed functions. Off-chain monitoring detects drawdown past threshold, then programmatically closes all positions and pauses the Safe.",
+        "Referral System — integrated an already-audited referral contract and built the verification layer around it: off-chain signed messages checked against on-chain state, with a fallback that rebuilds a missing record from chain. Alias normalisation and migration scripts to move existing records on-chain.",
         "Leaderboard & Trading Competitions — built the seasonal leaderboard (Node.js, MongoDB) tracking trader performance across configurable criteria, then extended it into a competition platform with filters for market, minimum collateral, and position lifetime.",
-        "Subgraph — extended the protocol's subgraph (TypeScript) with queries and handlers for leaderboard, competitions, referrals and position data.",
+        "Subgraph — rewrote the indexing so new factories and networks stopped being hand-edits to YAML, added the router and PowerCard entities, and built the Matchstick test suite over the handlers.",
       ],
       stack: ["Solidity", "Foundry", "Safe", "Zodiac", "TypeScript", "Node.js", "MongoDB", "Ethers.js", "The Graph"],
       entries: [],
@@ -521,13 +521,13 @@ window.PORTFOLIO = {
       start: "March 2022",
       end: "January 2024",
       summary:
-        "Lending protocol secured by carbon credits. Selected for the ABN AMRO + Techstars Future of Finance Accelerator and built and launched a pilot with ABN AMRO. One of two Solidity developers.",
+        "Lending protocol secured by carbon credits. Selected for the ABN AMRO + Techstars Future of Finance Accelerator. One of two Solidity developers.",
       highlights: [
         "Evolved the protocol from a Liquity fork to support multiple collateral assets with governance-controlled risk parameters.",
         "Redesigned tokenomics to remove the protocol token while preserving system incentives — simpler economics without breaking existing functionality.",
-        "Integrated Chainlink and Tellor oracle feeds for multi-source price validation, reducing reliance on any single oracle.",
-        "Implemented the Diamond Pattern (EIP-2535) for upgradeable, modular contract architecture.",
-        "Wrote comprehensive test suites (Chai, Mocha) and custom Hardhat tasks for deployment and monitoring.",
+        "Added Tellor alongside Chainlink as a second price source, so a single oracle outage or manipulation cannot sink the protocol. Upstream contribution, reviewed and merged by the original team.",
+        "Moved the protocol to the diamond pattern because the core contract had outgrown the EVM's stack limit and the compiler was failing.",
+        "Wrote the test suites across the migration, plus custom Hardhat tasks for deployment and monitoring.",
       ],
       stack: ["Solidity", "Hardhat", "Chainlink", "OpenZeppelin", "Diamond Pattern", "UUPS", "Ethers.js"],
       entries: [],
@@ -571,7 +571,7 @@ window.PORTFOLIO = {
       kind: "Protocol contract · Solidity 0.8.10 · Foundry",
       logo: "overlay",
       description:
-        "The router contract at the centre of Overlay's perps protocol. Every higher-level system — the funded-trader program, the referral system — reaches protocol state through it, which is what lets the core contracts stay immutable once deployed. It also decides which systems may call which functions, so it acts as a permission boundary rather than just a proxy.",
+        "The router contract at the centre of Overlay's perps protocol. Every higher-level system — the funded-trader program, the referral system — reaches protocol state through it, which is what lets the core contracts stay immutable once deployed. It also decides which systems may call which functions, so it enforces a permission boundary, not just a proxy.",
       highlights: [
         "Verified on-chain with 27,000+ transactions processed through it.",
         "Oracle redesign in the same codebase: TWAP from PancakeSwap V3 pools, made non-upgradeable and then fully immutable, resolving to the worst price available so it can never be manipulated in a borrower's favour.",
@@ -621,7 +621,7 @@ window.PORTFOLIO = {
       kind: "Risk system · TypeScript, Solidity",
       logo: "overlay",
       description:
-        "The safety system that automatically closes a protocol-sponsored trader's positions when they breach a loss limit, and pauses their account until a human looks at it. Sponsored traders risk none of their own money, so the protocol has to act as the risk manager rather than rely on the trader's judgement.",
+        "The safety system that automatically closes a protocol-sponsored trader's positions when they breach a loss limit, and pauses their account until a human looks at it. Sponsored traders risk none of their own money, so the protocol has to act as the risk manager; it cannot leave that to the trader's judgement.",
       privateRepo: true,
       highlights: [
         "Two independent limits: value below 50% of initial collateral, or a 25% drop since the first check of the day. The daily rule exists so a slow bleed cannot go unnoticed for a month.",
@@ -642,9 +642,10 @@ window.PORTFOLIO = {
         "Indexed the router alongside the core contracts, so position and market data flowing through it lands in the subgraph instead of being invisible to the frontend.",
         "Made the index multichain, including Berachain mainnet.",
         "Added the PowerCard ERC1155 entities and their transfer handling.",
+        "Made the referral address an indexed entity, so affiliate attribution is answered by the same subgraph, with no second source free to disagree with it.",
         "Reworked several handlers where the recorded state was wrong — unwind, liquidate, emergency withdraw and build — including a funding-payment formula that was computing the wrong value.",
         "Migrated the entity IDs to Bytes across the schema, which changed how every entity is keyed.",
-        "Matchstick test suite so handler changes are verified rather than eyeballed.",
+        "Matchstick test suite so a handler change is proven by a test instead of by a careful read.",
       ],
       stack: ["TypeScript", "The Graph", "Ethereum"],
       links: [
@@ -660,7 +661,7 @@ window.PORTFOLIO = {
       highlights: [
         "Immutability chosen because the risk is asymmetric — a bug in a normal contract is fixable, but a bug in the price means every loan is sized wrong the moment it lands, and the upgrade key becomes the obvious target.",
         "Resolves to the worst price available across spot and TWAP. Manipulation can therefore only ever hurt whoever performs it.",
-        "Staleness guard rejects an old price rather than trusting it.",
+        "Staleness guard rejects an old price outright.",
       ],
       stack: ["Solidity", "Ethereum", "OpenZeppelin", "Chainlink"],
       links: [
@@ -672,7 +673,7 @@ window.PORTFOLIO = {
       kind: "Product backend · Node.js, Express, MongoDB",
       logo: "overlay",
       description:
-        "Seasonal trading leaderboards and competitions. I built this backend from the ground up — schema, rules engine and all — as a configurable system, so launching a new competition is a change to configuration rather than a redeploy.",
+        "Seasonal trading leaderboards and competitions. I built this backend from the ground up — schema, rules engine and all — as a configurable system, so launching a new competition is a change to configuration, not a redeploy.",
       privateRepo: true,
       highlights: [
         "Configurable rules: minimum USD collateral per market, exempt markets, and an OVL price fallback so ranking still works when the feed is down. The collateral floor stops a dust position from topping a leaderboard on leverage alone.",
@@ -687,10 +688,11 @@ window.PORTFOLIO = {
       kind: "On-chain + backend · Solidity 0.8.19, Node.js",
       logo: "overlay",
       description:
-        "Tracks which traders signed up through an affiliate link and pays the affiliate accordingly. I built the attribution layer — settling it on-chain so neither the protocol nor the affiliate has to trust the other's database for who referred whom.",
+        "Tracks which traders signed up through an affiliate link and pays the affiliate accordingly. The referral contract was already built and audited; I integrated it and wrote the verification layer around it.",
       highlights: [
-        "Attribution is settled on-chain and signed off-chain, so a database cleanup can no longer permanently disqualify a real affiliate — the record is recreated from chain when it's missing.",
+        "Off-chain signed messages checked against on-chain state, with an on-chain fallback — so a database cleanup can no longer permanently disqualify a real affiliate. The record is recreated from chain when it's missing.",
         "Minimum trading volume enforced before a referral counts, and aliases are normalised so one person can't claim under several identities.",
+        "Migration scripts to move existing affiliate records from MongoDB on-chain.",
       ],
       stack: ["Solidity", "Node.js", "OpenZeppelin"],
       links: [
@@ -747,9 +749,9 @@ window.PORTFOLIO = {
       highlights: [
         "Five-state loan lifecycle — pending, active, repaid, liquidated, closed — where the contract refuses any transition that doesn't follow that path.",
         "Explicit on-chain allowlists of lenders and borrowers. The protocol is permissioned on purpose: it only moves money between counterparties the bank has approved.",
-        "Liquidation proceeds routed to a designated treasury rather than the default recipient, because seized collateral often doesn't cover the debt.",
+        "Liquidation proceeds routed to a designated treasury, not back to the default recipient, because seized collateral often doesn't cover the debt.",
         "A V2 escape hatch so the pilot can hand off to a successor contract.",
-        "Smaller correctness work: a maxLTV → liquidationLTV rename (the old name implied a borrowing limit rather than a liquidation threshold), the correct OpenZeppelin transfer helper on withdrawal paths, a tolerance on duration comparison, and test coverage for the liquidation and treasury paths.",
+        "Smaller correctness work: a maxLTV → liquidationLTV rename (the old name implied a borrowing limit, not a liquidation threshold), the correct OpenZeppelin transfer helper on withdrawal paths, a tolerance on duration comparison, and test coverage for the liquidation and treasury paths.",
       ],
       stack: ["Solidity", "Hardhat", "OpenZeppelin"],
       links: [],
