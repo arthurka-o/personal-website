@@ -238,8 +238,8 @@
     });
   }
 
-  /* The turn control. A round button rather than a word: the arrow does the
-     explaining, and a circle in the corner leaves the foot free for links. */
+  /* The turn control. A chevron rather than a word: the arrow does the
+     explaining, and a control in the corner leaves the foot free for links. */
   function flipButton(label, className, isBack) {
     var btn = el("button", className);
     btn.type = "button";
@@ -250,9 +250,14 @@
     svg.setAttribute("class", "icon card-flip-icon");
     svg.setAttribute("viewBox", "0 0 24 24");
     svg.setAttribute("aria-hidden", "true");
+    /* A matched pair, and the pair is the point: down for "there is more on
+       the other side", up for "back to the summary". The front glyph used to
+       be the collapse/merge sign, which asked the reader to fold the card
+       shut, and the back glyph was a left arrow, which read as navigation this
+       card does not have. */
     svg.innerHTML = isBack
-      ? '<path d="m15 6-6 6 6 6"/>'
-      : '<path d="m6 9 6 6 6-6"/><path d="M12 4v11"/><path d="m8.5 7.5 3.5-3.5 3.5 3.5"/>';
+      ? '<path d="m6 15 6-6 6 6"/>'
+      : '<path d="m6 9 6 6 6-6"/>';
     btn.appendChild(svg);
     return btn;
   }
@@ -474,12 +479,20 @@
         list.forEach(function (h) {
           var text = String(h == null ? "" : h);
           var cut = text.indexOf(" — ");
+          /* One point is one group. A term and its own sentence have to travel
+             in the same box, so the stylesheet can hold them close (4px) while
+             holding separate points apart (16px). Appended flat, every line was
+             a sibling and every line got the same 16px — so each bold term sat
+             as far from the sentence it introduced as from the point above it,
+             and the list read as one undifferentiated run of text. */
+          var point = el("div", "role-point");
           if (cut > 0) {
-            wrap.appendChild(el("p", "role-point-term", text.slice(0, cut)));
-            wrap.appendChild(el("p", "role-point-text", text.slice(cut + 3)));
+            point.appendChild(el("p", "role-point-term", text.slice(0, cut)));
+            point.appendChild(el("p", "role-point-text", text.slice(cut + 3)));
           } else {
-            wrap.appendChild(el("p", "role-point-text", text));
+            point.appendChild(el("p", "role-point-text", text));
           }
+          wrap.appendChild(point);
         });
         return wrap;
       }
@@ -669,13 +682,12 @@ projects.forEach(function (proj, idx) {
            never sit in the tab order behind the face you can see. */
         var label = proj.name || "Untitled project";
         var frontBtn = flipButton("Show the detail for " + label, "card-flip", false);
-        var backBtn = flipButton("Hide the detail for " + label, "card-flip card-flip-back", true);
+        var backBtn = flipButton("Hide the detail for " + label, "card-flip", true);
         foot.appendChild(frontBtn);
         front.appendChild(foot);
 
         var backHead = el("div", "card-back-head");
         backHead.appendChild(el("span", "card-back-label", label));
-        backHead.appendChild(backBtn);
         back.appendChild(backHead);
 
         var ul = el("ul", "bullets");
@@ -686,12 +698,16 @@ projects.forEach(function (proj, idx) {
 
         /* The links come round to the back too: the reader who turned the card
            over is the one most likely to want the source, and making them turn
-           it back to reach it would undo the point of turning it. */
-        if (linksWrap) {
-          var backFoot = el("div", "card-foot");
-          backFoot.appendChild(linksWrap.cloneNode(true));
-          back.appendChild(backFoot);
-        }
+           it back to reach it would undo the point of turning it.
+
+           The foot is built whether or not there are links, because the turn
+           control lives in it. Both faces now carry that control in the same
+           corner, so turning the card does not move the button the reader is
+           reaching for — it turns over under their cursor. */
+        var backFoot = el("div", "card-foot");
+        if (linksWrap) backFoot.appendChild(linksWrap.cloneNode(true));
+        backFoot.appendChild(backBtn);
+        back.appendChild(backFoot);
 
         function setFlipped(on) {
           li.classList.toggle("is-flipped", on);

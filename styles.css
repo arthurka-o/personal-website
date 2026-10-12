@@ -222,6 +222,16 @@
   --dur-enter: 160ms;
   --dur-exit: 110ms;
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+
+  /* How far the reader stands from a turning card. Large is flatter and
+     quieter, small throws the card at you; 1600px reads as an object turning
+     in place rather than spinning on a table. */
+  --flip-perspective: 1600px;
+
+  /* Shortest a card may be. The detail face scrolls inside whatever height the
+     summary needs, so this only has to stop a brief project from turning into
+     a sliver — not reserve room for the longest detail on the page. */
+  --card-min-h: 200px;
 }
 
 /* ============================================================================
@@ -946,18 +956,30 @@ a:hover {
   border-bottom: 0;
 }
 
+/* Sits in its own grid column, so it cannot baseline-align to the title beside
+   it the way the rest of the row does. 14px × 2 is the 28px line box the 17px
+   role title occupies, which drops the chevron onto the same line instead of
+   leaving it floating above. */
 .role-marker {
   font-family: var(--font-mono);
   font-size: var(--fs-small);
-  line-height: 1.7;
+  line-height: 2;
   color: var(--accent-muted);
   user-select: none;
+  align-self: start;
 }
 
+/* Centred, not baseline-aligned. The mark is a 24px replaced element, and a
+   flex container's baseline is taken from its first item's baseline — a
+   replaced element's baseline is its bottom edge. Baseline-aligning the org
+   line to the role title therefore parked the mark's *bottom* on the title's
+   baseline, which floated the whole logo and name about half a line above the
+   title it belongs to. Centring puts the mark, the name and the title on one
+   optical line instead. */
 .role-head {
   display: flex;
   flex-wrap: wrap;
-  align-items: baseline;
+  align-items: center;
   justify-content: space-between;
   gap: var(--sp-2) var(--sp-4);
   margin-bottom: var(--sp-2);
@@ -975,7 +997,7 @@ a:hover {
 .role-titles {
   display: flex;
   flex-wrap: wrap;
-  align-items: baseline;
+  align-items: center;
   gap: var(--sp-1) var(--sp-3);
   min-width: 0;
 }
@@ -1010,17 +1032,34 @@ a:hover {
   color: var(--text-muted);
 }
 
+/* The blocks a role is made of — summary, highlights, nested entries, stack.
+   It had no rule at all, so the children stacked with nothing between them and
+   the stack chips butted straight up against the last highlight. */
+.role-body {
+  display: grid;
+  gap: var(--sp-4);
+}
+
 .role-summary {
   color: var(--text);
-  margin-bottom: var(--sp-3);
   max-width: var(--measure, 68ch);
 }
 
 .bullets {
   display: grid;
   gap: var(--sp-2);
-  margin-bottom: var(--sp-3);
   max-width: 68ch;
+
+  /* The one region that may give up height. Shrinking past the content is what
+     lets a card stay the size of its summary while the detail runs three times
+     longer; the bullets scroll inside the card instead of the card growing to
+     hold them. A long bullet cut mid-sentence is the cue that there is more
+     below — no gradient wash needed to say it. */
+  flex: 1 1 auto;
+  min-block-size: 0;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
 }
 
 .bullet {
@@ -1072,7 +1111,7 @@ a:hover {
 /* nested employers, now inside the expanded half */
 .role-entries {
   display: grid;
-  gap: var(--sp-3);
+  gap: var(--sp-4);
   margin: 0;
   padding-left: var(--sp-4);
   border-left: 1px solid var(--border);
@@ -1141,9 +1180,16 @@ a:hover {
 /* ============================================================================
    14. PROJECT CARDS
    ========================================================================= */
+/* Cards in a row share one height. That is what puts every Source link and
+   every turn control on the same line: without it each card is as tall as its
+   own description, and a two-line card floats its foot a full line above its
+   neighbour's. The row is sized by the tallest *summary* now — the detail face
+   is out of flow — so this costs some slack at the bottom of a short card and
+   buys a grid a reader can actually scan. */
 .cards {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  align-items: stretch;
   gap: var(--sp-8);
 }
 
@@ -1153,6 +1199,18 @@ a:hover {
   border: 0;
   border-top: 2px solid var(--rule);
   padding: var(--sp-6) 0 0;
+
+  /* A column, so the grid can stretch the card to its row and the face inside
+     can stretch with it. As a plain block the card filled the row but its
+     content sat at the top of it, which is what left a short card's Source
+     link floating above its neighbours'. */
+  display: flex;
+  flex-direction: column;
+
+  /* The projection the card turns in. This has to sit on the card, as the
+     parent of the rotated element — see `.card-inner` below for what happens
+     without it. */
+  perspective: var(--flip-perspective);
 }
 
 .card:hover {
@@ -1207,14 +1265,34 @@ a:hover {
 }
 
 /* The card turns over rather than growing, so opening one does not push the
-   whole grid row taller. Both faces occupy the same cell: the row is as tall
-   as the taller of the two, which is what keeps the turn from reflowing the
-   page under the reader. */
+   whole grid row taller.
+
+   The height belongs to the front face alone. The back used to share the same
+   grid cell, which made the cell the taller of the two — and since the detail
+   runs two to three and a half times the length of the summary, every card was
+   sized to its detail and most of that box was empty paper the reader saw on
+   every visit whether they opened the card or not. `.card-back` is taken out
+   of flow below so it overlays the front instead of sizing it, and its
+   overflow scrolls inside the card.
+
+   The projection lives on `.card`, one level up, and that is the whole trick.
+   Without a perspective anywhere above it the browser projects `rotateY`
+   orthographically: the card narrows to a vertical line at the halfway point
+   and unfolds mirrored, which reads as a rendering fault rather than an object
+   moving in depth. That was what the turn looked like before — a squash, not a
+   flip. */
 .card-inner {
   position: relative;
   display: grid;
   grid-template-areas: "face";
+
+  /* Grows into whatever height the grid gave the card, but keeps its content
+     as the floor — `flex: 1` would set a zero basis and let a tall summary
+     overflow its own card. */
+  flex: 1 1 auto;
+
   transform-style: preserve-3d;
+  transform: translateZ(0);
   transition: transform var(--dur-enter) var(--ease-out);
 }
 
@@ -1222,44 +1300,79 @@ a:hover {
   transform: rotateY(180deg);
 }
 
+/* Hovering lifts the card toward the reader by a hair, which is what makes it
+   feel like an object with two sides instead of a region of the page. The
+   depth is small enough that 1600px barely scales it, so a lifted card cannot
+   overlap its neighbour. The flipped selector is second and more specific, and
+   translates before rotating — after a 180° turn the local Z axis points away
+   from the reader, so the other order would push the card backwards. */
+@media (hover: hover) {
+  .card:hover .card-inner {
+    transform: translateZ(14px);
+  }
+
+  .card.is-flipped:hover .card-inner {
+    transform: translateZ(14px) rotateY(180deg);
+  }
+}
+
+/* A flex column, not a grid, because the foot is pinned with an auto margin and
+   that needs a flex line to absorb it. As a grid with `align-content: start`
+   the rows are content-sized, the box holds no free space, and the margin
+   silently does nothing.
+
+   The floor is here so a card with a one-line description still gives the
+   detail a usable box to scroll in, rather than turning into a sliver. */
 .card-face {
   grid-area: face;
-  display: grid;
+  display: flex;
+  flex-direction: column;
   gap: var(--sp-3);
-  align-content: start;
+  min-block-size: var(--card-min-h);
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
 }
 
-/* The foot stays at the bottom of whichever face is showing, without pinning
-   the face to a fixed number of rows — the two faces carry different children. */
-.card-face > :last-child {
-  margin-top: auto;
-}
-
+/* Out of flow, and exactly the size of the front. This is the whole fix for
+   the oversized card: the detail no longer contributes a single pixel to the
+   height of the page, it just covers the summary while the card is turned. */
 .card-back {
+  position: absolute;
+  inset: 0;
   transform: rotateY(180deg);
 }
 
+/* The back is the same hairline surface as the front, so it is given its own
+   internal rule rather than a panel — a box here would be a box the rest of the
+   page does not use. That rule is what tells the reader they have landed on a
+   different side instead of further down the same one. */
 .card-back-head {
   display: flex;
+  flex: none;
   align-items: center;
   justify-content: space-between;
   gap: var(--sp-3);
+  padding-bottom: var(--sp-2);
+  border-bottom: 1px solid var(--border);
 }
 
+/* The project name, restated. Once the card has turned, the bullets are
+   anonymous without it, and it is the one thing on this face that says which
+   project the reader is still inside. */
 .card-back-label {
   font-family: var(--font-mono);
   font-size: var(--fs-label);
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--text-muted);
+  color: var(--text);
 }
 
-/* The turn control: a round button in the foot, so the links keep the row to
-   themselves. The arrow carries the meaning, the label carries it for anyone
-   who cannot see the arrow. */
+/* The turn control. Square, because the rest of the page is square: this used
+   to be the one circle on a page built from hairline rules and right angles.
+   The chevron carries the meaning, the label carries it for anyone who cannot
+   see the arrow. */
 .card-flip {
+  position: relative;
   display: inline-grid;
   place-items: center;
   inline-size: 34px;
@@ -1267,17 +1380,19 @@ a:hover {
   margin-inline-start: auto;
   padding: 0;
   border: 1px solid var(--border);
-  border-radius: 50%;
-  background: transparent;
+  border-radius: var(--r-control);
+  background-color: transparent;
   color: var(--text-muted);
   cursor: pointer;
   transition:
     color var(--dur-enter) var(--ease-out),
+    background-color var(--dur-enter) var(--ease-out),
     border-color var(--dur-enter) var(--ease-out);
 }
 
 .card-flip:hover {
   color: var(--accent);
+  background-color: var(--scrim);
   border-color: var(--accent);
 }
 
@@ -1286,20 +1401,30 @@ a:hover {
   outline-offset: 2px;
 }
 
+/* The drawn button stays 34px so it does not crowd the links beside it; the hit
+   area grows to 44px underneath. Absolutely positioned, so it adds no grid row
+   to the `inline-grid` button it hangs off. */
+.card-flip::after {
+  content: "";
+  position: absolute;
+  inset: -5px;
+}
+
 .card-flip-icon {
   inline-size: 18px;
   block-size: 18px;
 }
 
-.card-flip-back {
-  color: var(--text-muted);
-}
-
+/* Pinned to the bottom of whichever face is showing, so the links and the turn
+   control sit on one baseline across a row instead of floating at whatever
+   height the copy happens to end. */
 .card-foot {
   display: flex;
+  flex: none;
   flex-wrap: wrap;
   align-items: center;
   gap: var(--sp-3);
+  margin-top: auto;
 }
 
 .card-links {
@@ -1848,5 +1973,13 @@ a:hover {
      performs. Reduced-motion users get the change, not the choreography. */
   .card-inner {
     transition: none;
+  }
+
+  /* The hover lift is the one movement here the reader did not ask for, so it
+     is dropped. Both states are pinned back explicitly — leaving them to fall
+     back on `.card-inner` would snap a flipped card flat under the cursor. */
+  .card:hover:not(.is-flipped) .card-inner,
+  .card.is-flipped:hover .card-inner {
+    transform: rotateY(0deg);
   }
 }
