@@ -194,54 +194,8 @@
             </p>
           </header>
 
-          <div class="filterbar">
-            <div
-              class="rail"
-              role="group"
-              aria-label="Filter skills by area"
-              data-bind="skillFilters"
-            >
-              <!-- rendered by app.js -->
-            </div>
-
-            <div class="search">
-              <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
-                <circle cx="11" cy="11" r="6" />
-                <path d="m16 16 4 4" />
-              </svg>
-              <label class="visually-hidden" for="skill-search">
-                Search skills
-              </label>
-              <input
-                id="skill-search"
-                type="search"
-                placeholder="Search skills"
-                autocomplete="off"
-                data-bind="skillSearch"
-              />
-            </div>
-          </div>
-
-          <p
-            class="filter-status"
-            data-bind="skillStatus"
-            role="status"
-            aria-live="polite"
-          ></p>
-
           <div class="skill-groups" data-bind="skillGroups">
             <!-- rendered by app.js -->
-          </div>
-
-          <div class="empty-state" data-bind="skillEmpty" hidden>
-            <p class="empty-title">No skills match that filter.</p>
-            <p class="empty-body">
-              Try a different area, or clear the search box. Skills are listed
-              in the <code>skills</code> array in <code>content.js</code>.
-            </p>
-            <button class="btn btn-ghost" type="button" data-action="reset-filters">
-              Reset filters
-            </button>
           </div>
         </div>
       </section>

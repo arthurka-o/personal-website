@@ -744,17 +744,12 @@ projects.forEach(function (proj, idx) {
   }
 
   /* ---------------------------------------------------------------- skills */
-  var filtersWrap = $('[data-bind="skillFilters"]');
   var groupsWrap = $('[data-bind="skillGroups"]');
-  var searchInput = $('[data-bind="skillSearch"]');
-  var statusEl = $('[data-bind="skillStatus"]');
-  var emptyEl = $('[data-bind="skillEmpty"]');
 
-  var activeFilter = "all";
-  var query = "";
-
+  /* No filter bar and no search box. Both existed to narrow a list that fits
+     on one screen without narrowing: the controls were a second thing to read,
+     and every one of them could hide the answer rather than find it. */
   if (groupsWrap) {
-    var groupNodes = [];
     skills.forEach(function (group) {
       var sec = el("section", "skill-group");
       sec.setAttribute("data-group", group.id);
@@ -767,106 +762,11 @@ projects.forEach(function (proj, idx) {
         var logo = skillLogo(item);
         if (logo) li.appendChild(markImg(logo, 14));
         li.appendChild(el("span", "chip-name", name));
-        li.setAttribute("data-skill", String(name).toLowerCase());
         list.appendChild(li);
       });
       sec.appendChild(list);
       groupsWrap.appendChild(sec);
-      groupNodes.push(sec);
     });
-
-    if (filtersWrap) {
-      var chips = [];
-      [{ id: "all", label: "All" }]
-        .concat(
-          skills.map(function (g) {
-            return { id: g.id, label: g.label };
-          })
-        )
-        .forEach(function (def) {
-          var b = el("button", "filter-chip", def.label);
-          b.type = "button";
-          b.setAttribute("aria-pressed", def.id === "all" ? "true" : "false");
-          b.addEventListener("click", function () {
-            activeFilter = def.id;
-            chips.forEach(function (c) {
-              c.setAttribute("aria-pressed", c === b ? "true" : "false");
-            });
-            applyFilters();
-          });
-          filtersWrap.appendChild(b);
-          chips.push(b);
-        });
-    }
-
-    function applyFilters() {
-      var shownTotal = 0;
-      var shownGroups = 0;
-
-      skills.forEach(function (group, gi) {
-        var sec = groupNodes[gi];
-        var shown = 0;
-        $$("[data-skill]", sec).forEach(function (node) {
-          var groupOk = activeFilter === "all" || group.id === activeFilter;
-          var queryOk =
-            !query ||
-            node.getAttribute("data-skill").indexOf(query) !== -1 ||
-            group.label.toLowerCase().indexOf(query) !== -1;
-          var ok = groupOk && queryOk;
-          if (ok) {
-            node.removeAttribute("hidden");
-            shown++;
-          } else {
-            node.setAttribute("hidden", "");
-          }
-        });
-        if (shown) {
-          sec.removeAttribute("hidden");
-          shownGroups++;
-        } else {
-          sec.setAttribute("hidden", "");
-        }
-        shownTotal += shown;
-      });
-
-      var anySkills = skills.length > 0;
-      if (anySkills && shownTotal === 0) show(emptyEl);
-      else hide(emptyEl);
-
-      if (statusEl) {
-        if (!anySkills) statusEl.textContent = "";
-        else if (shownTotal === 0) statusEl.textContent = "No matching skills.";
-        else
-          statusEl.textContent =
-            shownTotal +
-            (shownTotal === 1 ? " skill" : " skills") +
-            " across " +
-            shownGroups +
-            (shownGroups === 1 ? " area." : " areas.");
-      }
-    }
-
-    if (searchInput) {
-      searchInput.addEventListener("input", function () {
-        query = searchInput.value.trim().toLowerCase();
-        applyFilters();
-      });
-    }
-
-    $$('[data-action="reset-filters"]').forEach(function (btn) {
-      btn.addEventListener("click", function () {
-        activeFilter = "all";
-        query = "";
-        if (searchInput) searchInput.value = "";
-        $$(".filter-chip", filtersWrap).forEach(function (c, i) {
-          c.setAttribute("aria-pressed", i === 0 ? "true" : "false");
-        });
-        applyFilters();
-        if (searchInput) searchInput.focus();
-      });
-    });
-
-    applyFilters();
   }
 
   /* ------------------------------------------------------------- education */

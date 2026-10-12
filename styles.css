@@ -788,6 +788,9 @@ a:hover {
   border-top: 1px solid var(--rule);
 }
 
+
+/* Heading for the "Built with" logo band. Distinct from the old .rail, which
+   was the skills filter group's wrapper and went with the filter bar. */
 .rail-title {
   font-family: var(--font-sans);
   font-size: var(--fs-label);
@@ -1443,67 +1446,12 @@ a:hover {
 /* ============================================================================
    15. SKILL FILTER BAR
    ========================================================================= */
-.filterbar {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--sp-3);
-  margin-bottom: var(--sp-4);
-}
 
-.rail {
-  --od-gap: var(--sp-2);
-  --od-rail-pad: 0;
-  flex: 1 1 320px;
-  min-width: 0;
-}
 
-.filter-chip {
-  min-height: 36px;
-  padding: var(--sp-1) var(--sp-3);
-  border: 1px solid var(--border);
-  border-radius: var(--r-control);
-  background: transparent;
-  color: var(--text-muted);
-  font-family: var(--font-sans);
-  font-size: var(--fs-meta);
-  cursor: pointer;
-  white-space: nowrap;
-  transition: background var(--dur-enter) var(--ease-out),
-    color var(--dur-enter) var(--ease-out),
-    border-color var(--dur-enter) var(--ease-out);
-}
 
-.filter-chip:hover {
-  background: var(--scrim);
-  color: var(--text);
-  border-color: var(--border-strong);
-}
 
-.filter-chip[aria-pressed="true"] {
-  background: var(--accent);
-  border-color: var(--accent);
-  color: var(--ground);
-  font-weight: 600;
-}
 
-.search {
-  display: flex;
-  align-items: center;
-  gap: var(--sp-2);
-  flex: 0 1 240px;
-  min-width: 0;
-  min-height: 36px;
-  padding-inline: var(--sp-3);
-  border: 1px solid var(--border);
-  border-radius: var(--r-control);
-  background: transparent;
-  color: var(--text-muted);
-}
 
-.search:focus-within {
-  border-color: var(--accent);
-}
 
 .search input {
   flex: 1 1 0;
@@ -1524,13 +1472,6 @@ a:hover {
   outline: none;
 }
 
-.filter-status {
-  font-family: var(--font-sans);
-  font-size: var(--fs-meta);
-  color: var(--text-muted);
-  margin-bottom: var(--sp-6);
-  min-height: 1.5em;
-}
 
 /* ============================================================================
    16. SKILL GROUPS
@@ -1574,26 +1515,8 @@ a:hover {
 /* ============================================================================
    17. EMPTY STATE
    ========================================================================= */
-.empty-state {
-  border: 1px dashed var(--border-strong);
-  border-radius: var(--r-card);
-  padding: var(--sp-12) var(--sp-6);
-  text-align: center;
-}
 
-.empty-title {
-  font-family: var(--font-sans);
-  font-size: 1rem;
-  margin-bottom: var(--sp-2);
-}
 
-.empty-body {
-  color: var(--text-muted);
-  font-size: var(--fs-small);
-  max-width: 44ch;
-  margin-inline: auto;
-  margin-bottom: var(--sp-6);
-}
 
 /* ============================================================================
    18. EDUCATION
@@ -1885,9 +1808,6 @@ a:hover {
     grid-template-columns: minmax(0, 1fr);
   }
 
-  .search {
-    flex: 1 1 100%;
-  }
 
   .role-head,
   .edu-head,
