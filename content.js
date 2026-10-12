@@ -94,6 +94,23 @@ window.PORTFOLIO = {
       tile: true,
     },
 
+    /* GitHub org avatars, and only the two where the org's avatar IS the product's
+       mark. Both arrived as square canvases with the mark filling under a
+       quarter of the frame - 18% for The Graph - which at an 18px chip is a
+       5px smudge. Each is cropped to its ink with 6% padding and re-encoded;
+       the artwork is untouched, only the empty margin is gone.
+
+       Rasters with no alpha, so both take tile: true like Overlay: the dark
+       ground behind them is the page ground, which makes the tile disappear
+       into Night and read as a logo tile on Paper. */
+    thegraph: {
+      title: "The Graph",
+      file: "thegraph",
+      hex: "#ffffff",
+      tile: true,
+    },
+    tellor: { title: "Tellor", file: "tellor", hex: "#ffffff", tile: true },
+
     ethers: { title: "Ethers.js", file: "ethers", hex: "#2535A0" },
     nestjs: { title: "NestJS", file: "nestjs", hex: "#E0234E" },
     python: { title: "Python", file: "python", hex: "#3776AB" },
@@ -874,7 +891,7 @@ window.PORTFOLIO = {
         "Diamond Pattern",
         { name: "OpenZeppelin", logo: "openzeppelin" },
         { name: "Chainlink", logo: "chainlink" },
-        "Tellor",
+        { name: "Tellor", logo: "tellor" },
         "Safe",
         "Zodiac",
         "Merkle Trees",
@@ -898,7 +915,7 @@ window.PORTFOLIO = {
         { name: "PostgreSQL", logo: "postgresql" },
         { name: "MongoDB", logo: "mongodb" },
         "REST APIs",
-        "The Graph",
+        { name: "The Graph", logo: "thegraph" },
         { name: "Ruby on Rails", logo: "rubyonrails" },
         "Pundit",
         { name: "Sidekiq", logo: "sidekiq" },
