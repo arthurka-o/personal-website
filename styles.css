@@ -848,9 +848,14 @@ a:hover {
   flex: none;
 }
 
+/* The padding this used to carry was subtracted from the mark rather than
+   added to it: box-sizing is border-box, so 4px of inset on an 18px chip left
+   the artwork 10px and made every tiled mark read as visibly smaller than the
+   un-tiled ones beside it. The tile is there to back a white-ink raster, not to
+   frame it — so the mark now fills its box and is the same size as every other
+   chip. */
 .chip-mark.is-tiled {
   background: var(--mark-tile);
-  padding: 4px;
   border-radius: 4px;
 }
 

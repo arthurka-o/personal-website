@@ -79,7 +79,9 @@ window.PORTFOLIO = {
     vitest: { title: "Vitest", file: "vitest", hex: "#729B1B" },
 
     /* Foundry's mark is the org's own profile asset (foundry-rs/.github), a
-       200x200 raster. The ink is white on transparent (median pixel
+       200x200 raster, filed as foundry-mark so the URL differs from the
+       cut it replaced - a same-path swap is served from cache. The ink is
+       white on transparent (median pixel
        luminance 255), so it takes tile: true like Overlay rather than being
        recoloured. An earlier cut from getfoundry.sh was 300x300 but read as
        too fine at 16px - a canvas-occupancy check says it covered more of
@@ -87,7 +89,7 @@ window.PORTFOLIO = {
        padding. */
     foundry: {
       title: "Foundry",
-      file: "foundry",
+      file: "foundry-mark",
       hex: "#ffffff",
       tile: true,
     },
