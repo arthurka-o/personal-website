@@ -446,6 +446,15 @@
       sections.forEach(function (sec) {
         if (sec.offsetTop <= probe) current = sec.id;
       });
+      /* The last section can never pass the probe. It has nothing below it but
+         a short footer, so the page runs out of scroll before its offset gets
+         high enough — which left the nav stuck on Education for the whole of
+         Contact. Being at the bottom means the last section is the one being
+         read, whatever its offset says. */
+      var scrolled = window.pageYOffset || document.documentElement.scrollTop || 0;
+      var atBottom =
+        scrolled + window.innerHeight >= document.documentElement.scrollHeight - 2;
+      if (atBottom && sections.length) current = sections[sections.length - 1].id;
       setActive(current);
     }
     window.addEventListener("scroll", onScroll, { passive: true });
