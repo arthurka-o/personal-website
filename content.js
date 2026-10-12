@@ -832,6 +832,8 @@ window.PORTFOLIO = {
         "UUPS",
         "Diamond Pattern",
         { name: "OpenZeppelin", logo: "openzeppelin" },
+        { name: "Chainlink", logo: "chainlink" },
+        "Tellor",
         "Safe",
         "Zodiac",
       ],
@@ -842,7 +844,9 @@ window.PORTFOLIO = {
       items: [
         { name: "TypeScript", logo: "typescript" },
         { name: "Node.js", logo: "nodedotjs" },
-        { name: "Ruby on Rails", logo: "rubyonrails" },
+        "Ethers.js",
+        "Express",
+        "GraphQL",
         { name: "PostgreSQL", logo: "postgresql" },
         { name: "MongoDB", logo: "mongodb" },
         "REST APIs",
@@ -850,10 +854,31 @@ window.PORTFOLIO = {
       ],
     },
     {
+      id: "rails",
+      label: "Ruby & Rails",
+      items: [
+        { name: "Ruby on Rails", logo: "rubyonrails" },
+        "RSpec",
+        "Capybara",
+        "Pundit",
+        "Sidekiq",
+        "Kamal",
+      ],
+    },
+    {
+      id: "frontend",
+      label: "Frontend",
+      items: [
+        { name: "React", logo: "react" },
+        { name: "Next.js", logo: "nextdotjs" },
+      ],
+    },
+    {
       id: "infra",
       label: "Infrastructure",
       items: [
         { name: "Amazon Web Services", logo: "amazonwebservices" },
+        "Docker",
         "CI/CD",
         { name: "Git", logo: "git" },
       ],
