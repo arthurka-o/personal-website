@@ -44,7 +44,6 @@ window.PORTFOLIO = {
     tagline: "Perps DEX to TGE · multi-asset lending · 2× hackathon prize winner",
     summary:
       "One of six core engineers on an exotic perps DEX, from testnet through TGE. Four years of Solidity, eight years of production engineering.",
-    approach: "I work with heavy AI assistance in the loop. I read every line I ship.",
     location: "Warsaw, Poland",
     email: "work@arthurka.eu",
   },
@@ -302,7 +301,7 @@ window.PORTFOLIO = {
         len: 8,
         title: "Protocol subgraph",
         detail: [
-          "The protocol's on-chain index, and the data layer the frontend and the analytics read from. I rewrote the indexing so new factories and networks stopped being hand-edits to YAML, and made the index multichain, including Berachain mainnet.",
+          "The protocol's on-chain index, and the data layer the frontend and the analytics read from. Most of the indexing is mine — I rewrote the config so new factories and networks stopped being hand-edits to YAML, and made the index multichain, including Berachain mainnet.",
           "Also made it multichain, including Berachain mainnet, and replaced a hardcoded market address with generated per-factory config — previously every new factory or network was a hand-edit that could silently stop part of the protocol indexing.",
         ],
         stack: ["typescript", "ethereum"],
@@ -507,7 +506,7 @@ window.PORTFOLIO = {
         "Funded Trader System — built the program where sponsored users trade with protocol-provided USDT. Safe multisig wallets with Zodiac modules enforce that funds interact only with Overlay contracts, and call only the allowed functions. Off-chain monitoring detects drawdown past threshold, then programmatically closes all positions and pauses the Safe.",
         "Referral System — integrated an already-audited referral contract and built the verification layer around it: off-chain signed messages checked against on-chain state, with a fallback that rebuilds a missing record from chain. Alias normalisation and migration scripts to move existing records on-chain.",
         "Leaderboard & Trading Competitions — built the seasonal leaderboard (Node.js, MongoDB) tracking trader performance across configurable criteria, then extended it into a competition platform with filters for market, minimum collateral, and position lifetime.",
-        "Subgraph — rewrote the indexing so new factories and networks stopped being hand-edits to YAML, added the router and PowerCard entities, and built the Matchstick test suite over the handlers.",
+        "Subgraph — most of the indexing is mine: rewrote the config so new factories and networks stopped being hand-edits to YAML, added the router and PowerCard entities, and built the Matchstick test suite over the handlers.",
       ],
       stack: ["Solidity", "Foundry", "Safe", "Zodiac", "TypeScript", "Node.js", "MongoDB", "Ethers.js", "The Graph"],
       entries: [],

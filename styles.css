@@ -668,14 +668,9 @@ a:hover {
   max-width: 46ch;
   font-size: 1.25rem;
   line-height: 1.5;
-  margin-bottom: var(--sp-4);
-}
-
-.hero-approach {
-  max-width: 46ch;
-  font-family: var(--font-sans);
-  font-size: var(--fs-small);
-  color: var(--text-muted);
+  /* Was split across the summary and an approach line that sat between this
+     and the buttons. The spacing belongs here now that it is the last line
+     before the actions. */
   margin-bottom: var(--sp-8);
 }
 

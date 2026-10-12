@@ -316,7 +316,6 @@
   bind("role", profile.role);
   bind("tagline", profile.tagline);
   bind("summary", profile.summary);
-  bind("approach", profile.approach);
   bind("email", profile.email);
   bind("brandName", profile.name);
   bind("footerNote", (DATA.footer || {}).note);
