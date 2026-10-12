@@ -79,7 +79,6 @@
 }
 /* /OD-LAYOUT-PRIMITIVES v1 */
 
-
 /* ============================================================================
    1. PALETTE — every colour value, declared exactly once
    ========================================================================= */
@@ -917,292 +916,15 @@ a:hover {
    ========================================================================= */
 
 /* --- the shipped group inside a role's panel --------------------------- */
-.role-panel {
-  display: grid;
-  gap: var(--sp-4);
-  margin-top: var(--sp-4);
-  padding-top: var(--sp-4);
-  border-top: 1px solid var(--border);
-}
-
-.role-panel[hidden] {
-  display: none;
-}
-
-.shipped-group {
-  display: grid;
-  gap: var(--sp-2);
-}
-
-.shipped-group-head {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: var(--sp-3);
-}
-
-.shipped-group-label {
-  font-family: var(--font-mono);
-  font-size: var(--fs-label);
-  font-weight: 500;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--text-muted);
-}
-
-.shipped-group-count {
-  font-family: var(--font-mono);
-  font-size: var(--fs-meta);
-  color: var(--text-muted);
-  white-space: nowrap;
-}
-
-.shipped-list {
-  display: grid;
-}
 
 /* A group heading inside the list. Reuses the "Shipped" label styling; the
    top margin keeps it from reading as another entry. */
-.shipped-sub-head {
-  margin-top: var(--sp-4);
-}
-
-.shipped-sub-head:first-child {
-  margin-top: 0;
-}
 
 /* --- one entry: a single line, expandable -------------------------------- */
-.shipped-entry {
-  border-top: 1px solid var(--border);
-}
-
-.shipped-entry:last-child {
-  border-bottom: 1px solid var(--border);
-}
-
-.shipped-entry-toggle {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto auto;
-  align-items: baseline;
-  gap: var(--sp-2) var(--sp-3);
-  width: 100%;
-  min-height: 44px;
-  padding: var(--sp-2) 0;
-  border: 0;
-  border-radius: 0;
-  background: none;
-  font: inherit;
-  color: inherit;
-  text-align: left;
-  cursor: pointer;
-  appearance: none;
-}
-
-@media (hover: hover) {
-  .shipped-entry-toggle:hover {
-    background: var(--surface);
-  }
-}
-
-.shipped-entry-toggle:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: -2px;
-}
-
-.shipped-entry-title {
-  display: block;
-  min-width: 0;
-  font-size: var(--fs-small);
-  font-weight: 600;
-  line-height: 1.35;
-}
-
-.shipped-entry-span {
-  font-family: var(--font-mono);
-  font-size: var(--fs-meta);
-  color: var(--text-muted);
-}
-
-.shipped-entry-toggle .chev {
-  align-self: center;
-  color: var(--text-muted);
-  transition: transform var(--dur-enter) var(--ease-out);
-}
-
-.shipped-entry-toggle[aria-expanded="true"] .chev {
-  transform: rotate(180deg);
-}
-
-.shipped-entry-panel {
-  display: grid;
-  gap: var(--sp-3);
-  max-width: 72ch;
-  padding-bottom: var(--sp-4);
-}
-
-.shipped-entry-panel[hidden] {
-  display: none;
-}
-
-.shipped-body {
-  margin: 0;
-  font-size: var(--fs-small);
-  color: var(--text-muted);
-}
-
-.shipped-body + .shipped-body {
-  margin-top: var(--sp-3);
-}
-
-.shipped-stack {
-  padding: 0;
-  list-style: none;
-}
-
-/* --- the shipped summary inside a role row --------------------------------
-   The scan layer. A title and the one-line reason it exists, and nothing
-   else — no dates, no count, no second control. The rhythm comes from the
-   rule and the whitespace, because the brief bans charts, photography and
-   illustration, so there is nothing honest to draw here. */
-/* --- employer chapters -----------------------------------------------------
-   The role list above stays a scan target; each chapter below carries one
-   employer's full context. The role row links here, so the anchor has to clear
-   the fixed topbar rather than land under it. */
-.chapters {
-  margin-top: var(--sp-16);
-}
-
-.chapters[hidden] {
-  display: none;
-}
-
-.chapter {
-  /* the link from a role row lands here, and the topbar is sticky */
-  scroll-margin-top: calc(var(--topbar-h) + var(--sp-6));
-  margin-bottom: var(--sp-12);
-}
-
-.chapter-head {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: var(--sp-2) var(--sp-4);
-  padding-bottom: var(--sp-3);
-  border-bottom: 1px solid var(--rule);
-}
-
-.chapter-who {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: var(--sp-2) var(--sp-3);
-  min-width: 0;
-}
-
-.chapter-org {
-  margin: 0;
-  font-size: var(--fs-title);
-  font-weight: 600;
-  line-height: 1.2;
-}
-
-/* an <a> that looks like a heading sets its own colour and underline */
-.chapter-org-link {
-  color: inherit;
-  text-decoration: none;
-}
-
-.chapter-org-link:hover,
-.chapter-org-link:focus-visible {
-  text-decoration: underline;
-  text-underline-offset: 3px;
-}
-
-.chapter-role {
-  font-size: var(--fs-small);
-  color: var(--text-muted);
-}
-
-.chapter-when {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: var(--sp-1) var(--sp-3);
-  font-family: var(--font-mono);
-  font-size: var(--fs-meta);
-  color: var(--text-muted);
-}
-
-.chapter-place {
-  font-family: var(--font-sans);
-}
-
-/* --- the jump link on a role row ------------------------------------------ */
-.role-jump {
-  display: inline-flex;
-  align-items: baseline;
-  gap: var(--sp-2);
-  margin-top: var(--sp-1);
-  color: var(--accent);
-  font-family: var(--font-mono);
-  font-size: var(--fs-meta);
-  text-decoration: none;
-}
-
-.role-jump:hover,
-.role-jump:focus-visible {
-  text-decoration: underline;
-  text-underline-offset: 3px;
-}
-
-.role-jump-arrow {
-  font-family: var(--font-sans);
-}
-
-@media (hover: hover) {
-  .role-jump:hover {
-    color: var(--accent-strong);
-  }
-}
-
-/* --- the activity strip ----------------------------------------------------
-   Not a Gantt. No two entries overlap, so a bar's length would say nothing.
-   What the dates do carry is distribution, so each entry is one mark placed
-   where it started, and entries sharing a month stack — a column three marks
-   high reads as three things shipped that month.
-
-.shipped-link {
-  /* a grid item stretches by default, which would make the whole panel row a
-     link target; the hit area stays the label */
-  justify-self: start;
-
-  font-family: var(--font-mono);
-  font-size: var(--fs-meta);
-  color: var(--accent);
-  text-decoration: none;
-}
-
-.shipped-link:hover,
-.shipped-link:focus-visible {
-  text-decoration: underline;
-  text-underline-offset: 3px;
-}
 
 /* --- narrow ---------------------------------------------------------------
    At a phone width the date range no longer fits beside the title, so it drops
    to its own line rather than being squeezed. The row stays a 44px target. */
-@media (max-width: 720px) {
-  .shipped-entry-toggle {
-    grid-template-columns: minmax(0, 1fr) auto;
-  }
-
-  .shipped-entry-span {
-    grid-column: 1;
-    grid-row: 2;
-  }
-}
-
 /* ============================================================================
    EXPERIENCE
    ========================================================================= */
@@ -1288,13 +1010,6 @@ a:hover {
   color: var(--text-muted);
 }
 
-.role-meta {
-  font-family: var(--font-sans);
-  font-size: var(--fs-meta);
-  color: var(--text-muted);
-  margin-bottom: var(--sp-3);
-}
-
 .role-summary {
   color: var(--text);
   margin-bottom: var(--sp-3);
@@ -1327,21 +1042,6 @@ a:hover {
    highlight that already names itself before an em dash keeps that name as a
    heading; one that is a plain sentence renders as description alone. Either
    way there is no bullet glyph — the term is what marks the item. */
-.role-toggle {
-  margin-bottom: var(--sp-3);
-}
-
-.role-more {
-  display: grid;
-  gap: var(--sp-4);
-  max-width: 68ch;
-  padding-top: var(--sp-4);
-  border-top: 1px solid var(--border);
-}
-
-.role-more[hidden] {
-  display: none;
-}
 
 .role-points {
   display: grid;
@@ -1369,13 +1069,6 @@ a:hover {
 
 /* This disclosure is the only control a role exposes, so on a touch screen it
    carries the full 44px target rather than the 32px the card disclosures use. */
-@media (max-width: 720px) {
-  .role-toggle {
-    min-height: 44px;
-    padding-inline: var(--sp-4);
-  }
-}
-
 /* nested employers, now inside the expanded half */
 .role-entries {
   display: grid;
@@ -1455,14 +1148,11 @@ a:hover {
 }
 
 .card {
-  display: grid;
-  grid-template-rows: auto auto 1fr auto;
-  gap: var(--sp-3);
+  min-width: 0;
   background: transparent;
   border: 0;
   border-top: 2px solid var(--rule);
   padding: var(--sp-6) 0 0;
-  min-width: 0;
 }
 
 .card:hover {
@@ -1516,16 +1206,93 @@ a:hover {
   color: var(--text-muted);
 }
 
-.card-more {
-  grid-column: 1 / -1;
+/* The card turns over rather than growing, so opening one does not push the
+   whole grid row taller. Both faces occupy the same cell: the row is as tall
+   as the taller of the two, which is what keeps the turn from reflowing the
+   page under the reader. */
+.card-inner {
+  position: relative;
   display: grid;
-  gap: var(--sp-2);
-  padding: var(--sp-3) 0 0;
-  border-top: 1px solid var(--border);
+  grid-template-areas: "face";
+  transform-style: preserve-3d;
+  transition: transform var(--dur-enter) var(--ease-out);
 }
 
-.card-more[hidden] {
-  display: none;
+.card.is-flipped .card-inner {
+  transform: rotateY(180deg);
+}
+
+.card-face {
+  grid-area: face;
+  display: grid;
+  gap: var(--sp-3);
+  align-content: start;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* The foot stays at the bottom of whichever face is showing, without pinning
+   the face to a fixed number of rows — the two faces carry different children. */
+.card-face > :last-child {
+  margin-top: auto;
+}
+
+.card-back {
+  transform: rotateY(180deg);
+}
+
+.card-back-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+}
+
+.card-back-label {
+  font-family: var(--font-mono);
+  font-size: var(--fs-label);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+/* The turn control: a round button in the foot, so the links keep the row to
+   themselves. The arrow carries the meaning, the label carries it for anyone
+   who cannot see the arrow. */
+.card-flip {
+  display: inline-grid;
+  place-items: center;
+  inline-size: 34px;
+  block-size: 34px;
+  margin-inline-start: auto;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition:
+    color var(--dur-enter) var(--ease-out),
+    border-color var(--dur-enter) var(--ease-out);
+}
+
+.card-flip:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.card-flip:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.card-flip-icon {
+  inline-size: 18px;
+  block-size: 18px;
+}
+
+.card-flip-back {
+  color: var(--text-muted);
 }
 
 .card-foot {
@@ -1533,20 +1300,6 @@ a:hover {
   flex-wrap: wrap;
   align-items: center;
   gap: var(--sp-3);
-}
-
-.disclosure {
-  min-height: 32px;
-  padding: var(--sp-1) var(--sp-3);
-  font-size: var(--fs-label);
-}
-
-.disclosure .chev {
-  transition: transform var(--dur-enter) var(--ease-out);
-}
-
-.disclosure[aria-expanded="true"] .chev {
-  transform: rotate(180deg);
 }
 
 .card-links {
@@ -2090,13 +1843,10 @@ a:hover {
     transition-duration: 0.01ms !important;
   }
 
-  /* There is no reveal left to neutralise. The shipped timeline has no clip-path
-     transition and no scroll observer, so these users get the finished chart
-     straight from the stylesheet — what is left is hover, bar fill and chevron
-     rotation, all of them state feedback rather than choreography. */
-  .disclosure .chev,
-  .role-toggle .chev,
-  .shipped-entry-toggle .chev {
+  /* The global rule above already takes the duration to nothing, which is all a
+     card turn needs: the card still turns, it just arrives rather than
+     performs. Reduced-motion users get the change, not the choreography. */
+  .card-inner {
     transition: none;
   }
 }

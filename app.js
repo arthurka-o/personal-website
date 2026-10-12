@@ -199,6 +199,63 @@
   }
 
   /* ---------------------------------------------------------------- utils */
+
+  /* Two helpers for the card flip, kept beside the other utils because they
+     are pure DOM and know nothing about the portfolio.
+
+     setFace hides a face from everyone, not just the eye: `inert` takes its
+     links and buttons out of the tab order and `aria-hidden` keeps a screen
+     reader from announcing a face that is turned away. */
+
+  function setFace(face, visible) {
+    if (visible) {
+      face.removeAttribute("aria-hidden");
+      if ("inert" in face) face.removeAttribute("inert");
+      else removeTabStops(face, false);
+    } else {
+      face.setAttribute("aria-hidden", "true");
+      if ("inert" in face) face.setAttribute("inert", "");
+      else removeTabStops(face, true);
+    }
+  }
+
+  /* Fallback for browsers without `inert`: toggle tabindex on everything
+     focusable inside the face. */
+  function removeTabStops(face, off) {
+    var focusables = face.querySelectorAll("a[href], button, input, select, textarea");
+    Array.prototype.forEach.call(focusables, function (node) {
+      if (off) {
+        if (!node.hasAttribute("data-tabindex")) {
+          node.setAttribute("data-tabindex", node.getAttribute("tabindex") || "");
+        }
+        node.setAttribute("tabindex", "-1");
+      } else if (node.hasAttribute("data-tabindex")) {
+        var was = node.getAttribute("data-tabindex");
+        if (was === "") node.removeAttribute("tabindex");
+        else node.setAttribute("tabindex", was);
+        node.removeAttribute("data-tabindex");
+      }
+    });
+  }
+
+  /* The turn control. A round button rather than a word: the arrow does the
+     explaining, and a circle in the corner leaves the foot free for links. */
+  function flipButton(label, className, isBack) {
+    var btn = el("button", className);
+    btn.type = "button";
+    btn.setAttribute("aria-label", label);
+    btn.setAttribute("aria-expanded", isBack ? "true" : "false");
+
+    var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    svg.setAttribute("class", "icon card-flip-icon");
+    svg.setAttribute("viewBox", "0 0 24 24");
+    svg.setAttribute("aria-hidden", "true");
+    svg.innerHTML = isBack
+      ? '<path d="m15 6-6 6 6 6"/>'
+      : '<path d="m6 9 6 6 6-6"/><path d="M12 4v11"/><path d="m8.5 7.5 3.5-3.5 3.5 3.5"/>';
+    btn.appendChild(svg);
+    return btn;
+  }
   function $(sel, root) {
     return (root || document).querySelector(sel);
   }
@@ -534,8 +591,14 @@
     if (projects.length === 0) {
       show($('[data-bind="projectEmpty"]'));
     } else {
-      projects.forEach(function (proj, idx) {
+projects.forEach(function (proj, idx) {
         var li = el("li", "card");
+
+        var hasMore = proj.highlights && proj.highlights.length;
+
+        var inner = el("div", "card-inner");
+        var front = el("div", "card-face card-front");
+        var back = el("div", "card-face card-back");
 
         var head = el("div", "card-head");
         var nameWrap = el("div", "card-name-wrap");
@@ -544,7 +607,7 @@
         nameWrap.appendChild(el("h3", "card-name", proj.name || "Untitled project"));
         head.appendChild(nameWrap);
         if (filled(proj.kind)) head.appendChild(el("span", "card-kind", proj.kind));
-        li.appendChild(head);
+        front.appendChild(head);
 
         var body = el("div", "card-body");
         if (filled(proj.description)) {
@@ -563,32 +626,19 @@
           });
           body.appendChild(stackChips);
         }
-        li.appendChild(body);
+        front.appendChild(body);
 
-        var hasMore = proj.highlights && proj.highlights.length;
-        if (hasMore) {
-          var more = el("div", "card-more");
-          var ul = el("ul", "bullets");
-          proj.highlights.forEach(function (h) {
-            ul.appendChild(el("li", "bullet", h));
-          });
-          more.appendChild(ul);
-          li.appendChild(more);
-        }
-
-        /* No "Details" disclosure on the card. It hid the one part of the card
-           a reader actually came for, and put a control between them and it. */
-        var foot = el("div", "card-foot");
-
-        var valid = (proj.links || []).filter(function (l) {
-          return filled(l.url);
-        });
         /* Link status lives in exactly one place: whatever a card has to show
            about its source, clickable or not. A private repository states
            itself here rather than in the description, so the copy stays the
            pitch and the foot stays the evidence. */
+        var valid = (proj.links || []).filter(function (l) {
+          return filled(l.url);
+        });
+        var foot = el("div", "card-foot");
+        var linksWrap = null;
         if (valid.length || proj.privateRepo) {
-          var linksWrap = el("div", "card-links");
+          linksWrap = el("div", "card-links");
           valid.forEach(function (l) {
             var a = externalLink(l.label || "Link", l.url);
             a.className = "card-link";
@@ -600,7 +650,71 @@
           foot.appendChild(linksWrap);
         }
 
-        li.appendChild(foot);
+        /* Nothing to turn over: a plain card, with no button pretending there
+           is more to see. */
+        if (!hasMore) {
+          if (foot.childNodes.length) front.appendChild(foot);
+          inner.appendChild(front);
+          li.appendChild(inner);
+          projList.appendChild(li);
+          return;
+        }
+
+        /* --- the flip ------------------------------------------------------
+           The card turns rather than grows. Expanding pushed the whole grid
+           row taller every time a card was opened, and left the detail sitting
+           below the thing the reader was already looking at.
+
+           The hidden face is inert, not merely out of sight, so its links
+           never sit in the tab order behind the face you can see. */
+        var label = proj.name || "Untitled project";
+        var frontBtn = flipButton("Show the detail for " + label, "card-flip", false);
+        var backBtn = flipButton("Hide the detail for " + label, "card-flip card-flip-back", true);
+        foot.appendChild(frontBtn);
+        front.appendChild(foot);
+
+        var backHead = el("div", "card-back-head");
+        backHead.appendChild(el("span", "card-back-label", label));
+        backHead.appendChild(backBtn);
+        back.appendChild(backHead);
+
+        var ul = el("ul", "bullets");
+        proj.highlights.forEach(function (h) {
+          ul.appendChild(el("li", "bullet", h));
+        });
+        back.appendChild(ul);
+
+        /* The links come round to the back too: the reader who turned the card
+           over is the one most likely to want the source, and making them turn
+           it back to reach it would undo the point of turning it. */
+        if (linksWrap) {
+          var backFoot = el("div", "card-foot");
+          backFoot.appendChild(linksWrap.cloneNode(true));
+          back.appendChild(backFoot);
+        }
+
+        function setFlipped(on) {
+          li.classList.toggle("is-flipped", on);
+          frontBtn.setAttribute("aria-expanded", on ? "true" : "false");
+          backBtn.setAttribute("aria-expanded", on ? "true" : "false");
+          setFace(front, !on);
+          setFace(back, on);
+          /* Focus follows the turn, so the control you pressed is still the one
+             under your cursor rather than buried behind the card. */
+          if (on) backBtn.focus();
+          else frontBtn.focus();
+        }
+        frontBtn.addEventListener("click", function () {
+          setFlipped(true);
+        });
+        backBtn.addEventListener("click", function () {
+          setFlipped(false);
+        });
+        setFace(back, false);
+
+        inner.appendChild(front);
+        inner.appendChild(back);
+        li.appendChild(inner);
         projList.appendChild(li);
       });
     }
