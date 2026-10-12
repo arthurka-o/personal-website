@@ -78,10 +78,13 @@ window.PORTFOLIO = {
     rspec: { title: "RSpec", file: "rspec", hex: "#FE405F" },
     vitest: { title: "Vitest", file: "vitest", hex: "#729B1B" },
 
-    /* Foundry's own site ships its mark as a 300x300 raster, and the ink is
-       white on transparent (median pixel luminance 255), so it behaves like
-       Overlay: tile: true puts it on the page's dark ground, where it reads
-       on Paper and disappears into Night. */
+    /* Foundry's mark is the org's own profile asset (foundry-rs/.github), a
+       200x200 raster. The ink is white on transparent (median pixel
+       luminance 255), so it takes tile: true like Overlay rather than being
+       recoloured. An earlier cut from getfoundry.sh was 300x300 but read as
+       too fine at 16px - a canvas-occupancy check says it covered more of
+       the frame, not less, so what changed was stroke weight rather than
+       padding. */
     foundry: {
       title: "Foundry",
       file: "foundry",
