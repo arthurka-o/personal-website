@@ -655,7 +655,7 @@ window.PORTFOLIO = {
       kind: "Protocol contract · Solidity 0.8.10 · Foundry",
       logo: "overlay",
       description:
-        "The upgradeable proxy router wrapping Overlay's immutable core contracts. It is the seam that lets higher-level systems — the funded-trader program, the referral system — reach protocol state without the core ever being upgradeable. It also constrains which contracts and which functions those systems may call, so it is a permission boundary and not just a proxy.",
+        "The router contract at the centre of Overlay's perps protocol. Every higher-level system — the funded-trader program, the referral system — reaches protocol state through it, which is what lets the core contracts stay immutable once deployed. It also decides which systems may call which functions, so it acts as a permission boundary rather than just a proxy.",
       highlights: [
         "Verified on-chain with 27,000+ transactions processed through it.",
         "Oracle redesign in the same codebase: TWAP from PancakeSwap V3 pools, made non-upgradeable and then fully immutable, resolving to the worst price available so it can never be manipulated in a borrower's favour.",
@@ -675,9 +675,9 @@ window.PORTFOLIO = {
       kind: "Protocol · Solidity 0.8.11 · Hardhat → Foundry",
       logo: "kumo",
       description:
-        "KUMO finances carbon-removal projects: a certified credit is locked as collateral and stablecoins are drawn against it immediately, instead of waiting for the credit to sell. This is the fork where the real engineering happened.",
+        "KUMO lends against carbon removal: a certified carbon credit is locked as collateral and stablecoins are drawn against it immediately, instead of waiting for the credit to be sold. I took over this fork and made it production-ready — the diamond upgrade, multi-asset support and the oracle work below were mine.",
       highlights: [
-        "Converted the protocol to the Diamond pattern (EIP-2535) because its functions had stopped fitting inside the EVM's stack limit — the compiler was failing with Stack too deep. Settlement moved out of the central contract into a separate facet, which also let batch liquidation run many closures in one transaction instead of hundreds.",
+        "Converted the protocol to the diamond pattern because its functions had outgrown the EVM's stack limit and the compiler was failing. Settlement moved into its own facet, which also let batch liquidation run many closures in a single transaction instead of hundreds.",
         "Made it multi-asset: threaded an asset parameter through 271 call sites across seven contracts that previously had none, plus a factory that creates a savings pool per asset rather than hand-copying deployed contracts.",
         "Added a per-asset cap on stablecoin creation, and fixed a bug where the \"how much room is left\" calculation wrapped around to report enormous headroom instead of none.",
         "Upstream contributor to the original protocol: added Tellor as a second price source alongside Chainlink so a single oracle outage or manipulation cannot sink the protocol.",
@@ -702,7 +702,7 @@ window.PORTFOLIO = {
       kind: "Risk system · TypeScript, Solidity",
       logo: "overlay",
       description:
-        "The off-chain system that automatically closes a protocol-sponsored trader's positions and pauses their Safe when they exceed their loss limit. Sponsored traders risk none of their own money, so the protocol has to act as the risk manager rather than rely on the trader's judgement.",
+        "The safety system that automatically closes a protocol-sponsored trader's positions when they breach a loss limit, and pauses their account until a human looks at it. Sponsored traders risk none of their own money, so the protocol has to act as the risk manager rather than rely on the trader's judgement.",
       privateRepo: true,
       highlights: [
         "Two independent limits: value below 50% of initial collateral, or a 25% drop since the first check of the day. The daily rule exists so a slow bleed cannot go unnoticed for a month.",
@@ -718,12 +718,14 @@ window.PORTFOLIO = {
       kind: "Data layer · TypeScript · The Graph",
       logo: "overlay",
       description:
-        "The protocol's on-chain index, and the single largest piece of data-layer work. Replaced a single hardcoded market address with generated multi-factory configuration, so adding a factory or a network became a data change rather than a hand-edit that could silently fail to index part of the protocol.",
+        "The protocol's on-chain index — the data layer the frontend and the analytics read from. I did most of the indexing for the protocol's main contract and its router, and brought the whole thing onto multiple networks.",
       highlights: [
-        "Generated per-factory data sources from a network config, cloning a template so a new factory inherits correct handlers automatically.",
-        "Dual-factory support and three factories wired up.",
-        "Matchstick test suite, so handler changes are verified rather than eyeballed.",
-        "Referral address added as an indexed entity, making affiliate attribution queryable through the same subgraph the protocol already reads.",
+        "Indexed the router alongside the core contracts, so position and market data flowing through it lands in the subgraph instead of being invisible to the frontend.",
+        "Made the index multichain, including Berachain mainnet.",
+        "Added the PowerCard ERC1155 entities and their transfer handling.",
+        "Reworked several handlers where the recorded state was wrong — unwind, liquidate, emergency withdraw and build — including a funding-payment formula that was computing the wrong value.",
+        "Migrated the entity IDs to Bytes across the schema, which changed how every entity is keyed.",
+        "Matchstick test suite so handler changes are verified rather than eyeballed.",
       ],
       stack: ["TypeScript", "The Graph", "Ethereum"],
       links: [
@@ -732,12 +734,12 @@ window.PORTFOLIO = {
     },
     {
       name: "Immutable TWAP oracle",
-      kind: "Price oracle · shares repository with the Shiva Router",
+      kind: "Price oracle · same repo as the Shiva Router",
       logo: "overlay",
       description:
         "The protocol's price feed, rebuilt on PancakeSwap V3 pools and then deliberately locked down: non-upgradeable first, then fully immutable, while every other contract in the protocol stays upgradeable.",
       highlights: [
-        "Immutability chosen because the risk is asymmetric — a bug in a normal contract is fixable, a bug in the price means every loan is sized wrong immediately and the upgrade key is the obvious target.",
+        "Immutability chosen because the risk is asymmetric — a bug in a normal contract is fixable, but a bug in the price means every loan is sized wrong the moment it lands, and the upgrade key becomes the obvious target.",
         "Resolves to the worst price available across spot and TWAP. Manipulation can therefore only ever hurt whoever performs it.",
         "Staleness guard rejects an old price rather than trusting it.",
       ],
@@ -751,7 +753,7 @@ window.PORTFOLIO = {
       kind: "Product backend · Node.js, Express, MongoDB",
       logo: "overlay",
       description:
-        "Seasonal leaderboards and trading competitions, built as a rule engine rather than hardcoded queries so a new competition is configuration rather than a deploy.",
+        "Seasonal trading leaderboards and competitions. I built this backend from the ground up — schema, rules engine and all — as a configurable system, so launching a new competition is a change to configuration rather than a redeploy.",
       privateRepo: true,
       highlights: [
         "Configurable rules: minimum USD collateral per market, exempt markets, and an OVL price fallback so ranking still works when the feed is down. The collateral floor stops a dust position from topping a leaderboard on leverage alone.",
@@ -766,11 +768,10 @@ window.PORTFOLIO = {
       kind: "On-chain + backend · Solidity 0.8.19, Node.js",
       logo: "overlay",
       description:
-        "Affiliate attribution where neither party has to trust the other's database. The on-chain tier is the source of truth; the database is a cache that can be rebuilt from it.",
+        "Tracks which traders signed up through an affiliate link and pays the affiliate accordingly. I built the attribution layer — settling it on-chain so neither the protocol nor the affiliate has to trust the other's database for who referred whom.",
       highlights: [
-        "Off-chain signed messages checked against on-chain state, with an on-chain verification fallback — so a database cleanup can no longer permanently disqualify a real affiliate. The record is recreated from chain when missing.",
-        "Minimum trading volume enforced before a referral counts.",
-        "Alias normalisation and indexing, so one person cannot hold several aliases and claim multiple times.",
+        "Attribution is settled on-chain and signed off-chain, so a database cleanup can no longer permanently disqualify a real affiliate — the record is recreated from chain when it's missing.",
+        "Minimum trading volume enforced before a referral counts, and aliases are normalised so one person can't claim under several identities.",
       ],
       stack: ["Solidity", "Node.js", "OpenZeppelin"],
       links: [
@@ -782,7 +783,7 @@ window.PORTFOLIO = {
       kind: "Published package · TypeScript",
       logo: "typescript",
       description:
-        "The package other teams import. Every commit in it is defensive work, which is what distinguishes a library from an internal script.",
+        "The published TypeScript package other teams import to read Overlay's on-chain state. Most of my work here was keeping it in step with the protocol: when the contracts changed, this package had to change with them, without breaking callers.",
       highlights: [
         "Real-time portfolio PnL across multiple markets.",
         "USDT's 6 decimals handled against the 18 most tokens assume — getting this wrong returns values off by 1e12.",
@@ -792,21 +793,20 @@ window.PORTFOLIO = {
       stack: ["TypeScript"],
       links: [
         {
-          label: "Source — v0.1.29",
+          label: "Source",
           url: "https://github.com/overlay-market/overlay-sdk",
         },
       ],
     },
     {
-      name: "Portfolio & prediction UI",
-      kind: "Frontend · TypeScript, React, Next.js",
+      name: "Overlay frontend",
+      kind: "Protocol frontend · TypeScript, React, Next.js",
       logo: "nextdotjs",
       description:
-        "The largest single contribution by volume — the protocol's product surface, including prediction markets, funded-trader account cards and the referral flows.",
+        "The protocol's web app — the surface traders actually use. I was one of its main contributors, working mostly in the portfolio view, the prediction-market screens and the charts.",
       highlights: [
-        "Prediction market groups with routing, data model and multi-line probability charts.",
         "Found and fixed a bigint precision bug in the portfolio overview: a 256-bit on-chain price was being coerced to a JavaScript number, silently losing precision in exactly the two figures traders trust — value locked and unrealised PnL.",
-        "Fixed a stale closure in the same file that could break the polling refresh's change detection.",
+        "Built the prediction-market screens: market groups, routing, data model and multi-line probability charts.",
         "Referral guardrails: actions disabled for funded and avatar accounts, thresholds and rates correct after a successful claim.",
       ],
       stack: ["TypeScript", "React", "Next.js"],
@@ -818,19 +818,19 @@ window.PORTFOLIO = {
       ],
     },
     {
-      name: "Loans.sol — ABN AMRO pilot",
+      name: "ABN AMRO pilot — carbon-credit lending",
       kind: "Pilot contract · Solidity 0.8.19 · BUSL-1.1",
       logo: "kumo",
       description:
-        "The carbon-credit lending contract built for the bank pilot. The design goal was obviousness rather than cleverness — something a bank would sign off on. A five-state loan lifecycle, explicit allowlists, and seized collateral routed to a treasury.",
+        "A contract for lending against carbon credits, built for a pilot with ABN AMRO, a Dutch bank. I wrote it, and kept it deliberately plain — explicit allowlists and a strict loan lifecycle, written so a bank's risk team could review and sign it off without reverse-engineering the logic.",
       privateRepo: true,
       note: "Built for the ABN AMRO + Techstars accelerator.",
       highlights: [
-        "Loans.sol, 386 lines: PENDING → ACTIVE → REPAID / LIQUIDATED / CLOSED, with the contract refusing any transition that doesn't follow that path.",
-        "Explicit on-chain allowlists of lenders and borrowers. You cannot call the contract without being registered — the protocol is permissioned on purpose, so it only moves money between counterparties the bank has approved.",
-        "Liquidation proceeds routed to a designated treasury rather than back to the default recipient, because seized collateral often doesn't cover the debt.",
+        "Five-state loan lifecycle — pending, active, repaid, liquidated, closed — where the contract refuses any transition that doesn't follow that path.",
+        "Explicit on-chain allowlists of lenders and borrowers. The protocol is permissioned on purpose: it only moves money between counterparties the bank has approved.",
+        "Liquidation proceeds routed to a designated treasury rather than the default recipient, because seized collateral often doesn't cover the debt.",
         "A V2 escape hatch so the pilot can hand off to a successor contract.",
-        "The unglamorous half: a maxLTV → liquidationLTV rename (the old name implied a borrowing limit rather than a liquidation threshold), the correct OpenZeppelin transfer helper on withdrawal paths, a tolerance on duration comparison, and test coverage for the liquidation and treasury paths.",
+        "Smaller correctness work: a maxLTV → liquidationLTV rename (the old name implied a borrowing limit rather than a liquidation threshold), the correct OpenZeppelin transfer helper on withdrawal paths, a tolerance on duration comparison, and test coverage for the liquidation and treasury paths.",
       ],
       stack: ["Solidity", "Hardhat", "OpenZeppelin"],
       links: [],
@@ -839,11 +839,11 @@ window.PORTFOLIO = {
       name: "StreamBeam",
       kind: "ETHGlobal Prague 2025 · Solo · LayerZero General Prize",
       description:
-        "Cross-chain crypto donations for livestream creators. Built solo in 36 hours during the hackathon, then kept going for six more weeks afterwards — the hackathon repository closes on 2025-06-01 and this one opens the next day, running to 2025-07-13.",
+        "Cross-chain crypto donations for livestream creators. I built it solo in 36 hours at ETHGlobal Prague, won the LayerZero General Prize, and then kept working on it for another six weeks.",
       highlights: [
         "Won the LayerZero General Prize at ETHGlobal Prague 2025.",
         "LayerZero cross-chain donations with a real-time OBS alert system — donations surface on stream via browser source while they land.",
-        "212 commits, all his. The hackathon entry was the seed; this is what it became afterwards.",
+        "Solo build throughout, on my own repository.",
       ],
       stack: ["Solidity", "TypeScript", "Express.js", "Next.js", "LayerZero"],
       links: [
@@ -856,7 +856,7 @@ window.PORTFOLIO = {
       description:
         "On-chain insurance with automated claims and verification. Built with a team; prize winner at ETHWarsaw 2025.",
       highlights: [
-        "Team project — the repository belongs to a collaborator, not to him.",
+        "Team project — the repository belongs to a collaborator, not to me.",
       ],
       stack: ["Solidity", "Foundry"],
       links: [
@@ -871,17 +871,19 @@ window.PORTFOLIO = {
       kind: "Backend · Ruby on Rails 8",
       logo: "rubyonrails",
       description:
-        "Ten weeks on a fintech Rails backend as part of a four-person team. Never shipped to real users, but it is the only place the Rails and team-delivery side of the profile is evidenced.",
+        "Quests that walk new users through onboarding to the TON blockchain, built for a TON hackathon. I worked on the Rails 8 backend that runs them, as part of a four-person team.",
       privateRepo: true,
-      note: "Client repository; never deployed.",
+      note: "Client repository.",
       highlights: [
         "Rails 8.0 — propshaft, importmap, turbo, stimulus, Tailwind, Solid Cache/Queue/Cable, Kamal deploys, Pundit authorisation.",
-        "Owned workstreams rather than incidental commits: the loan and quest domain, budget logic with tests, the redirect-token system, a Telegram integration, and the onboarding flow.",
+        "Owned the quest and loan domain, plus the budget logic behind it, written with tests.",
+        "Built the redirect-token system, a Telegram integration, and the onboarding flow.",
         "RSpec and Capybara suite; a repository-wide Rubocop pass.",
       ],
       stack: [
         "Ruby on Rails",
         "PostgreSQL",
+        "TON",
         "Pundit",
         "RSpec",
         "Capybara",
