@@ -314,7 +314,6 @@
   /* ------------------------------------------------------- headline binds */
   bind("name", profile.name);
   bind("role", profile.role);
-  bind("tagline", profile.tagline);
   bind("summary", profile.summary);
   bind("email", profile.email);
   bind("brandName", profile.name);

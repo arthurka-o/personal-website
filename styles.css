@@ -654,16 +654,6 @@ a:hover {
   color: var(--accent);
 }
 
-.sep {
-  color: var(--border-strong);
-}
-
-.hero-role-tagline {
-  font-size: var(--fs-small);
-  color: var(--text-muted);
-  min-width: 0;
-}
-
 .hero-summary {
   max-width: 46ch;
   font-size: 1.25rem;

@@ -11,9 +11,12 @@
 
    THE HERO IS DELIBERATELY SHORT
    The long positioning paragraph from the CV used to sit under your name and
-   read as a wall. It is now split: one scannable tagline, one sentence of
-   proof, one line about how you work. The removed detail lives where a
-   reader chooses to read it — the Proof panel and the Experience section.
+   read as a wall. What is left is the role, one sentence of proof, and the
+   buttons. A tagline and a line about how you work both sat here once and were
+   removed: the tagline repeated the figure in the aside panel verbatim, and
+   the second line claimed something about the working method that turned out
+   not to be true. Everything they gestured at lives where a reader chooses to
+   read it — the "At a glance" panel and the Work section.
 
    BRAND MARKS
    logoLibrary maps a technology to its official mark in assets/logos/.
@@ -40,8 +43,7 @@ window.PORTFOLIO = {
   profile: {
     name: "Arthur Galiullin",
     initials: "AG",
-    role: "Solidity / Protocol Engineer",
-    tagline: "Perps DEX to TGE · multi-asset lending · 2× hackathon prize winner",
+    role: "Smart Contract & Backend Engineer",
     summary:
       "One of six core engineers on an exotic perps DEX, from testnet through TGE. Four years of Solidity, eight years of production engineering.",
     location: "Warsaw, Poland",
@@ -895,6 +897,6 @@ window.PORTFOLIO = {
 
   /* ------------------------------------------------------------- 10. FOOTER */
   footer: {
-    note: "Solidity / Protocol Engineer — Warsaw, Poland.",
+    note: "Smart Contract & Backend Engineer — Warsaw, Poland.",
   },
 };
