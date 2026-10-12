@@ -64,6 +64,21 @@ window.PORTFOLIO = {
      protocol marks are deliberately absent: putting a former employer's brand
      on the page would imply a current affiliation it does not claim. */
   logoLibrary: {
+    /* Added for the skills rebuild. Simple Icons (CC0-1.0), which is where the
+       existing marks came from too. Each ships all three treatments: the brand
+       colour for a ground it has contrast against, -inv (white) for the dark
+       ground, and -mono (black) for a light ground the brand colour fails on. */
+    ethers: { title: "Ethers.js", file: "ethers", hex: "#2535A0" },
+    nestjs: { title: "NestJS", file: "nestjs", hex: "#E0234E" },
+    python: { title: "Python", file: "python", hex: "#3776AB" },
+    express: { title: "Express", file: "express", hex: "#0A0A0A" },
+    graphql: { title: "GraphQL", file: "graphql", hex: "#E10098" },
+    tailwindcss: { title: "Tailwind CSS", file: "tailwindcss", hex: "#06B6D4" },
+    wagmi: { title: "wagmi", file: "wagmi", hex: "#000000" },
+    jest: { title: "Jest", file: "jest", hex: "#C21325" },
+    chai: { title: "Chai", file: "chai", hex: "#A30701" },
+    docker: { title: "Docker", file: "docker", hex: "#2496ED" },
+    sidekiq: { title: "Sidekiq", file: "sidekiq", hex: "#B1003E" },
     solidity: { title: "Solidity", file: "solidity", hex: "#363636" },
     ethereum: { title: "Ethereum", file: "ethereum", hex: "#3c3c3d" },
     bnbchain: { title: "BNB Chain", file: "bnbchain", hex: "#f0b90b" },
@@ -848,19 +863,19 @@ window.PORTFOLIO = {
       items: [
         { name: "TypeScript", logo: "typescript" },
         { name: "Node.js", logo: "nodedotjs" },
-        "Ethers.js",
+        { name: "Ethers.js", logo: "ethers" },
         "Viem",
-        "NestJS",
-        "Express",
-        "Python",
-        "GraphQL",
+        { name: "NestJS", logo: "nestjs" },
+        { name: "Express", logo: "express" },
+        { name: "Python", logo: "python" },
+        { name: "GraphQL", logo: "graphql" },
         { name: "PostgreSQL", logo: "postgresql" },
         { name: "MongoDB", logo: "mongodb" },
         "REST APIs",
         "The Graph",
         { name: "Ruby on Rails", logo: "rubyonrails" },
         "Pundit",
-        "Sidekiq",
+        { name: "Sidekiq", logo: "sidekiq" },
         "Kamal",
       ],
     },
@@ -870,17 +885,17 @@ window.PORTFOLIO = {
       items: [
         { name: "React", logo: "react" },
         { name: "Next.js", logo: "nextdotjs" },
-        "Tailwind CSS",
-        "wagmi",
+        { name: "Tailwind CSS", logo: "tailwindcss" },
+        { name: "wagmi", logo: "wagmi" },
       ],
     },
     {
       id: "testing",
       label: "Testing",
       items: [
-        "Jest",
+        { name: "Jest", logo: "jest" },
         "Vitest",
-        "Chai",
+        { name: "Chai", logo: "chai" },
         "Playwright",
         "Supertest",
         "RSpec",
@@ -892,7 +907,7 @@ window.PORTFOLIO = {
       label: "Infrastructure",
       items: [
         { name: "Amazon Web Services", logo: "amazonwebservices" },
-        "Docker",
+        { name: "Docker", logo: "docker" },
         "CI/CD",
         { name: "Git", logo: "git" },
       ],
