@@ -146,6 +146,9 @@
             </p>
           </header>
 
+          <!-- Each role row is its own chapter. A role's Details control opens
+               the work that shipped under it, one entry per line, so the
+               employer is stated exactly once on the whole page. -->
           <ol class="timeline" data-bind="experienceList">
             <!-- rendered by app.js -->
           </ol>
@@ -154,6 +157,12 @@
             No roles listed yet. Add them to the <code>experience</code> array
             in <code>content.js</code>.
           </p>
+
+          <!-- Each role row links straight to the chapter for its employer,
+               so the role list above stays four scan targets and the detail
+               lives once, further down. Rendered by app.js. -->
+          <div class="chapters" data-bind="chapters" hidden></div>
+
         </div>
       </section>
 

@@ -19,6 +19,7 @@
   var skills = DATA.skills || [];
   var education = DATA.education || [];
   var workingSetup = DATA.workingSetup || [];
+  var timeline = DATA.timeline || null;
   var languages = DATA.languages || [];
   var logoLibrary = DATA.logoLibrary || {};
   var logoRail = DATA.logoRail || [];
@@ -220,6 +221,20 @@
   function filled(v) {
     return typeof v === "string" && v.trim() !== "";
   }
+  /* A stack technology with no entry in logoLibrary still has a name, and the
+     name is the point. assets/logos ships three official treatments for most
+     marks but nothing at all for a few, so a chip that renders empty would read
+     as a broken layout rather than as a technology. Capitalising the key is
+     deliberately modest: it never guesses a brand spelling it was not given. */
+  function techName(key) {
+    return String(key == null ? "" : key)
+      .split(/[-_\s]+/)
+      .filter(Boolean)
+      .map(function (part) {
+        return part.charAt(0).toUpperCase() + part.slice(1);
+      })
+      .join(" ");
+  }
   function show(node) {
     if (node) node.removeAttribute("hidden");
   }
@@ -332,6 +347,182 @@
     });
   }
 
+  /* ------------------------------------------------------------ shipped
+     Each role row is its own chapter. There is no chart and no separate
+     timeline section: the employer is stated once, on the role, and the work
+     that shipped under it opens beneath it.
+
+     The Gantt is gone rather than restyled. A Gantt earns its space by
+     showing concurrency — overlapping bars, gaps, dependencies — and none of
+     these twenty-two entries overlap. The axis, bands and caption lede stay
+     in content.js and simply stop rendering.
+
+     EPOCH_MONTH survives with the chart removed, because an entry row still
+     prints its exact date range. Only the axis reader is gone. */
+  var MONTH_ABBR = [
+    "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+  ];
+  var EPOCH_MONTH = 4; /* 0-based: May — content.js documents month 0 as May 2022 */
+
+  function monthDate(offset) {
+    return MONTH_ABBR[((monthIndexOf(offset) % 12) + 12) % 12] + " " + Math.floor(monthIndexOf(offset) / 12);
+  }
+  /* The same offset expressed as an absolute month number, so a year can be
+     read off it. Both directions live here so they cannot drift apart. */
+  function monthIndexOf(offset) {
+    return 2022 * 12 + EPOCH_MONTH + (Number(offset) || 0);
+  }
+  function spanLabel(entry) {
+    var start = Math.max(0, Number(entry.start) || 0);
+    var len = Math.max(1, Number(entry.len) || 1);
+    var from = monthDate(start);
+    if (len === 1) return from;
+    return from + " — " + monthDate(start + len - 1);
+  }
+  function detailParas(entry) {
+    return [].concat(entry.detail || []).filter(function (t) {
+      return typeof t === "string" && t !== "";
+    });
+  }
+
+  /* One open entry at a time, and one open role at a time. Escape unwinds the
+     entry before the role, and focus always goes back to the control that
+     opened whatever it just closed. */
+  var openEntryBtn = null;
+  var openRoleBtn = null;
+
+  function closeEntry() {
+    if (!openEntryBtn) return;
+    var back = openEntryBtn;
+    var panel = document.getElementById(back.getAttribute("aria-controls"));
+    back.setAttribute("aria-expanded", "false");
+    if (panel) hide(panel);
+    openEntryBtn = null;
+    back.focus();
+  }
+
+  function closeRole() {
+    if (!openRoleBtn) return;
+    var back = openRoleBtn;
+    var panel = document.getElementById(back.getAttribute("aria-controls"));
+    back.setAttribute("aria-expanded", "false");
+    if (panel) hide(panel);
+    openRoleBtn = null;
+  }
+
+  /* One shipped entry: a single line with its title and exact date range,
+     and a disclosure carrying the note, the detail paragraphs, the stack marks
+     and the source link. */
+  var entrySeq = 0;
+
+  function buildShippedEntry(entry) {
+    entrySeq += 1;
+    var panelId = "shipped-detail-" + entrySeq;
+
+    var wrap = el("div", "shipped-entry");
+    var btn = el("button", "shipped-entry-toggle");
+    btn.type = "button";
+    btn.setAttribute("aria-expanded", "false");
+    btn.setAttribute("aria-controls", panelId);
+    btn.setAttribute(
+      "aria-label",
+      [entry.title, spanLabel(entry)].filter(Boolean).join(" — ")
+    );
+    btn.appendChild(el("span", "shipped-entry-title", entry.title));
+    btn.appendChild(el("span", "shipped-entry-span od-nowrap", spanLabel(entry)));
+
+    var chev = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    chev.setAttribute("class", "icon chev");
+    chev.setAttribute("viewBox", "0 0 24 24");
+    chev.setAttribute("aria-hidden", "true");
+    chev.innerHTML = '<path d="m6 9 6 6 6-6"/>';
+    btn.appendChild(chev);
+
+    var panel = el("div", "shipped-entry-panel");
+    panel.id = panelId;
+    panel.setAttribute("hidden", "");
+    /* No note here: it already sits beside the title in the summary
+       above, and repeating it would say the same sentence twice on one
+       page. The chapter carries what the summary cannot: when, and how. */
+    detailParas(entry).forEach(function (text) {
+      panel.appendChild(el("p", "shipped-body", text));
+    });
+
+    if (Array.isArray(entry.stack) && entry.stack.length) {
+      var stack = el("ul", "chips shipped-stack");
+      stack.setAttribute("aria-label", "Stack");
+      entry.stack.forEach(function (k) {
+        var chip = el("li", "chip");
+        var mark = markImg(k, 16);
+        if (mark) chip.appendChild(mark);
+        var logo = logoLibrary[k];
+        if (!logo) return;
+        chip.appendChild(el("span", "chip-name", logo.title));
+        stack.appendChild(chip);
+      });
+      if (stack.children.length) panel.appendChild(stack);
+    }
+
+    if (filled(entry.repo)) {
+      var link = externalLink(entry.repoLabel || "Source", entry.repo);
+      link.className = "shipped-link";
+      panel.appendChild(link);
+    }
+
+    btn.addEventListener("click", function () {
+      var wasOpen = btn.getAttribute("aria-expanded") === "true";
+      if (wasOpen) {
+        closeEntry();
+        return;
+      }
+      closeEntry();
+      btn.setAttribute("aria-expanded", "true");
+      show(panel);
+      openEntryBtn = btn;
+    });
+
+    wrap.appendChild(btn);
+    wrap.appendChild(panel);
+    return wrap;
+  }
+
+  /* "May 2024" -> the same month offset the entries use. Role dates are
+     written as labels, entries as offsets, so the two have to meet here
+     rather than anywhere else. */
+  function labelToOffset(label) {
+    var m = /^([A-Za-z]{3,})\s+(\d{4})$/.exec(String(label || "").trim());
+    if (!m) return null;
+    var idx = MONTH_ABBR
+      .map(function (a) {
+        return a.toLowerCase();
+      })
+      .indexOf(m[1].slice(0, 3).toLowerCase());
+    if (idx === -1) return null;
+    return parseInt(m[2], 10) * 12 + idx - (2022 * 12 + EPOCH_MONTH);
+  }
+
+  /* Where the work clustered inside one role's period.
+
+     This is deliberately NOT a Gantt. No two entries overlap, so a bar's
+     length carries no information and the chart would be decoration. What the
+     dates do carry is distribution: each entry becomes one mark on a shared
+     rail, and entries that started in the same month stack, so a column three
+     marks high reads as "three things shipped that month".
+
+     It is aria-hidden because the entry list directly beneath it is the same
+     data in a form a screen reader can actually use. The strip is the glance
+     read for a sighted reader; the list is the real one. */
+  document.addEventListener("keydown", function (ev) {
+    if (ev.key !== "Escape") return;
+    if (openEntryBtn) closeEntry();
+    else if (openRoleBtn) {
+      var back = openRoleBtn;
+      closeRole();
+      back.focus();
+    }
+  });
+
   /* ------------------------------------------------------------ navigation */
   var navList = $('[data-bind="navList"]');
   var SECTIONS = [
@@ -378,12 +569,137 @@
     onScroll();
   }
 
-  /* ------------------------------------------------------------ experience */
+  /* ------------------------------------------------------------ experience
+     Each role is a scan target: who, where, when, one line of summary, and a
+     link down to that employer's chapter. The heavy context lives in the
+     chapter block further down the page, so four roles fit one screen and the
+     detail is still one click away.
+
+     A role with no shipped work has no chapter to link to, so it keeps its
+     own Details control inline. Either way a role's detail lives in exactly
+     one place — never in both. */
   var expList = $('[data-bind="experienceList"]');
   if (expList) {
     if (experience.length === 0) {
       show($('[data-bind="experienceEmpty"]'));
     } else {
+      /* Which employer each role speaks for. The org values on entries are
+         kumo | overlay, matched here rather than inferred from a URL, because
+         the page now nests entries under roles. */
+      function orgOfRole(job) {
+        var company = String(job.company || "").toLowerCase();
+        if (company.indexOf("kumo") !== -1 || job.logo === "kumo") return "kumo";
+        if (company.indexOf("overlay") !== -1 || job.logo === "overlay") return "overlay";
+        return null;
+      }
+      /* Highlights that already name themselves before an em dash become a
+         term and a description; the rest render as description alone. */
+      function buildPoints(list) {
+        var wrap = el("div", "role-points");
+        list.forEach(function (h) {
+          var text = String(h == null ? "" : h);
+          var cut = text.indexOf(" — ");
+          if (cut > 0) {
+            wrap.appendChild(el("p", "role-point-term", text.slice(0, cut)));
+            wrap.appendChild(el("p", "role-point-text", text.slice(cut + 3)));
+          } else {
+            wrap.appendChild(el("p", "role-point-text", text));
+          }
+        });
+        return wrap;
+      }
+      function buildNested(list) {
+        var wrap = el("div", "role-entries");
+        list.forEach(function (entry) {
+          var row = el("div", "role-entry");
+          var head = el("div", "role-entry-head");
+          head.appendChild(el("span", "role-entry-title", entry.title || ""));
+          head.appendChild(el("span", "role-entry-period od-nowrap", entry.period || ""));
+          row.appendChild(head);
+          if (filled(entry.detail)) {
+            row.appendChild(el("p", "role-entry-detail", entry.detail));
+          }
+          wrap.appendChild(row);
+        });
+        return wrap;
+      }
+      function buildStack(list) {
+        var chips = el("div", "chips");
+        list.forEach(function (s) {
+          chips.appendChild(el("span", "chip", s));
+        });
+        return chips;
+      }
+
+      /* One employer in full: who it was, when, and then for each entry the
+         exact months, the long detail, the stack marks and the source link.
+
+         The role's own highlights and its stack live above, in the role row.
+         That is deliberate: this is the evidence layer, and it repeats
+         nothing the summary already said. The id is what the role row's link
+         points at, so the two cannot drift apart. */
+      function buildChapter(job, org, mine) {
+        var chapter = el("section", "chapter");
+        chapter.id = "chapter-" + org;
+
+        var head = el("header", "chapter-head");
+        var who = el("div", "chapter-who");
+        var logo = job.logo ? logoLibrary[job.logo] : null;
+        if (logo) who.appendChild(markImg(logo, 24));
+        var name = el("h3", "chapter-org", job.company || job.role || org);
+        if (filled(job.url)) {
+          var orgLink = el("a", "chapter-org-link");
+          orgLink.href = job.url;
+          orgLink.target = "_blank";
+          orgLink.rel = "noopener noreferrer";
+          orgLink.appendChild(name);
+          orgLink.appendChild(el("span", "visually-hidden", " (opens in a new tab)"));
+          who.appendChild(orgLink);
+        } else {
+          who.appendChild(name);
+        }
+        who.appendChild(el("span", "chapter-role", job.role || ""));
+        head.appendChild(who);
+
+        var when = el("div", "chapter-when");
+        when.appendChild(
+          el("span", "chapter-period od-nowrap", (job.start || "") + " – " + (job.end || ""))
+        );
+        if (filled(job.location)) when.appendChild(el("span", "chapter-place", job.location));
+        head.appendChild(when);
+        chapter.appendChild(head);
+
+        var group = el("div", "shipped-group");
+        var gHead = el("div", "shipped-group-head");
+        gHead.appendChild(el("span", "shipped-group-label", timeline.title || "Shipped"));
+        gHead.appendChild(el("span", "shipped-group-count", mine.length + " items"));
+        group.appendChild(gHead);
+
+        var list = el("div", "shipped-list");
+        mine.forEach(function (entry) {
+          list.appendChild(buildShippedEntry(entry));
+        });
+        group.appendChild(list);
+        chapter.appendChild(group);
+        return chapter;
+      }
+
+      /* One place that answers "what shipped under this employer", so the role
+         row and its chapter cannot disagree about it. */
+      function entriesForOrg(org) {
+        return (timeline.entries || [])
+          .filter(function (entry) {
+            return entry.org === org;
+          })
+          .sort(function (a, b) {
+            return (Number(a.start) || 0) - (Number(b.start) || 0);
+          });
+      }
+
+      /* Collected during the role pass and rendered after it, because a
+         chapter head reuses the organisation mark the role row already made. */
+      var chapters = [];
+
       experience.forEach(function (job) {
         var li = el("li", "role");
 
@@ -394,89 +710,132 @@
         var body = el("div", "role-body");
 
         var head = el("div", "role-head");
-        var titleWrap = el("div");
-        titleWrap.appendChild(el("div", "role-title", job.role || ""));
+        var titles = el("div", "role-titles");
+        titles.appendChild(el("span", "role-title", job.role || ""));
         // Protocol mark sits with the organisation name — a former employer's
         // mark belongs on the role it actually belongs to, named in full beside
         // it, never as an implied current affiliation.
-        var companyRow = el("div", "org-line");
+        var companyRow = el("span", "org-line");
         var orgContent = document.createDocumentFragment();
-        var orgMark = markTitle(job.logo ? logoLibrary[job.logo] : null, 36);
-        if (orgMark) orgContent.appendChild(orgMark);
-        // No organisation means no empty span left behind in the row.
+        var orgLogo = job.logo ? logoLibrary[job.logo] : null;
+        if (orgLogo) orgContent.appendChild(markImg(orgLogo, 24));
         if (filled(job.company)) {
           orgContent.appendChild(el("span", "role-company", job.company));
         }
         if (filled(job.url)) {
           // The mark and the organisation name are one link. The name is the
-          // link text, so it is what a screen reader announces; the mark is
-          // inside the same anchor rather than sitting beside a separate link.
+          // link text, so it is what a screen reader announces; the mark sits
+          // inside the same anchor rather than beside a separate link.
           var orgLink = el("a", "org-link");
           orgLink.href = job.url;
           orgLink.target = "_blank";
           orgLink.rel = "noopener noreferrer";
           orgLink.title = job.company + " — opens in a new tab";
           orgLink.appendChild(orgContent);
-          orgLink.appendChild(
-            el("span", "visually-hidden", " (opens in a new tab)")
-          );
+          orgLink.appendChild(el("span", "visually-hidden", " (opens in a new tab)"));
           companyRow.appendChild(orgLink);
         } else {
           companyRow.appendChild(orgContent);
         }
-        titleWrap.appendChild(companyRow);
-        head.appendChild(titleWrap);
-        head.appendChild(
+        // An entry with neither a mark nor a name leaves no empty row behind.
+        if (companyRow.childNodes.length) titles.appendChild(companyRow);
+        head.appendChild(titles);
+
+        var roleWhen = el("div", "role-when");
+        roleWhen.appendChild(
           el("span", "role-period od-nowrap", (job.start || "") + " – " + (job.end || ""))
         );
+        if (filled(job.location)) roleWhen.appendChild(el("span", "role-place", job.location));
+        head.appendChild(roleWhen);
         body.appendChild(head);
 
-        if (filled(job.location)) {
-          body.appendChild(el("p", "role-meta", job.location));
-        }
         if (filled(job.summary)) {
           body.appendChild(el("p", "role-summary", job.summary));
         }
 
-        // nested employers under one period heading
-        if (job.entries && job.entries.length) {
-          var entries = el("div", "role-entries");
-          job.entries.forEach(function (entry) {
-            var row = el("div", "role-entry");
-            var eHead = el("div", "role-entry-head");
-            eHead.appendChild(el("span", "role-entry-title", entry.title || ""));
-            eHead.appendChild(el("span", "role-entry-period od-nowrap", entry.period || ""));
-            row.appendChild(eHead);
-            if (filled(entry.detail)) {
-              row.appendChild(el("p", "role-entry-detail", entry.detail));
-            }
-            entries.appendChild(row);
-          });
-          body.appendChild(entries);
-        }
+        var org = orgOfRole(job);
+        var mine = entriesForOrg(org);
 
-        if (job.highlights && job.highlights.length) {
-          var ul = el("ul", "bullets");
-          job.highlights.forEach(function (h) {
-            ul.appendChild(el("li", "bullet", h));
-          });
-          body.appendChild(ul);
-        }
+        if (mine.length) {
+          chapters.push({ job: job, org: org, entries: mine });
 
-        if (job.stack && job.stack.length) {
-          var chips = el("div", "chips");
-          job.stack.forEach(function (s) {
-            chips.appendChild(el("span", "chip", s));
-          });
-          body.appendChild(chips);
+          /* The description is the role's own highlights — the copy written
+             from the CV, not generated. It belongs here, above the link,
+             because the one paragraph in your own voice should not be the
+             hardest thing on the page to reach. */
+          if (job.highlights && job.highlights.length) {
+            body.appendChild(buildPoints(job.highlights));
+          }
+          if (job.stack && job.stack.length) {
+            body.appendChild(buildStack(job.stack));
+          }
+
+          /* No count in this label: it goes stale the moment an entry is
+             added, and a number in the reader's eye is not the argument. */
+          var link = el("a", "role-jump");
+          link.href = "#chapter-" + org;
+          link.appendChild(el("span", null, "More details"));
+          link.appendChild(el("span", "role-jump-arrow", "\u2193"));
+          body.appendChild(link);
+        } else {
+          /* No shipped work, so no chapter and no link. The role keeps its own
+             detail inline, behind one control — same content, one place. */
+          var parts = [];
+          if (job.entries && job.entries.length) parts.push(buildNested(job.entries));
+          if (job.highlights && job.highlights.length) parts.push(buildPoints(job.highlights));
+          if (job.stack && job.stack.length) parts.push(buildStack(job.stack));
+
+          if (parts.length) {
+            var panelId = "role-panel-" + experience.indexOf(job);
+            var panel = el("div", "role-panel");
+            panel.id = panelId;
+            panel.setAttribute("hidden", "");
+            parts.forEach(function (part) {
+              panel.appendChild(part);
+            });
+
+            var toggle = el("button", "btn ghost disclosure role-toggle");
+            toggle.type = "button";
+            toggle.setAttribute("aria-expanded", "false");
+            toggle.setAttribute("aria-controls", panelId);
+            toggle.appendChild(document.createTextNode("Details"));
+            var roleChev = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+            roleChev.setAttribute("class", "icon chev");
+            roleChev.setAttribute("viewBox", "0 0 24 24");
+            roleChev.setAttribute("aria-hidden", "true");
+            roleChev.innerHTML = '<path d="m6 9 6 6 6-6"/>';
+            toggle.appendChild(roleChev);
+            toggle.addEventListener("click", function () {
+              var wasOpen = toggle.getAttribute("aria-expanded") === "true";
+              if (wasOpen) {
+                closeRole();
+                return;
+              }
+              closeEntry();
+              closeRole();
+              toggle.setAttribute("aria-expanded", "true");
+              show(panel);
+              openRoleBtn = toggle;
+            });
+
+            body.appendChild(toggle);
+            body.appendChild(panel);
+          }
         }
 
         li.appendChild(body);
         expList.appendChild(li);
       });
+
+      var chaptersHost = $('[data-bind="chapters"]');
+      if (chaptersHost) {
+        chapters.forEach(function (c) {
+          chaptersHost.appendChild(buildChapter(c.job, c.org, c.entries));
+        });
+        if (chapters.length) show(chaptersHost);
+      }
     }
   }
-
   /* -------------------------------------------------------------- projects */
   var projList = $('[data-bind="projectList"]');
   if (projList) {
@@ -498,6 +857,12 @@
         var body = el("div", "card-body");
         if (filled(proj.description)) {
           body.appendChild(el("p", "card-desc", proj.description));
+        }
+        /* A private repository says so. The alternative is a card with no
+           button and no explanation, which reads as "nothing to see here"
+           rather than "this is real, you just cannot click it". */
+        if (filled(proj.note)) {
+          body.appendChild(el("p", "card-note", proj.note));
         }
         if (proj.stack && proj.stack.length) {
           var stackChips = el("div", "chips");
@@ -548,13 +913,20 @@
         var valid = (proj.links || []).filter(function (l) {
           return filled(l.url);
         });
-        if (valid.length) {
+        /* Link status lives in exactly one place: whatever a card has to show
+           about its source, clickable or not. A private repository states
+           itself here rather than in the description, so the copy stays the
+           pitch and the foot stays the evidence. */
+        if (valid.length || proj.privateRepo) {
           var linksWrap = el("div", "card-links");
           valid.forEach(function (l) {
             var a = externalLink(l.label || "Link", l.url);
             a.className = "card-link";
             linksWrap.appendChild(a);
           });
+          if (proj.privateRepo) {
+            linksWrap.appendChild(el("span", "card-link card-link-locked", "Repository is private"));
+          }
           foot.appendChild(linksWrap);
         }
 
