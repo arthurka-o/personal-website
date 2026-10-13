@@ -769,6 +769,29 @@ projects.forEach(function (proj, idx) {
     });
   }
 
+  /* A neutral glyph for a row that has no brand mark of its own. Same 20px
+     box as a mark, so the label column does not shift. */
+  var GLYPHS = {
+    document:
+      '<path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2z"/>',
+    mail: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>',
+  };
+  function glyphMark(name) {
+    var span = el("span", "contact-mark contact-glyph");
+    span.setAttribute("aria-hidden", "true");
+    var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    svg.setAttribute("class", "icon");
+    svg.setAttribute("viewBox", "0 0 24 24");
+    svg.setAttribute("fill", "none");
+    svg.setAttribute("stroke", "currentColor");
+    svg.setAttribute("stroke-width", "1.6");
+    svg.setAttribute("stroke-linecap", "round");
+    svg.setAttribute("stroke-linejoin", "round");
+    svg.innerHTML = GLYPHS[name] || GLYPHS.document;
+    span.appendChild(svg);
+    return span;
+  }
+
   /* ------------------------------------------------------------- education */
   var eduList = $('[data-bind="educationList"]');
   if (eduList) {
@@ -840,6 +863,12 @@ projects.forEach(function (proj, idx) {
         var mark = markImg(logo, 20);
         mark.setAttribute("aria-hidden", "true");
         li.appendChild(mark);
+      } else if (opts && opts.glyph) {
+        // A row with no brand still reserves the mark column, so its label and
+        // value line up with the rows that have one.
+        li.appendChild(glyphMark(opts.glyph));
+      } else {
+        li.appendChild(el("span", "contact-mark"));
       }
       li.appendChild(el("span", "contact-label", label));
       if (opts && opts.href) {
@@ -868,6 +897,7 @@ projects.forEach(function (proj, idx) {
 
     row("Email", profile.email, {
       copy: profile.email,
+      glyph: "mail",
       href: profile.email ? "mailto:" + profile.email : null,
     });
     row("GitHub", links.github, {
@@ -886,6 +916,7 @@ projects.forEach(function (proj, idx) {
       row("Résumé", links.resume, {
         href: links.resume,
         text: "Download PDF",
+        glyph: "document",
       });
     }
 

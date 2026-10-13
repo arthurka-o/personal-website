@@ -1620,6 +1620,23 @@ a:hover {
   height: 20px;
 }
 
+/* The mark column is reserved whether or not a row has a mark. A row missing
+   one used to start 20px + one gap later, so its label and its value both sat
+   to the right of the rows that had a logo. */
+.contact-mark {
+  width: 20px;
+  height: 20px;
+  flex: none;
+  display: inline-grid;
+  place-items: center;
+  color: var(--text-muted);
+}
+
+.contact-glyph .icon {
+  width: 18px;
+  height: 18px;
+}
+
 .contact-label {
   font-family: var(--font-sans);
   font-size: var(--fs-label);
