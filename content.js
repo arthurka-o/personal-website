@@ -1009,7 +1009,7 @@ window.PORTFOLIO = {
   languages: [
     { name: "Russian", level: "Native" },
     { name: "English", level: "Professional" },
-    { name: "Polish", level: "Basic" },
+    { name: "Polish", level: "Intermediate" },
   ],
 
   /* ------------------------------------------------------------- 10. FOOTER */
