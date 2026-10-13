@@ -625,7 +625,7 @@ window.PORTFOLIO = {
           title: "Flatstack / Galvanize",
           period: "2020 – 2022",
           detail:
-            "Enterprise GRC platform. Built the public API, async processing pipelines and performance optimisation (N+1 fixes). Production monitoring with DataDog and Airbrake. AWS Lambda, Terraform, ECS.",
+            "Enterprise GRC platform, used by Canadian Government. Built the public API, async processing pipelines and performance optimisation (N+1 fixes). Production monitoring with DataDog and Airbrake. AWS Lambda, Terraform, ECS.",
         },
         {
           title: "meyvn",
