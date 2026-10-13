@@ -1,0 +1,79 @@
+name: Deploy
+
+# The page is rendered from content.js before it is published, because a crawler
+# that never runs JavaScript would otherwise receive a page with no work
+# history, no projects and no skills — 840 characters, most of it placeholder
+# text saying the site was empty. Google runs a second JavaScript pass, but the
+# first one sees nothing.
+#
+# So: build to static HTML, publish it, and never commit it. Nothing generated
+# is a source file, so there is nothing generated that can drift out of step
+# with what it was generated from. Editing content.js and pushing is the whole
+# workflow.
+#
+# Pages is configured to deploy from GitHub Actions (Settings -> Pages ->
+# Source: GitHub Actions). The default, "deploy from a branch", publishes main
+# verbatim — which would publish the template with every list empty, so the
+# switch to this source is required, not cosmetic.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# One deployment at a time. Two overlapping runs would each publish, and the
+# second to finish would replace the first for no reason.
+concurrency:
+  group: pages-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# A pull request only needs to prove the page builds. Publishing is for main.
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - run: npm ci
+
+      - name: Build the site
+        run: npm run build
+
+      - uses: actions/configure-pages@v5
+
+      # A broken build must not replace a working live site.
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
+
+  # A pull request is checked, not published. The build job above has already
+  # run by the time this is reached; this exists so a broken build shows up as a
+  # failed check rather than passing silently.
+  pr-check:
+    needs: build
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Build succeeded; nothing to publish for a pull request."

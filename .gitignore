@@ -41,3 +41,9 @@ validation-report.json
 
 # Folders to ignore
 node_modules
+
+# Build output. The rendered index.html is produced by `npm run build` and
+# published by the Deploy workflow; it is deliberately not committed, so there
+# is no generated file in the repository that could fall out of step with the
+# content.js it was rendered from.
+dist/

@@ -972,6 +972,7 @@ window.PORTFOLIO = {
       items: [
         { name: "Amazon Web Services", logo: "amazonwebservices" },
         { name: "Docker", logo: "docker" },
+        { name: "GitHub Actions", logo: "github" },
         "CI/CD",
         { name: "Git", logo: "git" },
       ],

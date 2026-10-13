@@ -1,0 +1,16 @@
+{
+  "name": "arthurka-eu",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Static site for arthurka.eu. The published site is plain HTML/CSS/JS with no framework — these devDependencies exist only to render the page for deployment, so search engines can read content that otherwise appears only after JavaScript runs.",
+  "type": "module",
+  "scripts": {
+    "build": "node tools/build.mjs",
+    "start": "node tools/build.mjs && node tools/serve.mjs",
+    "icons": "node tools/make-icons.mjs"
+  },
+  "devDependencies": {
+    "jsdom": "^25.0.1"
+  },
+  "license": "MIT"
+}

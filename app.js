@@ -307,6 +307,24 @@
       else node.textContent = value;
     });
   }
+  /* Every list container is emptied before it is written to.
+
+     The served page does NOT arrive with these elements empty. tools/build.mjs
+     runs this file in a DOM and writes the result to dist/, so that a crawler
+     which never executes JavaScript still reads a real work history, a real
+     project list and a real set of skills. Appending to a container that
+     already holds that markup would paint every list twice over — thirteen
+     project cards become twenty-six — so the pre-rendered copy is treated as a
+     cache of this file's own output and replaced, not extended.
+
+     The interactive layer is then still this file's job alone: the pre-rendered
+     markup is only ever what a crawler reads. */
+  function fill(name) {
+    var node = $('[data-bind="' + name + '"]');
+    if (!node) return null;
+    while (node.firstChild) node.removeChild(node.firstChild);
+    return node;
+  }
   function filled(v) {
     return typeof v === "string" && v.trim() !== "";
   }
@@ -351,7 +369,7 @@
   });
   bind("footerNote", (DATA.footer || {}).note);
   (function renderCredits() {
-    var list = $('[data-bind="credits"]');
+    var list = fill("credits");
     var credits = DATA.credits || [];
     if (!list || credits.length === 0) return;
     credits.forEach(function (line) {
@@ -363,7 +381,7 @@
   }
 
   /* ----------------------------------------------------------- hero links */
-  var heroLinks = $('[data-bind="heroLinks"]');
+  var heroLinks = fill("heroLinks");
   var LINK_DEFS = [
     {
       key: "github",
@@ -397,7 +415,7 @@
   }
 
   /* ------------------------------------------------------------ logo rail */
-  var logoRailEl = $('[data-bind="logoRail"]');
+  var logoRailEl = fill("logoRail");
   if (logoRailEl) {
     logoRail.forEach(function (key) {
       var logo = logoLibrary[key];
@@ -412,7 +430,7 @@
   }
 
   /* ----------------------------------------------------------- proof panel */
-  var proofList = $('[data-bind="proofList"]');
+  var proofList = fill("proofList");
   if (proofList) {
     if (proofPoints.length === 0) {
       proofList.appendChild(
@@ -440,7 +458,7 @@
   }
 
   /* ------------------------------------------------------------ navigation */
-  var navList = $('[data-bind="navList"]');
+  var navList = fill("navList");
   var SECTIONS = [
     { id: "experience", label: "Experience" },
     { id: "work", label: "Work" },
@@ -503,7 +521,7 @@
      A role with no shipped work has no chapter to link to, so it keeps its
      own Details control inline. Either way a role's detail lives in exactly
      one place — never in both. */
-  var expList = $('[data-bind="experienceList"]');
+  var expList = fill("experienceList");
   if (expList) {
     if (experience.length === 0) {
       show($('[data-bind="experienceEmpty"]'));
@@ -638,7 +656,7 @@
     }
   }
   /* -------------------------------------------------------------- projects */
-  var projList = $('[data-bind="projectList"]');
+  var projList = fill("projectList");
   if (projList) {
     if (projects.length === 0) {
       show($('[data-bind="projectEmpty"]'));
@@ -776,7 +794,7 @@ projects.forEach(function (proj, idx) {
   }
 
   /* ---------------------------------------------------------------- skills */
-  var groupsWrap = $('[data-bind="skillGroups"]');
+  var groupsWrap = fill("skillGroups");
 
   /* No filter bar and no search box. Both existed to narrow a list that fits
      on one screen without narrowing: the controls were a second thing to read,
@@ -825,7 +843,7 @@ projects.forEach(function (proj, idx) {
   }
 
   /* ------------------------------------------------------------- education */
-  var eduList = $('[data-bind="educationList"]');
+  var eduList = fill("educationList");
   if (eduList) {
     if (education.length === 0) {
       show($('[data-bind="educationEmpty"]'));
@@ -883,7 +901,7 @@ projects.forEach(function (proj, idx) {
     }
   }
 
-  var contactList = $('[data-bind="contactList"]');
+  var contactList = fill("contactList");
   if (contactList) {
     function row(label, value, opts) {
       if (!filled(value)) return;
@@ -959,7 +977,7 @@ projects.forEach(function (proj, idx) {
     }
   }
 
-  var setupList = $('[data-bind="setupList"]');
+  var setupList = fill("setupList");
   if (setupList) {
     workingSetup.forEach(function (item) {
       var rowEl = el("div", "glance-row");
@@ -969,7 +987,7 @@ projects.forEach(function (proj, idx) {
     });
   }
 
-  var langList = $('[data-bind="langList"]');
+  var langList = fill("langList");
   if (langList) {
     languages.forEach(function (lang) {
       var li = el("li", "lang-item");
