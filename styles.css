@@ -833,6 +833,12 @@ a:hover {
   width: 18px;
   height: 18px;
   flex: none;
+  /* object-fit defaults to fill, which stretches a replaced element to the box
+     and ignores its aspect ratio - so a 177x288 raster came out visibly
+     squashed in a square chip. contain is what keeps a mark's proportions.
+     Every source is also padded square at build time, so this only ever
+     matters as a backstop. */
+  object-fit: contain;
 }
 
 /* Marks that need to read at size: protocol and institution logos beside a
