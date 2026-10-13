@@ -484,6 +484,14 @@ a:hover {
   text-overflow: ellipsis;
 }
 
+/* While the hero h1 is on screen the topbar name is redundant, so it steps
+   aside. Removed from the layout entirely rather than hidden with visibility,
+   which would leave the name's width reserved and an odd gap in the bar. The
+   link keeps its own aria-label, so its accessible name is unaffected. */
+.brand-name.is-stepped-aside {
+  display: none;
+}
+
 .nav {
   margin-left: auto;
   min-width: 0;

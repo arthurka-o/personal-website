@@ -200,6 +200,31 @@
 
   /* ---------------------------------------------------------------- utils */
 
+  /* The page states the name twice within one screen: once in the topbar and
+     once as the hero h1 directly beneath it. Both are earning their place —
+     the h1 is the page's subject and what a reader lands on, the brand is the
+     way back up and the anchor once you are deep in the page. So rather than
+     delete either, the topbar one steps aside while the hero one is on
+     screen, and returns once it has scrolled past.
+
+     .nav is margin-left:auto, so nothing else in the bar moves when it goes. */
+  (function stepAsideBrandName() {
+    var name = $(".brand-name");
+    var hero = $(".hero-name");
+    if (!name || !hero || typeof IntersectionObserver !== "function") return;
+    var topbar = parseFloat(
+      getComputedStyle(document.documentElement).getPropertyValue("--topbar-h")
+    );
+    new IntersectionObserver(
+      function (entries) {
+        name.classList.toggle("is-stepped-aside", entries[0].isIntersecting);
+      },
+      /* Trimmed by the height of the sticky bar, so the swap happens as the
+         h1 clears the header rather than when it reaches the viewport edge. */
+      { rootMargin: "0px 0px 0px " + -(isNaN(topbar) ? 57 : topbar) + "px" }
+    ).observe(hero);
+  })();
+
   /* Two helpers for the card flip, kept beside the other utils because they
      are pure DOM and know nothing about the portfolio.
 
@@ -317,6 +342,11 @@
   bind("summary", profile.summary);
   bind("email", profile.email);
   bind("brandName", profile.name);
+  /* The visible name may be stepped aside (see the topbar/hero note), so the
+     link carries its own label and never depends on the text beside it. */
+  $$('[data-bind="brand"]').forEach(function (a) {
+    if (profile.name) a.setAttribute("aria-label", profile.name + " — back to top");
+  });
   bind("footerNote", (DATA.footer || {}).note);
   (function renderCredits() {
     var list = $('[data-bind="credits"]');
