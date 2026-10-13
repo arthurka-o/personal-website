@@ -232,7 +232,7 @@ window.PORTFOLIO = {
       url: "",
     },
     {
-      stat: "27,000+",
+      stat: "30,000+",
       label: "on-chain transactions",
       title: "Shiva Router",
       detail:
@@ -294,11 +294,11 @@ window.PORTFOLIO = {
         title: "Shiva Router",
         detail: [
           "The router is the protocol's front door. Overlay's core contracts behind it are immutable, so the router is also where the protocol states which higher-level systems — the funded-trader program, referrals — are allowed to reach which functions.",
-          "Users hold the router address permanently; the logic behind it never moves. 27,000+ transactions have passed through it.",
+          "Users hold the router address permanently; the logic behind it never moves. 30,000+ transactions have passed through it.",
         ],
         stack: ["solidity", "ethereum", "bnbchain"],
         repo: "https://bscscan.com/address/0xeB497c228F130BD91E7F13f81c312243961d894A",
-        repoLabel: "BscScan — 27,000+ txns",
+        repoLabel: "BscScan — 30,000+ txns",
       },
       {
         group: "Protocol contracts",
@@ -582,7 +582,7 @@ window.PORTFOLIO = {
       summary:
         "Exotic perps DEX on BSC. One of six core engineers, from testnet through TGE.",
       highlights: [
-        "Shiva Router — contributed to the upgradeable proxy in front of Overlay's immutable core contracts. Rewrote the price oracle in the same codebase: TWAP from PancakeSwap V3 pools, made non-upgradeable and then fully immutable. 27,000+ transactions verified on-chain.",
+        "Shiva Router — contributed to the upgradeable proxy in front of Overlay's immutable core contracts. Rewrote the price oracle in the same codebase: TWAP from PancakeSwap V3 pools, made non-upgradeable and then fully immutable. 30,000+ transactions verified on-chain.",
         "Funded Trader System — built the program where sponsored users trade with protocol-provided USDT. Safe multisig wallets with Zodiac modules enforce that funds interact only with Overlay contracts, and call only the allowed functions. Off-chain monitoring detects drawdown past threshold, then programmatically closes all positions and pauses the Safe.",
         "Referral System — integrated an already-audited referral contract and built the verification layer around it: off-chain signed messages checked against on-chain state, with a fallback that rebuilds a missing record from chain. Alias normalisation and migration scripts to move existing records on-chain.",
         "Leaderboard & Trading Competitions — built the seasonal leaderboard (Node.js, MongoDB) tracking trader performance across configurable criteria, then extended it into a competition platform with filters for market, minimum collateral, and position lifetime.",
@@ -652,7 +652,7 @@ window.PORTFOLIO = {
       description:
         "The router contract at the centre of Overlay's perps protocol. Every higher-level system — the funded-trader program, the referral system — reaches protocol state through it, which is what lets the core contracts stay immutable once deployed. It also decides which systems may call which functions, so it enforces a permission boundary, not just a proxy.",
       highlights: [
-        "Verified on-chain with 27,000+ transactions processed through it.",
+        "Verified on-chain with 30,000+ transactions processed through it.",
         "Oracle redesign in the same codebase: TWAP from PancakeSwap V3 pools, made non-upgradeable and then fully immutable, resolving to the worst price available so it can never be manipulated in a borrower's favour.",
         "Invariant testing with Chimera on the staking/notional relationship, plus Foundry mainnet-fork tests for the oracle path.",
         "Ported the Chainlink feed test suite from Python to Foundry so one toolchain verifies both sides of the interface, then covered the inputs that actually broke things: a zero price, and a macro window equal to the micro window.",
@@ -660,7 +660,7 @@ window.PORTFOLIO = {
       stack: ["Solidity", "Foundry", "Ethereum", "BNB Chain", "OpenZeppelin"],
       links: [
         {
-          label: "BscScan — 27,000+ txns",
+          label: "BscScan — 30,000+ txns",
           url: "https://bscscan.com/address/0xeB497c228F130BD91E7F13f81c312243961d894A",
         },
         { label: "Source", url: "https://github.com/overlay-market/v1-shiva" },
