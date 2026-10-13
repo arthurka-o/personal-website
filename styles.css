@@ -1488,10 +1488,11 @@ a:hover {
   gap: var(--sp-8);
 }
 
+/* No rule above the group. The skill list is one thing, not five ruled-off
+   sections — the group heading is enough to separate them. */
 .skill-group {
   background: transparent;
   border: 0;
-  border-top: 1px solid var(--border-strong);
   padding: var(--sp-6) 0 0;
   min-width: 0;
 }
@@ -1718,8 +1719,7 @@ a:hover {
   gap: var(--sp-2) var(--sp-6);
 }
 
-.footer-note,
-.footer-meta {
+.footer-note {
   font-family: var(--font-sans);
   font-size: var(--fs-label);
   color: var(--text-muted);

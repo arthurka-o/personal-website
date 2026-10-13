@@ -647,7 +647,7 @@ window.PORTFOLIO = {
   projects: [
     {
       name: "Shiva Router",
-      kind: "Protocol contract · Solidity 0.8.10 · Foundry",
+      kind: "Protocol contract · Solidity 0.8.10",
       logo: "overlay",
       description:
         "The router contract at the centre of Overlay's perps protocol. Every higher-level system — the funded-trader program, the referral system — reaches protocol state through it, which is what lets the core contracts stay immutable once deployed. It also decides which systems may call which functions, so it enforces a permission boundary, not just a proxy.",
@@ -668,7 +668,7 @@ window.PORTFOLIO = {
     },
     {
       name: "KUMO lending protocol",
-      kind: "Protocol · Solidity 0.8.11 · Hardhat → Foundry",
+      kind: "Protocol · Solidity 0.8.11",
       logo: "kumo",
       description:
         "KUMO is a fork of the Liquity lending protocol, retargeted at carbon removal. A certified carbon credit is locked as collateral and stablecoins are drawn against it immediately, instead of waiting for the credit to be sold. I took over this fork and made it production-ready — the diamond upgrade, multi-asset support and the oracle work below were mine.",
@@ -697,7 +697,7 @@ window.PORTFOLIO = {
     },
     {
       name: "Funded-trader kill switch",
-      kind: "Risk system · TypeScript, Solidity",
+      kind: "Risk system",
       logo: "overlay",
       description:
         "The safety system that automatically closes a protocol-sponsored trader's positions when they breach a loss limit, and pauses their account until a human looks at it. Sponsored traders risk none of their own money, so the protocol has to act as the risk manager; it cannot leave that to the trader's judgement.",
@@ -713,7 +713,7 @@ window.PORTFOLIO = {
     },
     {
       name: "Protocol subgraph",
-      kind: "Data layer · TypeScript · The Graph",
+      kind: "Data layer",
       logo: "overlay",
       description:
         "The protocol's on-chain index — the data layer the frontend and the analytics read from. I did most of the indexing for the protocol's main contract and its router, and brought the whole thing onto multiple networks.",
@@ -733,7 +733,7 @@ window.PORTFOLIO = {
     },
     {
       name: "Immutable TWAP oracle",
-      kind: "Price oracle · same repo as the Shiva Router",
+      kind: "Price oracle · same repo as Shiva Router",
       logo: "overlay",
       description:
         "The protocol's price feed, rebuilt on PancakeSwap V3 pools and then deliberately locked down: non-upgradeable first, then fully immutable, while every other contract in the protocol stays upgradeable.",
@@ -749,7 +749,7 @@ window.PORTFOLIO = {
     },
     {
       name: "Leaderboard & competitions",
-      kind: "Product backend · Node.js, Express, MongoDB",
+      kind: "Product backend",
       logo: "overlay",
       description:
         "Seasonal trading leaderboards and competitions. I built this backend from the ground up — schema, rules engine and all — as a configurable system, so launching a new competition is a change to configuration, not a redeploy.",
@@ -764,7 +764,7 @@ window.PORTFOLIO = {
     },
     {
       name: "Referral system",
-      kind: "On-chain + backend · Solidity 0.8.19, Node.js",
+      kind: "On-chain + backend",
       logo: "overlay",
       description:
         "Tracks which traders signed up through an affiliate link and pays the affiliate accordingly. The referral contract was already built and audited; I integrated it and wrote the verification layer around it.",
@@ -780,7 +780,7 @@ window.PORTFOLIO = {
     },
     {
       name: "Overlay SDK",
-      kind: "Published package · TypeScript",
+      kind: "Published package",
       logo: "typescript",
       description:
         "The published TypeScript package other teams import to read Overlay's on-chain state. Most of my work here was keeping it in step with the protocol: when the contracts changed, this package had to change with them, without breaking callers.",
@@ -800,7 +800,7 @@ window.PORTFOLIO = {
     },
     {
       name: "Overlay frontend",
-      kind: "Protocol frontend · TypeScript, React, Next.js",
+      kind: "Protocol frontend",
       logo: "nextdotjs",
       description:
         "The protocol's web app — the surface traders actually use. I was one of its main contributors, working mostly in the portfolio view, the prediction-market screens and the charts.",
@@ -818,8 +818,8 @@ window.PORTFOLIO = {
       ],
     },
     {
-      name: "ABN AMRO pilot — carbon-credit lending",
-      kind: "Pilot contract · Solidity 0.8.19 · BUSL-1.1",
+      name: "ABN AMRO pilot",
+      kind: "Pilot contract · BUSL-1.1",
       logo: "kumo",
       description:
         "A contract for lending against carbon credits, built for a pilot with ABN AMRO, a Dutch bank. I wrote it, and kept it deliberately plain — explicit allowlists and a strict loan lifecycle, written so a bank's risk team could review and sign it off without reverse-engineering the logic.",
@@ -837,7 +837,7 @@ window.PORTFOLIO = {
     },
     {
       name: "StreamBeam",
-      kind: "ETHGlobal Prague 2025 · Solo · LayerZero General Prize",
+      kind: "ETHGlobal Prague 2025 · Solo",
       description:
         "Cross-chain crypto donations for livestream creators. I built it solo in 36 hours at ETHGlobal Prague, won the LayerZero General Prize, and then kept working on it for another six weeks.",
       highlights: [
@@ -852,7 +852,7 @@ window.PORTFOLIO = {
     },
     {
       name: "InSure",
-      kind: "ETHWarsaw 2025 · Team · Prize winner · Foundry",
+      kind: "ETHWarsaw 2025 · Team",
       description:
         "On-chain insurance with automated claims and verification. Built with a team; prize winner at ETHWarsaw 2025.",
       highlights: [
