@@ -696,6 +696,24 @@ window.PORTFOLIO = {
       ],
     },
     {
+      name: "ABN AMRO pilot",
+      kind: "Pilot contract · BUSL-1.1",
+      logo: "kumo",
+      description:
+        "A contract for lending against carbon credits, built for a pilot with ABN AMRO, a Dutch bank. I wrote it, and kept it deliberately plain — explicit allowlists and a strict loan lifecycle, written so a bank's risk team could review and sign it off without reverse-engineering the logic.",
+      privateRepo: true,
+      note: "Built for the ABN AMRO + Techstars accelerator.",
+      highlights: [
+        "Five-state loan lifecycle — pending, active, repaid, liquidated, closed — where the contract refuses any transition that doesn't follow that path.",
+        "Explicit on-chain allowlists of lenders and borrowers. The protocol is permissioned on purpose: it only moves money between counterparties the bank has approved.",
+        "Liquidation proceeds routed to a designated treasury, not back to the default recipient, because seized collateral often doesn't cover the debt.",
+        "A V2 escape hatch so the pilot can hand off to a successor contract.",
+        "Smaller correctness work: a maxLTV → liquidationLTV rename (the old name implied a borrowing limit, not a liquidation threshold), the correct OpenZeppelin transfer helper on withdrawal paths, a tolerance on duration comparison, and test coverage for the liquidation and treasury paths.",
+      ],
+      stack: ["Solidity", "Hardhat", "OpenZeppelin"],
+      links: [],
+    },
+    {
       name: "Funded-trader kill switch",
       kind: "Risk system",
       logo: "overlay",
@@ -818,24 +836,6 @@ window.PORTFOLIO = {
       ],
     },
     {
-      name: "ABN AMRO pilot",
-      kind: "Pilot contract · BUSL-1.1",
-      logo: "kumo",
-      description:
-        "A contract for lending against carbon credits, built for a pilot with ABN AMRO, a Dutch bank. I wrote it, and kept it deliberately plain — explicit allowlists and a strict loan lifecycle, written so a bank's risk team could review and sign it off without reverse-engineering the logic.",
-      privateRepo: true,
-      note: "Built for the ABN AMRO + Techstars accelerator.",
-      highlights: [
-        "Five-state loan lifecycle — pending, active, repaid, liquidated, closed — where the contract refuses any transition that doesn't follow that path.",
-        "Explicit on-chain allowlists of lenders and borrowers. The protocol is permissioned on purpose: it only moves money between counterparties the bank has approved.",
-        "Liquidation proceeds routed to a designated treasury, not back to the default recipient, because seized collateral often doesn't cover the debt.",
-        "A V2 escape hatch so the pilot can hand off to a successor contract.",
-        "Smaller correctness work: a maxLTV → liquidationLTV rename (the old name implied a borrowing limit, not a liquidation threshold), the correct OpenZeppelin transfer helper on withdrawal paths, a tolerance on duration comparison, and test coverage for the liquidation and treasury paths.",
-      ],
-      stack: ["Solidity", "Hardhat", "OpenZeppelin"],
-      links: [],
-    },
-    {
       name: "StreamBeam",
       kind: "ETHGlobal Prague 2025 · Solo",
       description:
@@ -892,6 +892,7 @@ window.PORTFOLIO = {
       ],
       links: [],
     },
+
   ],
 
   /* --------------------------------------------------------------- 7. SKILLS
