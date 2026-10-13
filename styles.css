@@ -1216,12 +1216,15 @@ a:hover {
   border-top-color: var(--accent);
 }
 
+/* The kind was a second flex item in a space-between row, so it sat hard
+   right whenever it fit beside the name and dropped to the left on the next
+   line whenever it did not — which made its alignment flip with the viewport
+   rather than with anything about the card. It is always its own row now, and
+   always aligned with the title above it. */
 .card-head {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: var(--sp-2) var(--sp-4);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--sp-1);
 }
 
 .card-name {
@@ -1238,7 +1241,6 @@ a:hover {
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--text-muted);
-  text-align: right;
 }
 
 .card-body {
