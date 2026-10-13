@@ -111,6 +111,26 @@ window.PORTFOLIO = {
     },
     tellor: { title: "Tellor", file: "tellor", hex: "#ffffff", tile: true },
 
+    /* Safe and LayerZero, from their GitHub org avatars - and getting those took
+       the `?v=4` query. Without it GitHub serves a stale cached image: both
+       orgs returned the grey Octocat identicon, which is what made them look
+       like they had no logo at all. The canonical avatar_url carries the
+       version and resolves to the real mark.
+
+       Both arrive flattened rather than transparent, and in opposite
+       directions - Safe is black-on-white with a faint grid, LayerZero is
+       white-on-black - so a brightness rule catches one and misses the other.
+       The background is therefore read from the corner, the grid and plate
+       are replaced with the page ground, and dark neutral ink is lifted to
+       white so both read on the tile. Safe's green is left alone. */
+    safe: { title: "Safe", file: "safe", hex: "#ffffff", tile: true },
+    layerzero: {
+      title: "LayerZero",
+      file: "layerzero",
+      hex: "#ffffff",
+      tile: true,
+    },
+
     ethers: { title: "Ethers.js", file: "ethers", hex: "#2535A0" },
     nestjs: { title: "NestJS", file: "nestjs", hex: "#E0234E" },
     python: { title: "Python", file: "python", hex: "#3776AB" },
@@ -892,10 +912,10 @@ window.PORTFOLIO = {
         { name: "OpenZeppelin", logo: "openzeppelin" },
         { name: "Chainlink", logo: "chainlink" },
         { name: "Tellor", logo: "tellor" },
-        "Safe",
+        { name: "Safe", logo: "safe" },
         "Zodiac",
         "Merkle Trees",
-        "LayerZero",
+        { name: "LayerZero", logo: "layerzero" },
         "Chimera",
         "TypeChain",
       ],
