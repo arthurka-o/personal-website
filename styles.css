@@ -488,8 +488,16 @@ a:hover {
    aside. Removed from the layout entirely rather than hidden with visibility,
    which would leave the name's width reserved and an odd gap in the bar. The
    link keeps its own aria-label, so its accessible name is unaffected. */
-.brand-name.is-stepped-aside {
+/* Hidden by default, and revealed again only once the hero h1 has scrolled
+   past. The default has to be the hidden state, set by the .js class before
+   first paint — inverting it makes the name paint and then vanish a frame
+   later, which reads as a blink. */
+html.js .brand-name {
   display: none;
+}
+
+html.js .brand-name.is-brand-shown {
+  display: inline;
 }
 
 .nav {

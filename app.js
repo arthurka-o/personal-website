@@ -207,7 +207,9 @@
      delete either, the topbar one steps aside while the hero one is on
      screen, and returns once it has scrolled past.
 
-     .nav is margin-left:auto, so nothing else in the bar moves when it goes. */
+     .nav is margin-left:auto, so nothing else in the bar moves when it goes.
+     The hidden state is the default (see the .js class in index.html), and
+     this only ever adds the name back. */
   (function stepAsideBrandName() {
     var name = $(".brand-name");
     var hero = $(".hero-name");
@@ -217,7 +219,7 @@
     );
     new IntersectionObserver(
       function (entries) {
-        name.classList.toggle("is-stepped-aside", entries[0].isIntersecting);
+        name.classList.toggle("is-brand-shown", !entries[0].isIntersecting);
       },
       /* Trimmed by the height of the sticky bar, so the swap happens as the
          h1 clears the header rather than when it reaches the viewport edge. */

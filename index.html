@@ -19,6 +19,13 @@
     -->
     <script>
       (function () {
+        /* Marks that scripting is available, before first paint. The topbar
+           name is hidden by default under this class and revealed again only
+           once the hero heading has scrolled past — which has to be the
+           default rather than the exception, or the name paints and is then
+           taken away a frame later. Without JS the class is never added and
+           the name stays put. */
+        document.documentElement.classList.add("js");
         try {
           var stored = localStorage.getItem("od-theme");
           if (stored === "light" || stored === "dark") {
