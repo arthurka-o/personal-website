@@ -1,0 +1,40 @@
+/* Arthur Galiullin — CV stylesheet.
+   Reverse-engineered from the original PDF (WeasyPrint 69.0) and verified against it:
+   every text run lands within 0.001pt of the original. Full spec in DESIGN.md next to this file.
+   The `h1 + p + p + p` rule is the one addition (Oct 2026) — the grey work-authorisation
+   line under the contact row. Everything else is the original design. */
+@page { size: A4; margin: 1.6cm 48.52pt; }
+
+body {
+  font-family: "Noto Sans", sans-serif;
+  font-size: 10pt;
+  line-height: 1.42;
+  color: #1a1a1a;
+  margin: 0;
+  padding: 0;
+}
+
+h1 { font-size: 2.2em;   font-weight: 700; color: #1a5276; margin: 6pt 0 0.75pt;
+     letter-spacing: 0.3px; }
+h2 { font-size: 1.05em; font-weight: 600; color: #1a5276; margin: 0 0 3.75pt;
+     text-transform: uppercase; letter-spacing: 0.7px;
+     padding-bottom: 1.5pt; border-bottom: 1.2px solid #1a5276; }
+h3 { font-size: 1em;    font-weight: 600; color: #1a5276; margin: 6.75pt 0 1.5pt; }
+
+h2 { margin-top: 16.125pt; }
+hr + h2 { margin-top: 9.75pt; }
+
+p, ul { font-size: 0.98em; }
+p  { margin: 0 0 1.5pt; }
+ul { margin: 0 0 1.5pt; padding-left: 1.2em; }
+li { margin: 0 0 0.75pt; }
+
+h1 + p     { font-size: 0.95em; color: #555555; }
+h1 + p + p { font-size: 0.9em; }
+h1 + p + p + p { font-size: 0.9em; color: #555555; }
+
+strong { font-weight: 600; }
+em      { color: #555555; }
+a       { color: #1a5276; text-decoration: none; }
+
+hr { border: 0; border-top: 0.5px solid #bbbbbb; margin: 6pt 0; }
