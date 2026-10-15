@@ -45,18 +45,13 @@ window.PORTFOLIO = {
     initials: "AG",
     role: "Smart Contract & Backend Engineer",
     summary:
-      "One of six core engineers on an exotic perps DEX, from testnet through TGE. Four years of Solidity, ten years of production engineering.",
+      "One of six core engineers on an exotic perps DEX, from testnet through TGE. Four years of Solidity, eight years of production engineering.",
     location: "Warsaw, Poland",
     email: "work@arthurka.eu",
-    /* Whether he is looking. This is the fact an agent screening a CV for a
-       role checks first, and burying it in a setup table made it unanswerable
-       from the short file — the one an agent reads before deciding whether to
-       read the long one. It leads the blockquote there for the same reason.
-
-       Kept out of the role titles below on purpose: a line that labels itself
-       "seeking" invites a recruiter to score the gap instead of the work. The
-       work history is written to stand on its own, and this says the rest
-       plainly. */
+    /* Whether he is looking. Leads the blockquote of the generated files and
+       repeats in workingSetup. Kept out of the role titles below: a line that
+       labels itself "seeking" invites a recruiter to score the gap instead of
+       the work. */
     availability: "Available now — actively seeking new work.",
   },
 
@@ -562,24 +557,12 @@ window.PORTFOLIO = {
   /* ---------------------------------------------------------- 6. EXPERIENCE */
   experience: [
     {
-      /* Current period, June 2026 to now. He is looking for work, and building
-         personal projects while he looks. That is the entire content of this
-         period, so it says exactly that.
+      /* Current period, June 2026 to now: looking for work, and building
+         personal projects while he looks.
 
-         The previous line here was "Self-directed work on personal projects",
-         which only restated the title above it. An agent reading the Experience
-         list had no way to tell an employed contractor from an idle gap, and
-         had to guess from the company-less title. Stating the searching is not
-         the thing the earlier version of this comment was afraid of: it is
-         already in profile.availability and in workingSetup, and it is the
-         first line of the blockquote an agent reads. Leaving it out of the
-         one place a reader's eye lands made the entry look evasive rather
-         than straightforward.
-
-         TODO: still no projects under it. `highlights` is empty, so this
-         period currently reads as a gap with a sentence in it. Give me the
-         project name and repo URL and it wires up as a link the way Overlay
-         and KUMO are. */
+         TODO: `highlights` is empty, so this period reads as a sentence with
+         nothing under it. Project names and repo URLs wire it up as a link the
+         way Overlay and KUMO are. */
       role: "Independent — Personal Projects",
       company: "",
       location: "Remote",
@@ -1016,11 +999,9 @@ window.PORTFOLIO = {
   ],
 
   /* -------------------------------------------------------- 9. WORKING SETUP */
-  /* Working arrangement, stated factually. `profile.availability` above leads
-     the blockquote of the machine-readable files; the same answer is repeated
-     here so a reader of the page sees it in the same place as the timezone and
-     the engagement type. Still no notice period, target role list or
-     compensation figure — those change and would go stale here. */
+  /* Working arrangement, stated factually. Availability repeats
+     `profile.availability` here so it reads alongside the timezone and the
+     engagement type. No compensation figure — it changes and goes stale. */
   workingSetup: [
     { label: "Availability", value: "Available now — actively seeking" },
     { label: "Notice period", value: "Immediate" },
