@@ -19,7 +19,6 @@
   var skills = DATA.skills || [];
   var education = DATA.education || [];
   var workingSetup = DATA.workingSetup || [];
-  var timeline = DATA.timeline || null;
   var languages = DATA.languages || [];
   var logoLibrary = DATA.logoLibrary || {};
   var logoRail = DATA.logoRail || [];
