@@ -154,6 +154,12 @@ export function renderLlmsTxt(P, origin) {
     L.push(bullets(proofs), "");
   }
 
+  /* Employer names linked, because this is the section where a claim about
+     someone else's company is made — "$2.9M raised", "selected for the ABN AMRO
+     accelerator" — and a reviewer has no way to check either without going
+     hunting. The BscScan link two sections up proves this file knows how to
+     point at something verifiable, so pointing at nothing here read as a
+     choice rather than an omission. */
   const exp = (P.experience || []).filter((e) => e && flat(e.role));
   if (exp.length) {
     L.push("## Experience", "");
@@ -161,7 +167,11 @@ export function renderLlmsTxt(P, origin) {
       bullets(
         exp.map((e) => {
           const meta = [period(e.start, e.end), flat(e.location)].filter(Boolean).join(", ");
-          return `**${roleTitle(e)}**${meta ? ` (${meta})` : ""}. ${flat(e.summary)}`;
+          const who = flat(e.url)
+            ? `[${flat(e.company) || flat(e.role)}](${abs(origin, e.url)})`
+            : roleTitle(e);
+          const named = flat(e.url) && flat(e.role) && flat(e.company) ? ` — ${flat(e.role)}` : "";
+          return `**${who}${named}**${meta ? ` (${meta})` : ""}. ${flat(e.summary)}`;
         })
       ),
       ""
@@ -214,33 +224,32 @@ export function renderLlmsTxt(P, origin) {
     );
   }
 
+  /* Note the shape of these bullets: `- [name](url): notes`, with nothing
+     between the bullet marker and the opening bracket. Bold link text reads
+     almost the same to a person and completely differently to the parser the
+     spec says this format exists for — `**[name](url)**:` matches no
+     `- [name](url)` pattern at all, so the link graph came back empty. The
+     link text is already visually distinct; the asterisks bought nothing. */
   L.push("## Full content", "");
   L.push(
     bullets([
-      `**[Complete CV as markdown](${origin}/llms-full.txt)**: every role with its highlights, every project with its own detail, education and working setup. This file has the shape of it; that one has the depth.`,
-      resume ? `**[CV as PDF](${resume})**: the same CV as a document to read or forward.` : "",
-      github ? `**[GitHub](${github})**: public repositories.` : "",
-      linkedin ? `**[LinkedIn](${linkedin})**: professional profile.` : "",
+      `[Complete CV as markdown](${origin}/llms-full.txt): every role with its highlights, every project with its own detail, education and working setup.`,
+      resume ? `[CV as PDF](${resume}): the same CV as a document to read or forward.` : "",
+      github ? `[GitHub](${github}): public repositories.` : "",
+      linkedin ? `[LinkedIn](${linkedin}): professional profile.` : "",
     ]),
     ""
   );
 
-  /* The spec reserves this section for links an agent can skip when it wants a
-     shorter read, so it holds nothing an agent would otherwise need.
-
-     It used to hold the HTML page and index.md. The first is a step backwards
-     — an agent that fetched llms.txt is avoiding the HTML — and the second is
-     the same 29,726 bytes as llms-full.txt, linked twice under two names. The
-     structured data is the one thing here an agent cannot get anywhere else,
-     and the spec names it as exactly what this file is allowed to point at. */
-  L.push("## Optional", "");
-  L.push(
-    bullets([
-      `**Structured data**: ${origin}/ carries schema.org \`Person\`, \`WebSite\` and \`ProfilePage\` as JSON-LD in the page markup, generated from the same content model. The \`Person\` node's \`sameAs\` links the GitHub and LinkedIn accounts, which is what identifies them as one person.`,
-    ]),
-    ""
-  );
-
+  /* There used to be an Optional section here describing the schema.org JSON-LD
+     in the page markup. It was there because the spec says an llms.txt "can
+     also reference structured data markup used on the site". That is permission,
+     not a reason, and two reviewers independently called it the most purely
+     self-referential passage in either file: it pointed the agent back at the
+     HTML page it came here to avoid, and the one claim in it — that the markup
+     is generated from the same content model — is not checkable from outside.
+     Removed. An Optional section that costs 7% of the file and earns nothing is
+     the same mistake as the meta-prose above it. */
   return L.join("\n").replace(/\n{3,}/g, "\n\n").trim() + "\n";
 }
 

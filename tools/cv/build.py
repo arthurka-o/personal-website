@@ -41,7 +41,7 @@ ROLE = "Solidity / Protocol Engineer"
 LOCATION = "Warsaw, Poland (Remote)"
 LANG = "en-GB"
 DESCRIPTION = (
-    f"{NAME} — {ROLE}, {LOCATION}. Four years of Solidity and eight years of production "
+    f"{NAME} — {ROLE}, {LOCATION}. Four years of Solidity and ten years of production "
     "engineering. Core engineer on Overlay, an exotic perps DEX on BSC, from testnet to "
     "TGE ($2.9M raised, Polychain Capital, 1kx, ParaFi). Before that, Solidity developer "
     "on KUMO, a carbon-credit lending protocol selected for the ABN AMRO and Techstars "

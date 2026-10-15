@@ -45,7 +45,7 @@ window.PORTFOLIO = {
     initials: "AG",
     role: "Smart Contract & Backend Engineer",
     summary:
-      "One of six core engineers on an exotic perps DEX, from testnet through TGE. Four years of Solidity, eight years of production engineering.",
+      "One of six core engineers on an exotic perps DEX, from testnet through TGE. Four years of Solidity, ten years of production engineering.",
     location: "Warsaw, Poland",
     email: "work@arthurka.eu",
     /* Whether he is looking. This is the fact an agent screening a CV for a
