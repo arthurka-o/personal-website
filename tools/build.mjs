@@ -36,6 +36,7 @@ import { execSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { JSDOM } from "jsdom";
+import { renderLlmsTxt, renderLlmsFull } from "./llms-txt.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const DIST = join(ROOT, "dist");
@@ -329,6 +330,35 @@ writeFileSync(
 `
 );
 
+/* -------------------------------------------------------- llms.txt and friends
+
+   The same reasoning as the render above, applied to a different consumer. The
+   page is rendered so a crawler without JavaScript gets the content; this is so
+   an agent that has been told "look this person up" gets it as markdown instead
+   of having to strip navigation, chrome and CSS off an HTML page.
+
+   Two files, because the convention is a small index over a large document. And
+   the large document is written under a second name as well — index.md — which is
+   what the <link rel="alternate"> in index.html points at. Same bytes, so the two
+   discovery paths cannot end up describing different careers.
+
+   Generated from window.PORTFOLIO, like the JSON-LD above. A hand-written
+   llms.txt would be a second CV nobody proof-reads. */
+
+if (!profile.name) {
+  throw new Error(
+    "content.js has no profile.name — there is nothing to call this site, and " +
+      "an llms.txt whose H1 is empty is worse than no llms.txt at all."
+  );
+}
+
+const llmsTxt = renderLlmsTxt(P, ORIGIN);
+const llmsFull = renderLlmsFull(P, ORIGIN);
+
+writeFileSync(join(DIST, "llms.txt"), llmsTxt);
+writeFileSync(join(DIST, "llms-full.txt"), llmsFull);
+writeFileSync(join(DIST, "index.md"), llmsFull);
+
 /* ------------------------------------------------------------------ report */
 
 const text = document.body.textContent.replace(/\s+/g, " ").trim();
@@ -337,3 +367,4 @@ console.log(`  built    dist/`);
 console.log(`           ${rendered} regions rendered · ${skillNames.length} skills in JSON-LD`);
 console.log(`           ${text.length} characters of crawler-visible text`);
 console.log(`           ${document.querySelectorAll("img").length} images · ${document.querySelectorAll('a[href^="http"]').length} external links`);
+console.log(`           llms.txt ${llmsTxt.length} chars · llms-full.txt ${llmsFull.length} chars`);
