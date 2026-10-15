@@ -51,22 +51,6 @@ const skillNames = (group) =>
     .map((i) => flat(typeof i === "string" ? i : i && i.name))
     .filter(Boolean);
 
-/* Timeline entries name their technologies by logo key — "bnbchain", not "BNB
-   Chain" — because that key is what the page uses to pick the mark. Markdown
-   has no marks, so it needs the name the chip displays, which is what
-   logoLibrary holds. An unknown key is passed through rather than dropped: a
-   missing title is a gap in the logo library, not a reason for a technology to
-   vanish out of someone's CV. */
-const techNames = (list, logos) =>
-  (list || [])
-    .map((k) => {
-      const key = flat(k);
-      if (!key) return "";
-      const entry = (logos || {})[key];
-      return flat(entry && entry.title) || key;
-    })
-    .filter(Boolean);
-
 const validLinks = (list) =>
   (list || []).filter((l) => l && flat(l.url));
 
@@ -148,28 +132,17 @@ export function renderLlmsTxt(P, origin) {
   if (email) L.push(">", `> Contact: [${email}](mailto:${email})`);
   L.push("");
 
-  /* One sentence on what this file is, then the file list. The old version
-     spent two paragraphs explaining that the build renders both files from one
-     content model — true, and aimed at a reviewer rather than at an agent, so
-     it cost context that the facts below could have used. */
-  L.push(
-    "Rendered from the same content model as the website, so it cannot disagree",
-    "with the page. This file is the short version; the detail is one fetch away:",
-    "",
-    bullets([
-      "Identity, the verifiable highlights, career history at a glance, skills, education and how to get in touch — enough to answer most questions without another request.",
-      `**[llms-full.txt](${origin}/llms-full.txt)** — the complete CV as markdown: every role, every project, and every shipped system, with the reasoning behind the engineering decisions. Fetch it when a question needs specifics rather than a summary.`,
-    ]),
-    ""
-  );
+  /* Nothing sits between the blockquote and the first section. The file used to
+     carry 156 words here explaining that the build renders it from the same
+     content model as the website, and what to make of the parts that are
+     linked and the parts that are private. None of it survives contact with an
+     agent: it infers the same thing from seeing links and from "Repository is
+     private", it never fetches on instruction, and the reassurance that the
+     file "cannot disagree with the page" is a promise nobody can check - one
+     that a duplicated sentence elsewhere in this document would have falsified.
 
-  L.push(
-    "Work that can be linked is linked, so it can be checked rather than taken on",
-    "trust. Work behind a private repository is named and described, and marked as",
-    "private, because omitting it would make a real system read as one that does",
-    "not exist. Figures are the ones the site makes, not rounded versions of them.",
-    ""
-  );
+     What is left of it is a fact an agent uses: the link to the full document,
+     which is now a file list like any other. */
 
   /* The proof points are the section worth reading first: each one is a claim
      with something attached to it, which is the whole point of the page.
@@ -244,7 +217,7 @@ export function renderLlmsTxt(P, origin) {
   L.push("## Full content", "");
   L.push(
     bullets([
-      `**[Complete CV as markdown](${origin}/llms-full.txt)**: everything on the page as one markdown document — every role with its highlights, every project, the full list of shipped systems, and the reasoning behind each. This file has the shape of it; that one has the detail.`,
+      `**[Complete CV as markdown](${origin}/llms-full.txt)**: every role with its highlights, every project with its own detail, education and working setup. This file has the shape of it; that one has the depth.`,
       resume ? `**[CV as PDF](${resume})**: the same CV as a document to read or forward.` : "",
       github ? `**[GitHub](${github})**: public repositories.` : "",
       linkedin ? `**[LinkedIn](${linkedin})**: professional profile.` : "",
@@ -360,43 +333,6 @@ export function renderLlmsFull(P, origin) {
     }
   }
 
-  /* ---------------------------------------------------------------- shipped
-     The bar chart on the page carries month offsets against a hand-laid axis,
-     not calendar dates. Turning those offsets into dates would mean inventing
-     precision the content model does not have, so this section groups by the
-     band the entry belongs to and states none. Chronology by role is in
-     Experience above. */
-  const timeline = P.timeline || {};
-  const entries = (timeline.entries || []).filter((e) => e && flat(e.title));
-  if (entries.length) {
-    L.push("## Shipped", "");
-    if (flat(timeline.lede)) L.push(flat(timeline.lede), "");
-    const byGroup = new Map();
-    for (const e of entries) {
-      const g = flat(e.group) || "Other";
-      if (!byGroup.has(g)) byGroup.set(g, []);
-      byGroup.get(g).push(e);
-    }
-    for (const [g, items] of byGroup) {
-      L.push(`### ${g}`, "");
-      for (const e of items) {
-        const org = flat(e.org);
-        const orgTitle = flat((P.logoLibrary || {})[org] && P.logoLibrary[org].title);
-        L.push(`- **${flat(e.title)}**${org ? ` (${orgTitle || org})` : ""}`);
-        for (const para of (e.detail || []).map(flat).filter(Boolean)) {
-          L.push(`  ${para}`, "");
-        }
-        const bits = [];
-        const stack = techNames(e.stack, P.logoLibrary);
-        if (stack.length) bits.push(`Stack: ${stack.join(", ")}`);
-        if (flat(e.repo)) {
-          bits.push(`[${flat(e.repoLabel) || "Source"}](${abs(origin, e.repo)})`);
-        }
-        if (bits.length) L.push(`  ${bits.join(" · ")}`, "");
-      }
-    }
-  }
-
   /* ------------------------------------------------------------------ skills */
   const groups = (P.skills || []).filter((g) => g && skillNames(g).length);
   if (groups.length) {
@@ -438,15 +374,6 @@ export function renderLlmsFull(P, origin) {
       ""
     );
   }
-
-  L.push("---", "");
-  L.push(
-    "*Generated from the site's content model by `tools/build.mjs`. This document is",
-    `the page at ${origin}/ in markdown, and is published under both this name and`,
-    "index.md so that fetching `/llms.txt` and following a `rel=\"alternate\"` link land",
-    "on the same bytes.*",
-    ""
-  );
 
   return L.join("\n").replace(/\n{3,}/g, "\n\n").trim() + "\n";
 }

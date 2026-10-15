@@ -1018,6 +1018,7 @@ window.PORTFOLIO = {
      compensation figure — those change and would go stale here. */
   workingSetup: [
     { label: "Availability", value: "Available now — actively seeking" },
+    { label: "Notice period", value: "Immediate" },
     { label: "Based in", value: "Warsaw, Poland" },
     { label: "Timezone", value: "CET/CEST (UTC+1/+2)" },
     { label: "Work mode", value: "Remote" },
