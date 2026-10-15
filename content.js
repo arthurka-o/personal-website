@@ -48,6 +48,16 @@ window.PORTFOLIO = {
       "One of six core engineers on an exotic perps DEX, from testnet through TGE. Four years of Solidity, eight years of production engineering.",
     location: "Warsaw, Poland",
     email: "work@arthurka.eu",
+    /* Whether he is looking. This is the fact an agent screening a CV for a
+       role checks first, and burying it in a setup table made it unanswerable
+       from the short file — the one an agent reads before deciding whether to
+       read the long one. It leads the blockquote there for the same reason.
+
+       Kept out of the role titles below on purpose: a line that labels itself
+       "seeking" invites a recruiter to score the gap instead of the work. The
+       work history is written to stand on its own, and this says the rest
+       plainly. */
+    availability: "Available now — actively seeking new work.",
   },
 
   /* ------------------------------------------------------------- 2. LINKS */
@@ -245,9 +255,9 @@ window.PORTFOLIO = {
       label: "hackathon prize winner",
       title: "ETHGlobal Prague 2025 · ETHWarsaw 2025",
       detail:
-        "LayerZero General Prize for StreamAid, built solo in 36 hours. Prize with the InSure team at ETHWarsaw.",
-      url: "https://github.com/arthurka-o/2025-eth-global-prague",
-      urlLabel: "StreamAid source",
+        "LayerZero General Prize for StreamBeam, built solo in 36 hours. Prize with the InSure team at ETHWarsaw.",
+      url: "https://github.com/arthurka-o/streambeam",
+      urlLabel: "StreamBeam source",
     },
   ],
 
@@ -557,6 +567,11 @@ window.PORTFOLIO = {
          but a timeline entry that labels itself unemployed invites a recruiter
          to score the gap instead of the work — and leading with the building
          is the stronger read while staying honest.
+
+         That does not mean the searching is hidden. It is stated once, plainly,
+         in `profile.availability` and in workingSetup, and both are as visible
+         as this entry is. The distinction is between describing a period of
+         work and announcing a status; the status is not being kept quiet.
 
          TODO: this entry is thin until the project lands. Add what you built
          to `highlights`, and give me the project name and repo URL so I can
@@ -996,10 +1011,13 @@ window.PORTFOLIO = {
   ],
 
   /* -------------------------------------------------------- 9. WORKING SETUP */
-  /* Factual working arrangement only — this is a capability showcase, so it
-     carries no availability date, notice period, target role list, or
-     compensation figure. */
+  /* Working arrangement, stated factually. `profile.availability` above leads
+     the blockquote of the machine-readable files; the same answer is repeated
+     here so a reader of the page sees it in the same place as the timezone and
+     the engagement type. Still no notice period, target role list or
+     compensation figure — those change and would go stale here. */
   workingSetup: [
+    { label: "Availability", value: "Available now — actively seeking" },
     { label: "Based in", value: "Warsaw, Poland" },
     { label: "Timezone", value: "CET/CEST (UTC+1/+2)" },
     { label: "Work mode", value: "Remote" },

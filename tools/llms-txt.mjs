@@ -132,34 +132,52 @@ export function renderLlmsTxt(P, origin) {
 
   const L = [];
 
+  /* The blockquote is the one part of the file guaranteed to be read, so it
+     carries the facts needed to act on rather than the facts needed to
+     appreciate: who, where, whether he is available, and how to reach him. The
+     summary is last because it is the one line that is about the work rather
+     than the situation. */
   L.push(`# ${profile.name} — ${profile.role}`, "");
-  L.push(`> ${profile.name} is a ${profile.role.toLowerCase()} based in ${profile.location}. ${profile.summary}`, "");
+  /* One line per fact rather than one run of them: an agent reading the top of
+     this file should not have to parse a row of separators to find out whether
+     the person is looking, and "Contact" is the one fact worth being able to
+     act on without a second fetch. */
+  L.push(`> **${profile.role}**${profile.location ? ` — ${profile.location}` : ""}`);
+  if (flat(profile.availability)) L.push(">", `> **${flat(profile.availability)}**`);
+  if (profile.summary) L.push(">", `> ${flat(profile.summary)}`);
+  if (email) L.push(">", `> Contact: [${email}](mailto:${email})`);
+  L.push("");
 
+  /* One sentence on what this file is, then the file list. The old version
+     spent two paragraphs explaining that the build renders both files from one
+     content model — true, and aimed at a reviewer rather than at an agent, so
+     it cost context that the facts below could have used. */
   L.push(
-    "This file is rendered from the same content model that renders the website, so it",
-    "cannot disagree with the page it describes. There are two levels of detail:",
+    "Rendered from the same content model as the website, so it cannot disagree",
+    "with the page. This file is the short version; the detail is one fetch away:",
     "",
     bullets([
-      "**This file** — identity, the verifiable highlights, career history at a glance, and skills. Short enough to read in full before deciding whether to go further.",
-      `**[llms-full.txt](${origin}/llms-full.txt)** — the complete CV as markdown: every role, every project, and every shipped system, with the reasoning behind the engineering decisions. Fetch this when a question needs specifics rather than a summary.`,
+      "Identity, the verifiable highlights, career history at a glance, skills, education and how to get in touch — enough to answer most questions without another request.",
+      `**[llms-full.txt](${origin}/llms-full.txt)** — the complete CV as markdown: every role, every project, and every shipped system, with the reasoning behind the engineering decisions. Fetch it when a question needs specifics rather than a summary.`,
     ]),
     ""
   );
 
   L.push(
-    "A note on what is and is not here. Work that can be linked is linked, so it can",
-    "be checked rather than taken on trust. Work behind a private repository is named",
-    "and described, and marked as private, because omitting it would make a real system",
-    "read as one that does not exist. Figures are the ones the site makes, not rounded",
-    "versions of them.",
+    "Work that can be linked is linked, so it can be checked rather than taken on",
+    "trust. Work behind a private repository is named and described, and marked as",
+    "private, because omitting it would make a real system read as one that does",
+    "not exist. Figures are the ones the site makes, not rounded versions of them.",
     ""
   );
 
   /* The proof points are the section worth reading first: each one is a claim
-     with something attached to it, which is the whole point of the page. */
+     with something attached to it, which is the whole point of the page.
+     Named as llms-full.txt names them — one renderer, one name, one set of
+     facts. */
   const proofs = proofLines(P, origin);
   if (proofs.length) {
-    L.push("## Selected work", "");
+    L.push("## Proof points", "");
     L.push(bullets(proofs), "");
   }
 
@@ -188,40 +206,64 @@ export function renderLlmsTxt(P, origin) {
     );
   }
 
-  /* Factual working arrangement only — the page deliberately carries no
-     availability date or compensation figure, so neither does this. */
+  /* Education was the one screening answer that could not be reached without a
+     second fetch, which is a poor showing for a two-line section. The two
+     degrees are also the strongest non-work signal on the page. */
+  const edu = (P.education || []).filter((e) => e && flat(e.degree));
+  if (edu.length) {
+    L.push("## Education", "");
+    L.push(
+      bullets(
+        edu.map((e) => {
+          const meta = [flat(e.school), flat(e.period)].filter(Boolean).join(", ");
+          return `**${flat(e.degree)}**${meta ? ` — ${meta}` : ""}`;
+        })
+      ),
+      ""
+    );
+  }
+
+  /* The same two sections llms-full.txt uses, under the same names, for the
+     same data. They were called "Practicalities" here and "Working setup" there,
+     which is a small thing that makes cross-reading the two files harder than
+     it needs to be. */
   const setup = P.workingSetup || [];
   const langs = (P.languages || []).filter((l) => l && flat(l.name));
-  if (setup.length || langs.length) {
-    L.push("## Practicalities", "");
+  if (setup.length) {
+    L.push("## Working setup", "");
+    L.push(bullets(setup.map((s) => `**${flat(s.label)}**: ${flat(s.value)}`)), "");
+  }
+  if (langs.length) {
+    L.push("## Languages", "");
     L.push(
-      bullets([
-        ...setup.map((s) => `**${flat(s.label)}**: ${flat(s.value)}`),
-        langs.length
-          ? `**Languages**: ${langs.map((l) => `${flat(l.name)} (${flat(l.level)})`).join(", ")}`
-          : "",
-      ])
+      bullets(langs.map((l) => `**${flat(l.name)}**: ${flat(l.level)}`)),
+      ""
     );
-    L.push("");
   }
 
   L.push("## Full content", "");
   L.push(
     bullets([
-      `**[Complete CV as markdown](${origin}/llms-full.txt)**: everything on the page as one markdown document — all roles with their highlights, all projects, the full list of shipped systems, education and skills.`,
+      `**[Complete CV as markdown](${origin}/llms-full.txt)**: everything on the page as one markdown document — every role with its highlights, every project, the full list of shipped systems, and the reasoning behind each. This file has the shape of it; that one has the detail.`,
       resume ? `**[CV as PDF](${resume})**: the same CV as a document to read or forward.` : "",
       github ? `**[GitHub](${github})**: public repositories.` : "",
       linkedin ? `**[LinkedIn](${linkedin})**: professional profile.` : "",
-      email ? `**[Email](mailto:${email})**: ${email}.` : "",
     ]),
     ""
   );
 
+  /* The spec reserves this section for links an agent can skip when it wants a
+     shorter read, so it holds nothing an agent would otherwise need.
+
+     It used to hold the HTML page and index.md. The first is a step backwards
+     — an agent that fetched llms.txt is avoiding the HTML — and the second is
+     the same 29,726 bytes as llms-full.txt, linked twice under two names. The
+     structured data is the one thing here an agent cannot get anywhere else,
+     and the spec names it as exactly what this file is allowed to point at. */
   L.push("## Optional", "");
   L.push(
     bullets([
-      `**[The page itself](${origin}/)**: the same content as HTML. It is rendered statically at build time, so the work history, projects and skills are in the markup rather than appearing only after JavaScript runs.`,
-      `**[Markdown version of the page](${origin}/index.md)**: the same document as llms-full.txt, under the name used when a page is linked to by \`rel="alternate"\`.`,
+      `**Structured data**: ${origin}/ carries schema.org \`Person\`, \`WebSite\` and \`ProfilePage\` as JSON-LD in the page markup, generated from the same content model. The \`Person\` node's \`sameAs\` links the GitHub and LinkedIn accounts, which is what identifies them as one person.`,
     ]),
     ""
   );
@@ -240,6 +282,10 @@ export function renderLlmsFull(P, origin) {
 
   L.push(`# ${profile.name}`, "");
   L.push(`**${profile.role}** · ${profile.location}`, "");
+  /* Carried here as well as in the short file. This document is what an agent
+     that already decided to go deep has in hand, and "is he looking" does not
+     stop being a screening question just because the summary was read first. */
+  if (flat(profile.availability)) L.push(`**${flat(profile.availability)}**`, "");
   L.push(profile.summary, "");
 
   const mail = flat(profile.email);
