@@ -1,5 +1,9 @@
 /* Renders llms.txt and llms-full.txt from window.PORTFOLIO.
 
+   Section names are the page's own - At a glance, Experience, Work, Skills,
+   Education, Working setup, Languages - so a reader moving between the two
+   sees the same words, rather than the content.js array names leaking out.
+
    Generated rather than written: a hand-maintained llms.txt would be a second
    CV that drifts, and it is the one file nobody proof-reads because machines
    read it. llms-full.txt is written under the name index.md as well, so that
@@ -81,7 +85,7 @@ export function renderLlmsTxt(P, origin) {
   L.push("");
 
   const proofs = proofLines(P, origin);
-  if (proofs.length) L.push("## Proof points", "", bullets(proofs), "");
+  if (proofs.length) L.push("## At a glance", "", bullets(proofs), "");
 
   const exp = (P.experience || []).filter((e) => e && flat(e.role));
   if (exp.length) {
@@ -151,7 +155,7 @@ export function renderLlmsFull(P, origin) {
   if (contact.length) L.push(contact.join(" · "), "");
 
   const proofs = proofLines(P, origin);
-  if (proofs.length) L.push("## Proof points", "", bullets(proofs), "");
+  if (proofs.length) L.push("## At a glance", "", bullets(proofs), "");
 
   const exp = (P.experience || []).filter((e) => e && flat(e.role));
   if (exp.length) {
@@ -175,7 +179,7 @@ export function renderLlmsFull(P, origin) {
 
   const projects = (P.projects || []).filter((p) => p && flat(p.name));
   if (projects.length) {
-    L.push("## Projects", "");
+    L.push("## Work", "");
     for (const p of projects) {
       L.push(`### ${flat(p.name)}`, "");
       if (flat(p.kind)) L.push(`*${flat(p.kind)}*`, "");
