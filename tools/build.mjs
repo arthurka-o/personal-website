@@ -330,20 +330,8 @@ writeFileSync(
 `
 );
 
-/* -------------------------------------------------------- llms.txt and friends
-
-   The same reasoning as the render above, applied to a different consumer. The
-   page is rendered so a crawler without JavaScript gets the content; this is so
-   an agent that has been told "look this person up" gets it as markdown instead
-   of having to strip navigation, chrome and CSS off an HTML page.
-
-   Two files, because the convention is a small index over a large document. And
-   the large document is written under a second name as well — index.md — which is
-   what the <link rel="alternate"> in index.html points at. Same bytes, so the two
-   discovery paths cannot end up describing different careers.
-
-   Generated from window.PORTFOLIO, like the JSON-LD above. A hand-written
-   llms.txt would be a second CV nobody proof-reads. */
+/* llms.txt and its two names, generated from window.PORTFOLIO like the JSON-LD
+   above. index.md is the same bytes as llms-full.txt. */
 
 if (!profile.name) {
   throw new Error(
