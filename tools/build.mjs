@@ -285,6 +285,44 @@ function spliceJsonLd(doc) {
 
 html = spliceJsonLd(html);
 
+/* ------------------------------------------------------------ the head tags
+
+   Eight meta tags repeat the name, the role and the summary. Left hardcoded in
+   index.html they are a second copy of facts content.js owns, and nothing flags
+   a disagreement: "eight years of production engineering" sat in
+   og:description and twitter:description for two commits after the body had
+   been corrected.
+
+   They are resolved here rather than by app.js. The splicer below copies each
+   bound region's innerHTML, and a change to an attribute is not a change to
+   innerHTML — so a runtime bind would set these in a live browser and never
+   reach dist/, which is the copy a crawler and a link unfurler read. The
+   values written are exactly the ones app.js would have produced, from the same
+   source, so there is still only one place to edit. */
+const headMeta = {
+  metaAuthor: profile.name,
+  metaSiteName: profile.name,
+  metaTitle: `${profile.name} — ${profile.role}`,
+  metaDescription: profile.metaDescription,
+  metaSocialTitle: `${profile.name} — ${profile.role}`,
+  metaSocialDescription: profile.summary,
+  metaSocialImageAlt: `${profile.name}, ${profile.role}`,
+};
+
+const escAttr = (v) =>
+  String(v).replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;");
+
+html = html.replace(/<meta\b[^>]*>/gi, (tag) => {
+  const m = /\bdata-bind="([^"]+)"/.exec(tag);
+  if (!m || !(m[1] in headMeta)) return tag;
+  const value = headMeta[m[1]];
+  if (value == null || value === "") return tag;
+  const content = `content="${escAttr(value)}"`;
+  return /\bcontent="[^"]*"/.test(tag)
+    ? tag.replace(/\bcontent="[^"]*"/, content)
+    : tag.replace(/\s*\/>$/, ` ${content} />`);
+});
+
 /* ------------------------------------------------------------------ output
 
    Everything the live site serves is copied into dist/ and deployed from there.

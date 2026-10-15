@@ -11,6 +11,14 @@
 
 const flat = (s) => String(s == null ? "" : s).replace(/\s+/g, " ").trim();
 
+/* The workingSetup row labelled Availability. The page renders it in its
+   Working setup panel, so reading it here keeps one statement of whether he is
+   looking rather than a page copy and a markdown copy that can disagree. */
+const availability = (P) => {
+  const row = (P.workingSetup || []).find((s) => flat(s.label).toLowerCase() === "availability");
+  return flat(row && row.value);
+};
+
 const abs = (origin, path) => {
   const p = flat(path);
   if (!p) return "";
@@ -79,7 +87,7 @@ export function renderLlmsTxt(P, origin) {
 
   L.push(`# ${profile.name} — ${profile.role}`, "");
   L.push(`> **${profile.role}**${profile.location ? ` — ${profile.location}` : ""}`);
-  if (flat(profile.availability)) L.push(">", `> **${flat(profile.availability)}**`);
+  if (availability(P)) L.push(">", `> **${availability(P)}**`);
   if (profile.summary) L.push(">", `> ${flat(profile.summary)}`);
   if (email) L.push(">", `> Contact: [${email}](mailto:${email})`);
   L.push("");
@@ -142,7 +150,7 @@ export function renderLlmsFull(P, origin) {
 
   L.push(`# ${profile.name}`, "");
   L.push(`**${profile.role}** · ${profile.location}`, "");
-  if (flat(profile.availability)) L.push(`**${flat(profile.availability)}**`, "");
+  if (availability(P)) L.push(`**${availability(P)}**`, "");
   L.push(profile.summary, "");
 
   const mail = flat(profile.email);

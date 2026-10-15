@@ -359,6 +359,13 @@
   /* ------------------------------------------------------- headline binds */
   bind("name", profile.name);
   bind("role", profile.role);
+  /* The title is text, so bind() reaches it and the build splices it into
+     dist/. The meta tags are not: they carry their value in content="", and the
+     build copies each bound region's innerHTML, which an attribute change does
+     not touch. A runtime bind would set them in a live browser and never reach
+     dist/ — the copy a crawler and a link unfurler read. build.mjs resolves
+     those instead. */
+  bind("documentTitle", profile.name && profile.role ? profile.name + " — " + profile.role : "");
   bind("summary", profile.summary);
   bind("email", profile.email);
   bind("brandName", profile.name);
@@ -376,9 +383,10 @@
       list.appendChild(el("li", null, line));
     });
   })();
-  if (profile.name && profile.role) {
-    document.title = profile.name + " — " + profile.role;
-  }
+  /* The head. One name, one role, one summary, read once and written to every
+     element that repeats them — see bindAttr for why these were hardcoded. */
+  var headTitle = profile.name && profile.role ? profile.name + " — " + profile.role : "";
+  bind("documentTitle", headTitle);
 
   /* ----------------------------------------------------------- hero links */
   var heroLinks = fill("heroLinks");

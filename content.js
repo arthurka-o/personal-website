@@ -48,11 +48,11 @@ window.PORTFOLIO = {
       "One of six core engineers on an exotic perps DEX, from testnet through TGE. Four years of Solidity, eight years of production engineering.",
     location: "Warsaw, Poland",
     email: "work@arthurka.eu",
-    /* Whether he is looking. Leads the blockquote of the generated files and
-       repeats in workingSetup. Kept out of the role titles below: a line that
-       labels itself "seeking" invites a recruiter to score the gap instead of
-       the work. */
-    availability: "Available now — actively seeking new work.",
+    /* The <meta name="description">, used by crawlers that do not read
+       Open Graph. A different string from summary on purpose: it carries the
+       keywords a search matches on, which reads badly as a link preview. */
+    metaDescription:
+      "Arthur Galiullin — Smart Contract & Backend Engineer. Perps DEX from testnet to TGE, multi-asset lending protocol, hackathon prize winner. Warsaw, Poland.",
   },
 
   /* ------------------------------------------------------------- 2. LINKS */
@@ -999,9 +999,10 @@ window.PORTFOLIO = {
   ],
 
   /* -------------------------------------------------------- 9. WORKING SETUP */
-  /* Working arrangement, stated factually. Availability repeats
-     `profile.availability` here so it reads alongside the timezone and the
-     engagement type. No compensation figure — it changes and goes stale. */
+  /* The single source for whether he is looking. The generated llms files lead
+     their blockquote with the Availability row below rather than carrying a
+     second copy, so the page and the markdown cannot disagree. No
+     compensation figure — it changes and goes stale. */
   workingSetup: [
     { label: "Availability", value: "Available now — actively seeking" },
     { label: "Notice period", value: "Immediate" },
