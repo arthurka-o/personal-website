@@ -562,26 +562,31 @@ window.PORTFOLIO = {
   /* ---------------------------------------------------------- 6. EXPERIENCE */
   experience: [
     {
-      /* Self-directed period, May 2026 to now.
-         The page says "personal projects", not "job seeking". Both are true,
-         but a timeline entry that labels itself unemployed invites a recruiter
-         to score the gap instead of the work — and leading with the building
-         is the stronger read while staying honest.
+      /* Current period, June 2026 to now. He is looking for work, and building
+         personal projects while he looks. That is the entire content of this
+         period, so it says exactly that.
 
-         That does not mean the searching is hidden. It is stated once, plainly,
-         in `profile.availability` and in workingSetup, and both are as visible
-         as this entry is. The distinction is between describing a period of
-         work and announcing a status; the status is not being kept quiet.
+         The previous line here was "Self-directed work on personal projects",
+         which only restated the title above it. An agent reading the Experience
+         list had no way to tell an employed contractor from an idle gap, and
+         had to guess from the company-less title. Stating the searching is not
+         the thing the earlier version of this comment was afraid of: it is
+         already in profile.availability and in workingSetup, and it is the
+         first line of the blockquote an agent reads. Leaving it out of the
+         one place a reader's eye lands made the entry look evasive rather
+         than straightforward.
 
-         TODO: this entry is thin until the project lands. Add what you built
-         to `highlights`, and give me the project name and repo URL so I can
-         wire it up as a link the way Overlay and KUMO are. */
+         TODO: still no projects under it. `highlights` is empty, so this
+         period currently reads as a gap with a sentence in it. Give me the
+         project name and repo URL and it wires up as a link the way Overlay
+         and KUMO are. */
       role: "Independent — Personal Projects",
       company: "",
       location: "Remote",
       start: "June 2026",
       end: "Present",
-      summary: "Self-directed work on personal projects.",
+      summary:
+        "Actively seeking work, with personal projects on the go alongside it.",
       highlights: [],
       stack: [],
       entries: [],
