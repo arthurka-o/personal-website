@@ -3,7 +3,7 @@
    every text run lands within 0.001pt of the original. Full spec in DESIGN.md next to this file.
    The `h1 + p + p + p` rule is the one addition (Oct 2026) — the grey work-authorisation
    line under the contact row. Everything else is the original design. */
-@page { size: A4; margin: 1.6cm 48.52pt; }
+@page { size: A4; margin: 1.5cm 48.52pt; }
 
 body {
   font-family: "Noto Sans", sans-serif;

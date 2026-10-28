@@ -37,7 +37,7 @@ Exotic perps DEX on BSC ($2.9M raised, backed by Polychain Capital, 1kx, ParaFi;
 ### Solidity Developer — KUMO *(March 2022 – January 2024)*
 Lending protocol secured by carbon credits. Selected for **ABN AMRO + Techstars Future of Finance Accelerator**; built and launched a pilot with ABN AMRO. One of 2 Solidity developers.
 
-- Joined KUMO on a **Liquity fork** retargeted at carbon credits and threaded the asset parameter through the protocol to make it multi-asset: every function that touches a position now takes the asset it is working with, plus a factory that creates a stability pool per asset instead of hand-copying deployed contracts.
+- Joined KUMO on a **Liquity fork** retargeted at carbon credits and threaded the asset parameter through the protocol to make it multi-asset: every function touching a position now takes the asset it works with, plus a factory that creates a stability pool per asset instead of hand-copying contracts.
 - Split the core contract's oversized functions to get past the EVM's stack limit, and researched the **Diamond Pattern (EIP-2535)** as the fix, prototyping the split. The protocol shipped on **UUPS** instead — the upgradeable-proxy ecosystem around it was the more mature one at the time.
 - Added a **per-asset mint cap** on stablecoin creation. Writing the headroom calculation surfaced a real bug: when the cap sat below the amount already minted, the unsigned subtraction wrapped around and reported enormous room instead of none.
 - Integrated **Chainlink and Tellor** oracle feeds for multi-source price validation. Upstream contribution to the original protocol, reviewed and merged by their team.

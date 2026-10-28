@@ -64,7 +64,7 @@ Check with `pdfinfo cv.pdf` after any change — the July 2025 PDF had none of t
 
 ## 2. Design constants
 
-Page A4 (595.276 × 841.89 pt), margins **1.6cm** vertical, **48.52pt** horizontal.
+Page A4 (595.276 × 841.89 pt), margins **1.5cm** vertical, **48.52pt** horizontal.
 Content box: x 48.52 → 546.76 pt (498.24 pt wide).
 
 | element | size | weight | colour | notes |
@@ -121,11 +121,16 @@ Margins collapse, so the numbers below are *effective gaps* between rendered box
    of element* (e.g. a second `ul` after a paragraph, or an `h3` that is not preceded by
    `h2`/`hr`) changes which margin-collapsing rule applies and shifts everything below it.
    Re-run the diff (§4) after any structural edit.
-4. **Two pages, and it is tight.** The content box on each page ends at 796.54pt. In the
-   current (Oct 2026) revision page 2 finishes at 780.7pt — **12.6pt of slack, about
-   half a line**. One more sentence anywhere in the lower half of page 2 pushes the links
+4. **Two pages, and it is tight.** The content box on each page ends at 799.37pt. In the
+   current revision page 2 finishes at 791.8pt — **7.5pt of slack**, less than half a
+   line. One more sentence anywhere in the lower half of page 2 pushes the links
    row onto a third page. The cheapest places to reclaim space, in order: the KUMO
    pilot-contract bullet, the StreamBeam description, the Rails paragraph.
+
+   The vertical margin was 1.6cm until the skills list grew past what 1.6cm left
+   room for; it is 1.5cm now, which buys 5.7pt on every page. That is the last
+   cheap lever — the next one is trimming copy, and after that the document has to
+   become three pages on purpose rather than by accident.
 5. **`ul` padding is `1.2em` of the list's own size** (0.98em → 11.76pt indent). Adding
    `font-size` to `li` instead of `ul` compounds the em and shifts the whole list.
 
