@@ -1,0 +1,54 @@
+/* Arthur Galiullin — cover letter stylesheet.
+
+   Reuses the CV design constants (DESIGN.md / cv.css) so a cover letter looks like
+   a page from the same document family: same Noto Sans, same #1a5276 blue, same
+   grey footnote tone, same hairline rules.
+
+   Differences from cv.css, and why:
+   - Body steps up to 10.5pt. A letter is prose meant to be read, not scanned, and the
+     CV's 9.8pt is deliberately tight to fit two pages of dense bullets.
+   - Paragraph spacing opens to 8pt. In the CV, 1.5pt gaps work because bullets carry
+     the structure; here the paragraphs are the structure and need air between them.
+   - Section headings (the bold lead-ins) are the only device. There is no uppercase
+     h2 rule, because a letter has no sections to index.
+*/
+
+@page { size: A4; margin: 1.6cm 48.52pt; }
+
+body {
+  font-family: "Noto Sans", sans-serif;
+  font-size: 10.5pt;
+  line-height: 1.55;
+  color: #1a1a1a;
+  margin: 0;
+  padding: 0;
+}
+
+/* --- Masthead: name, contact, role/date line --- */
+
+h1 { font-size: 2.2em;   font-weight: 700; color: #1a5276; margin: 6pt 0 0.75pt;
+     letter-spacing: 0.3px; }
+h1 + p     { font-size: 0.9em; color: #555555; }
+h1 + p + p { font-size: 0.9em; }
+
+h2 { font-size: 0.95em; font-weight: 600; color: #1a5276; margin: 0 0 3.75pt;
+     letter-spacing: 0.7px; }
+h3 { font-size: 1em;    font-weight: 600; color: #1a5276; margin: 6.75pt 0 1.5pt; }
+
+p  { margin: 0 0 7pt; }
+ul { margin: 0 0 7pt; padding-left: 1.2em; }
+li { margin: 0 0 4pt; }
+
+/* The bold lead-in that opens each section. Stands alone on its line, so it needs
+   room above it and none below before the paragraph it introduces. */
+h2 + p { margin-top: 0; }
+
+/* Keep a section lead-in and the paragraph it introduces on the same page. Without
+   this a short final section ("Closing") orphans its heading at a page foot. */
+h2 { break-after: avoid-page; }
+
+strong { font-weight: 600; }
+em      { color: #555555; }
+a       { color: #1a5276; text-decoration: none; }
+
+hr { border: 0; border-top: 0.5px solid #bbbbbb; margin: 10pt 0; }
