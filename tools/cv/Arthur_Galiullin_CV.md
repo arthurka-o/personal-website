@@ -7,7 +7,7 @@ CET/CEST (UTC+1/+2) · Not relocating · Authorised to work in Poland · Open to
 
 ---
 
-Solidity engineer with 4+ years of hands-on contract development and 8 years in production engineering. Shipped a perps DEX from testnet to TGE as one of six core engineers, took a Liquity fork multi-asset and upgradeable via UUPS, and built the referral, leaderboard and funded-trader risk systems around the protocol. Twice a hackathon prize winner. Strongest at smart contracts and protocol design. Heavy LLM-assisted workflow — shipping fast matters.
+Solidity engineer with 4+ years of hands-on contract development and 8 years in production engineering. Shipped a perps DEX from testnet to TGE as one of six core engineers, took a Liquity fork multi-asset and upgradeable via UUPS, and built the referral, leaderboard and funded-trader risk systems around the protocol. Twice a hackathon prize winner. Strongest at smart contracts and protocol design.
 
 ---
 
