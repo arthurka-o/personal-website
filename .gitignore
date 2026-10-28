@@ -47,3 +47,11 @@ node_modules
 # is no generated file in the repository that could fall out of step with the
 # content.js it was rendered from.
 dist/
+
+# Browser-session artifacts. The MCP browser writes a page snapshot and a
+# console log per navigation into this directory; they are transcripts of a
+# session, not source.
+.playwright-mcp/
+
+# Python bytecode from the CV build tools.
+__pycache__/

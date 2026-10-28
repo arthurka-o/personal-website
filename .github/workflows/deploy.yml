@@ -40,9 +40,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # The Node version comes from .nvmrc, the one file that names it, so the
+      # runtime the build runs on is the one that was chosen on purpose. It
+      # is pinned rather than tracking a major: a floating "22" silently
+      # changes the runtime under the build, and a runtime carries its own
+      # security fixes, which are not something to inherit by accident.
+      # .nvmrc names a release that carries the fix for CVE-2026-111497, the
+      # out-of-bounds write in the Brotli decoder that Node bundles.
       - uses: actions/setup-node@v4
         with:
-          node-version: "22"
+          node-version-file: ".nvmrc"
           cache: npm
 
       - run: npm ci

@@ -16,8 +16,13 @@ import { writeFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { deflateSync } from "node:zlib";
+import { checkNodeVersion } from "./check-node.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
+
+/* Same check as the build: this script calls zlib, so it should not run on a
+   Node carrying the Brotli out-of-bounds write, CVE-2026-111497. */
+checkNodeVersion();
 
 const GROUND = [0x0b, 0x0e, 0x11]; // the favicon's own ground, matches styles.css
 const INK = [0x5f, 0xd3, 0x9a]; // the accent green from styles.css

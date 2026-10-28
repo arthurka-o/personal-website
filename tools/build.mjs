@@ -37,12 +37,19 @@ import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { JSDOM } from "jsdom";
 import { renderLlmsTxt, renderLlmsFull } from "./llms-txt.mjs";
+import { checkNodeVersion } from "./check-node.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const DIST = join(ROOT, "dist");
 
 const ORIGIN = "https://arthurka.eu";
 const SITE_PATH = "/";
+
+/* The build runs a dependency tree and a zlib call, so it should not run on a
+   Node carrying the Brotli out-of-bounds write, CVE-2026-111497. The fix for
+   that is a patched runtime, not a dependency upgrade, so it is checked here
+   rather than in the package list. */
+checkNodeVersion();
 
 function read(relative) {
   return readFileSync(join(ROOT, relative), "utf8");
