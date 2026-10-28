@@ -392,13 +392,22 @@
   var LINK_DEFS = [
     {
       key: "github",
-      label: "github.com/arthurka-o",
+      /* The mark beside it is the GitHub logo, so the text does not have to
+         name the domain as well. "github.com/arthurka-o" said it twice. */
+      label: "arthurka-o",
       icon: "M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48l-.01-1.7c-2.78.6-3.37-1.34-3.37-1.34-.45-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.61.07-.61 1 .07 1.53 1.03 1.53 1.03.9 1.53 2.34 1.09 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.64 0 0 .84-.27 2.75 1.02a9.58 9.58 0 0 1 5 0c1.91-1.29 2.75-1.02 2.75-1.02.55 1.37.2 2.39.1 2.64.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.68-4.57 4.93.36.31.68.92.68 1.85l-.01 2.75c0 .27.18.58.69.48A10 10 0 0 0 12 2z",
     },
     {
       key: "linkedin",
       label: "LinkedIn",
       icon: "M6.94 5a1.94 1.94 0 1 1-3.88 0 1.94 1.94 0 0 1 3.88 0zM3.2 8.4h3.5V21H3.2zM9 8.4h3.35v1.72h.05c.47-.86 1.6-1.77 3.3-1.77 3.53 0 4.18 2.2 4.18 5.06V21h-3.5v-5.7c0-1.36-.03-3.1-1.92-3.1-1.92 0-2.22 1.47-2.22 3v5.8H9z",
+    },
+    {
+      /* The CV is the thing a reader here most often wants, so it sits in the
+         row rather than only at the bottom of the page. */
+      key: "resume",
+      label: "CV",
+      icon: "M14 3v4a1 1 0 0 0 1 1h4M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2z",
     },
     {
       key: "website",
@@ -411,6 +420,9 @@
       if (!filled(links[def.key])) return;
       var a = externalLink(def.label, links[def.key]);
       a.className = "hero-link";
+      /* A bare "CV" is a thin name for a screen reader, so the accessible name
+         says what it is. */
+      if (def.key === "resume") a.setAttribute("aria-label", "CV (PDF)");
       var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
       svg.setAttribute("class", "icon");
       svg.setAttribute("viewBox", "0 0 24 24");

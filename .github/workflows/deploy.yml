@@ -38,7 +38,12 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      # The full history, not just the tip: the staleness check below compares
+      # when the CV markdown and the CV PDF were last committed, and with a
+      # shallow clone both look like they came from the same commit.
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       # The Node version comes from .nvmrc, the one file that names it, so the
       # runtime the build runs on is the one that was chosen on purpose. It
@@ -53,6 +58,20 @@ jobs:
           cache: npm
 
       - run: npm ci
+
+      # cv.pdf is a committed binary, and a runner has no WeasyPrint to rebuild
+      # it with, so the build cannot refresh it here. What it can do is refuse
+      # to publish a PDF that no longer matches its markdown — which is exactly
+      # how a stale one got published in the first place.
+      - name: The CV PDF must not be stale
+        run: |
+          md=$(git log -1 --format=%ct -- tools/cv/Arthur_Galiullin_CV.md)
+          pdf=$(git log -1 --format=%ct -- cv.pdf)
+          if [ "$md" -gt "$pdf" ]; then
+            echo "::error::cv.pdf is older than tools/cv/Arthur_Galiullin_CV.md."
+            echo "Rebuild and commit it: python3 tools/cv/build.py"
+            exit 1
+          fi
 
       - name: Build the site
         run: npm run build

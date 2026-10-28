@@ -31,7 +31,7 @@
      npm start         render dist/ and serve it on :4321
    ========================================================================= */
 
-import { readFileSync, writeFileSync, mkdirSync, rmSync, existsSync, cpSync } from "node:fs";
+import { readFileSync, writeFileSync, mkdirSync, rmSync, existsSync, cpSync, statSync } from "node:fs";
 import { execSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
@@ -44,6 +44,67 @@ const DIST = join(ROOT, "dist");
 
 const ORIGIN = "https://arthurka.eu";
 const SITE_PATH = "/";
+
+/* ------------------------------------------------------------------- the CV
+
+   cv.pdf is a committed binary, and until now nothing rebuilt it: the build
+   only copied it into dist/. So editing the CV markdown left the published PDF
+   saying something the markdown no longer said, and nobody noticed until the
+   PDF was rebuilt by hand — months later, when the staleness had already
+   broken the two-page fit.
+
+   So the PDF is rebuilt here when the markdown has moved ahead of it.
+
+   WeasyPrint's Pango layout decides where the lines break, so the PDF is only
+   rebuilt by the version the design was verified against. Another version
+   would reflow the document, and the two-page fit with it. The version is
+   pinned in tools/cv/DESIGN.md §1.
+
+   The build does not fail when it cannot rebuild: a deployment runner has no
+   WeasyPrint and no pango, and a missing optional toolchain is not a broken
+   site. It says so instead. The workflow's own step is what refuses to
+   publish a stale PDF. */
+
+const CV_MD = join(ROOT, "tools/cv/Arthur_Galiullin_CV.md");
+const CV_PDF = join(ROOT, "cv.pdf");
+const CV_BUILD = join(ROOT, "tools/cv/build.py");
+const CV_WEAZYPRINT = "69.0";
+
+function refreshCvPdf() {
+  if (!existsSync(CV_MD)) return;
+  const stale =
+    !existsSync(CV_PDF) || statSync(CV_MD).mtimeMs > statSync(CV_PDF).mtimeMs;
+  if (!stale) return;
+
+  const say = (why) =>
+    console.log(
+      `           cv.pdf is older than its markdown and was not rebuilt (${why}).\n` +
+        `           Run: python3 tools/cv/build.py`
+    );
+
+  let version;
+  try {
+    version = execSync(
+      'python3 -c "import weasyprint; print(weasyprint.__version__)"',
+      { stdio: ["ignore", "pipe", "ignore"] }
+    )
+      .toString()
+      .trim();
+  } catch {
+    say("no python3 with weasyprint");
+    return;
+  }
+  if (version !== CV_WEAZYPRINT) {
+    say(`weasyprint ${version}, but the layout is verified against ${CV_WEAZYPRINT}`);
+    return;
+  }
+  try {
+    execSync(`python3 "${CV_BUILD}"`, { stdio: ["ignore", "pipe", "pipe"] });
+    console.log(`           cv.pdf  rebuilt from the markdown`);
+  } catch {
+    say("the build failed");
+  }
+}
 
 /* The build runs a dependency tree and a zlib call, so it should not run on a
    Node carrying the Brotli out-of-bounds write, CVE-2026-111497. The fix for
@@ -340,6 +401,9 @@ html = html.replace(/<meta\b[^>]*>/gi, (tag) => {
 writeFileSync(join(DIST, "index.html"), html);
 
 // Static files, copied verbatim.
+// The CV is rebuilt first if it has fallen behind its markdown, so the copy
+// is the fresh one rather than the stale one.
+refreshCvPdf();
 for (const file of ["404.html", "CNAME", ".nojekyll", "styles.css", "content.js", "app.js", "cv.pdf"]) {
   const src = join(ROOT, file);
   if (existsSync(src)) cpSync(src, join(DIST, file));
