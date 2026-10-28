@@ -59,6 +59,7 @@ window.PORTFOLIO = {
   links: {
     github: "https://github.com/arthurka-o",
     linkedin: "https://www.linkedin.com/in/arthur-galiullin/",
+    upwork: "https://www.upwork.com/freelancers/~016038237dd7ada953",
     website: "",
     resume: "cv.pdf", // the site's own CV, served next to index.html
   },
@@ -168,6 +169,7 @@ window.PORTFOLIO = {
     git: { title: "Git", file: "git", hex: "#f05032" },
     github: { title: "GitHub", file: "github", hex: "#181717" },
     linkedin: { title: "LinkedIn", file: "linkedin", hex: "#0a66c2" },
+    upwork: { title: "Upwork", file: "upwork", hex: "#14a800" },
 
     /* Protocol marks — these are his own work, so they belong on the page.
        Each was taken from the organisation's own published asset:

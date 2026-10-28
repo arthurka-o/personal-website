@@ -81,6 +81,7 @@ export function renderLlmsTxt(P, origin) {
   const links = P.links || {};
   const github = flat(links.github);
   const linkedin = flat(links.linkedin);
+  const upwork = flat(links.upwork);
   const resume = abs(origin, links.resume);
   const email = flat(profile.email);
   const L = [];
@@ -136,6 +137,7 @@ export function renderLlmsTxt(P, origin) {
       resume ? `[CV as PDF](${resume}): the same CV as a document to read or forward.` : "",
       github ? `[GitHub](${github}): public repositories.` : "",
       linkedin ? `[LinkedIn](${linkedin}): professional profile.` : "",
+      upwork ? `[Upwork](${upwork}): freelance profile, for contract work.` : "",
     ]),
     ""
   );
@@ -158,6 +160,7 @@ export function renderLlmsFull(P, origin) {
     mail ? `[${mail}](mailto:${mail})` : "",
     flat(links.github) ? `[GitHub](${abs(origin, links.github)})` : "",
     flat(links.linkedin) ? `[LinkedIn](${abs(origin, links.linkedin)})` : "",
+    flat(links.upwork) ? `[Upwork](${abs(origin, links.upwork)})` : "",
     flat(links.resume) ? `[CV (PDF)](${abs(origin, links.resume)})` : "",
   ].filter(Boolean);
   if (contact.length) L.push(contact.join(" · "), "");
