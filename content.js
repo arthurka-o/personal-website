@@ -287,11 +287,11 @@ window.PORTFOLIO = {
       summary:
         "Exotic perps DEX on BSC. One of six core engineers, from testnet through TGE.",
       highlights: [
-        "Shiva Router — contributed to the upgradeable proxy in front of Overlay's immutable core contracts. Rewrote the price oracle in the same codebase: TWAP from PancakeSwap V3 pools, made non-upgradeable and then fully immutable. 30,000+ transactions verified on-chain.",
-        "Funded Trader System — built the program where sponsored users trade with protocol-provided USDT. Safe multisig wallets with Zodiac modules enforce that funds interact only with Overlay contracts, and call only the allowed functions. Off-chain monitoring detects drawdown past threshold, then programmatically closes all positions and pauses the Safe.",
-        "Referral System — integrated an already-audited referral contract and built the verification layer around it: off-chain signed messages checked against on-chain state, with a fallback that rebuilds a missing record from chain. Alias normalisation and migration scripts to move existing records on-chain.",
-        "Leaderboard & Trading Competitions — built the seasonal leaderboard (Node.js, MongoDB) tracking trader performance across configurable criteria, then extended it into a competition platform with filters for market, minimum collateral, and position lifetime.",
-        "Subgraph — most of the indexing is mine: rewrote the config so new factories and networks stopped being hand-edits to YAML, added the router and PowerCard entities, and built the Matchstick test suite over the handlers.",
+        "Contributed to the Shiva Router, the upgradeable proxy in front of Overlay's immutable core contracts. Rewrote the price oracle in the same codebase: TWAP from PancakeSwap V3 pools, made non-upgradeable and then fully immutable. 30,000+ transactions verified on-chain.",
+        "Built the funded-trader program, where sponsored users trade with protocol-provided USDT. Safe multisig wallets with Zodiac modules enforce that funds interact only with Overlay contracts, and call only the allowed functions. Off-chain monitoring detects drawdown past threshold, then programmatically closes all positions and pauses the Safe.",
+        "Integrated an already-audited referral contract and built the verification layer around it: off-chain signed messages checked against on-chain state, with a fallback that rebuilds a missing record from chain. Alias normalisation and migration scripts to move existing records on-chain.",
+        "Built the seasonal leaderboard (Node.js, MongoDB) tracking trader performance across configurable criteria, then extended it into a competition platform with filters for market, minimum collateral, and position lifetime.",
+        "Wrote most of the protocol's indexing: rewrote the config so new factories and networks stopped being hand-edits to YAML, added the router and PowerCard entities, and built the Matchstick test suite over the handlers.",
       ],
       stack: ["Solidity", "Foundry", "Safe", "Zodiac", "TypeScript", "Node.js", "MongoDB", "Ethers.js", "The Graph"],
       entries: [],
@@ -307,10 +307,11 @@ window.PORTFOLIO = {
       summary:
         "Lending protocol secured by carbon credits. Selected for the ABN AMRO + Techstars Future of Finance Accelerator. One of two Solidity developers.",
       highlights: [
-        "Evolved the protocol from a Liquity fork to support multiple collateral assets with governance-controlled risk parameters.",
-        "Redesigned tokenomics to remove the protocol token while preserving system incentives — simpler economics without breaking existing functionality.",
+        "Joined KUMO on a Liquity fork retargeted at carbon removal, and threaded the asset parameter through the protocol to make it multi-asset: every function that touches a position now takes the asset it is working with, plus a factory that creates a savings pool per asset rather than hand-copying deployed contracts.",
+        "Helped redesign the tokenomics to remove the protocol token while preserving the system's incentives — simpler economics without breaking existing functionality.",
         "Added Tellor alongside Chainlink as a second price source, so a single oracle outage or manipulation cannot sink the protocol. Upstream contribution, reviewed and merged by the original team.",
-        "Moved the protocol to the diamond pattern because the core contract had outgrown the EVM's stack limit and the compiler was failing.",
+        "The core contract's functions had outgrown the EVM's stack limit, so the upgradeability question had to be settled. Researched the Diamond pattern (EIP-2535) and prototyped the split; the protocol shipped on UUPS instead, because the upgradeable-proxy ecosystem around it was the more mature one at the time.",
+        "Added a per-asset cap on stablecoin creation, and fixed a bug where the \"how much room is left\" calculation wrapped around to report enormous headroom instead of none.",
         "Wrote the test suites across the migration, plus custom Hardhat tasks for deployment and monitoring.",
       ],
       stack: ["Solidity", "Hardhat", "Chainlink", "OpenZeppelin", "Diamond Pattern", "UUPS", "Ethers.js"],
@@ -376,11 +377,10 @@ window.PORTFOLIO = {
       kind: "Protocol · Solidity 0.8.11",
       logo: "kumo",
       description:
-        "KUMO is a fork of the Liquity lending protocol, retargeted at carbon removal. A certified carbon credit is locked as collateral and stablecoins are drawn against it immediately, instead of waiting for the credit to be sold. I took over this fork and made it production-ready — the diamond upgrade, multi-asset support and the oracle work below were mine.",
+        "KUMO's protocol was a fork of the Liquity lending protocol, retargeted at carbon removal, and the work below was done in my own fork of KUMO's. A certified carbon credit is locked as collateral and stablecoins are drawn against it immediately, instead of waiting for the credit to be sold. My work on it was the multi-asset rework, the upgradeability work and the oracle work below.",
       highlights: [
-        "Converted the protocol to the diamond pattern because its functions had outgrown the EVM's stack limit and the compiler was failing. Callers reach the same address they always did, and new facets can be added later without touching the ones already holding user funds.",
-        "Split settlement onto its own contract, which let batch liquidation close many underwater positions in a single transaction instead of paying gas hundreds of times, and added recovery mode for when the collateral backing everything drops below what the debts are worth.",
-        "Made it multi-asset: threaded an asset parameter through 271 call sites across seven contracts that previously had none, plus a factory that creates a savings pool per asset rather than hand-copying deployed contracts.",
+        "Made it multi-asset: every function that touches a position now takes the asset it is working with, plus a factory that creates a savings pool per asset rather than hand-copying deployed contracts.",
+        "Split the core contract's functions after they outgrew the EVM's stack limit. The Diamond pattern (EIP-2535) was researched and prototyped for this, but the protocol shipped on UUPS instead — the upgradeable-proxy ecosystem around it was the more mature one at the time.",
         "Added a per-asset cap on stablecoin creation, and fixed a bug where the \"how much room is left\" calculation wrapped around to report enormous headroom instead of none.",
         "Thirty-plus commits repairing the existing test suite across the migration. The structural change is the interesting commit; the green suite afterwards is the work.",
         "Upstream contributor to the original protocol: added Tellor as a second price source alongside Chainlink so a single oracle outage or manipulation cannot sink the protocol.",
@@ -391,21 +391,20 @@ window.PORTFOLIO = {
         "Foundry",
         "Chainlink",
         "OpenZeppelin",
+        "Diamond Pattern",
+        "UUPS",
       ],
       links: [
-        { label: "Source", url: "https://github.com/arthurka-o/kumo-protocol" },
-        {
-          label: "Upstream contribution",
-          url: "https://github.com/wollooo/kumo-protocol",
-        },
+        { label: "Source (my fork)", url: "https://github.com/arthurka-o/kumo-protocol" },
       ],
+      note: "Original repo is private",
     },
     {
       name: "ABN AMRO pilot",
       kind: "Pilot contract · BUSL-1.1",
       logo: "kumo",
       description:
-        "A contract for lending against carbon credits, built for a pilot with ABN AMRO, a Dutch bank. I wrote it, and kept it deliberately plain — explicit allowlists and a strict loan lifecycle, written so a bank's risk team could review and sign it off without reverse-engineering the logic.",
+        "A contract for lending against carbon credits, built for a pilot with ABN AMRO, a Dutch bank. Two of us wrote it — I took most of it — and kept it deliberately plain: explicit allowlists and a strict loan lifecycle, written so a bank's risk team could review and sign it off without reverse-engineering the logic.",
       privateRepo: true,
       note: "Built for the ABN AMRO + Techstars accelerator.",
       highlights: [

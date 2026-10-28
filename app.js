@@ -536,26 +536,24 @@
       /* Which employer each role speaks for. The org values on entries are
          kumo | overlay, matched here rather than inferred from a URL, because
          the page now nests entries under roles. */
-      /* Highlights that already name themselves before an em dash become a
-         term and a description; the rest render as description alone. */
+      /* One point is one sentence, and it names its own subject.
+
+         A highlight that came in as "Term — description" used to be split on
+         the em dash and the term set bold above the sentence it introduced.
+         That gave every point a heading, and it gave the reader a second
+         thing to read before the point itself. It also split on any em dash
+         in the sentence, not only the one at the front, so a point that used
+         an em dash as punctuation lost the second half of its meaning to a
+         stray bold line.
+
+         The term is gone. Each point is written to stand on its own, and the
+         marker in the margin is what marks the item. */
       function buildPoints(list) {
         var wrap = el("div", "role-points");
         list.forEach(function (h) {
           var text = String(h == null ? "" : h);
-          var cut = text.indexOf(" — ");
-          /* One point is one group. A term and its own sentence have to travel
-             in the same box, so the stylesheet can hold them close (4px) while
-             holding separate points apart (16px). Appended flat, every line was
-             a sibling and every line got the same 16px — so each bold term sat
-             as far from the sentence it introduced as from the point above it,
-             and the list read as one undifferentiated run of text. */
           var point = el("div", "role-point");
-          if (cut > 0) {
-            point.appendChild(el("p", "role-point-term", text.slice(0, cut)));
-            point.appendChild(el("p", "role-point-text", text.slice(cut + 3)));
-          } else {
-            point.appendChild(el("p", "role-point-text", text));
-          }
+          point.appendChild(el("p", "role-point-text", text));
           wrap.appendChild(point);
         });
         return wrap;

@@ -1092,10 +1092,14 @@ html.js .brand-name.is-brand-shown {
 }
 
 /* --- the opened half of a role --------------------------------------------
-   The same disclosure the project cards use, so the two read as one page. A
-   highlight that already names itself before an em dash keeps that name as a
-   heading; one that is a plain sentence renders as description alone. Either
-   way there is no bullet glyph — the term is what marks the item. */
+   The same disclosure the project cards use, so the two read as one page.
+   Each highlight is one sentence that names its own subject, so there is no
+   bold term carrying the item — the en dash in the margin marks it, the same
+   glyph and the same accent the project cards use.
+
+   The points are set at full contrast. The bold term used to be what gave
+   this block its weight against the muted page; without it, muted grey would
+   have left the substance of the role reading as an aside. */
 
 .role-points {
   display: grid;
@@ -1103,22 +1107,21 @@ html.js .brand-name.is-brand-shown {
 }
 
 .role-point {
-  display: grid;
-  gap: var(--sp-1);
+  position: relative;
+  padding-left: var(--sp-4);
 }
 
-.role-point-term {
-  margin: 0;
-  font-size: var(--fs-small);
-  font-weight: 600;
-  line-height: 1.35;
-  color: var(--text);
+.role-point::before {
+  content: "–";
+  position: absolute;
+  left: 0;
+  color: var(--accent-muted);
 }
 
 .role-point-text {
   margin: 0;
   font-size: var(--fs-small);
-  color: var(--text-muted);
+  color: var(--text);
 }
 
 /* This disclosure is the only control a role exposes, so on a touch screen it
