@@ -284,7 +284,7 @@ instead of waiting for the credit to sell.
 
 ## 10. Loans.sol — ABN AMRO / Techstars pilot · `kumo-earth/lending` · **PRIVATE**
 
-> **kind:** Pilot contract · 136 commits · Solidity 0.8.19 · BUSL-1.1
+> **kind:** Pilot contract · 85 of 532 commits · Solidity 0.8.19 · BUSL-1.1
 > **note to attach:** *Built for the ABN AMRO + Techstars Future of Finance
 > accelerator. This repository is private — no public link.*
 

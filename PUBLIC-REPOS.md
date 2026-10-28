@@ -107,7 +107,7 @@ Overlay-market, all 404:
 
 KUMO:
 - `kumo-earth/lending` — **org has 0 public repos.** The Techstars/ABN AMRO
-  prototype, 136 commits, entirely unlinkable.
+  prototype, 85 of Arthur's commits in it, entirely unlinkable.
 
 **168 Overlay commits + the entire KUMO prototype are invisible from outside.**
 
