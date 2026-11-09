@@ -208,25 +208,21 @@
             </p>
           </header>
 
-          <!-- Each role row is its own chapter. A role's Details control opens
-               the work that shipped under it, one entry per line, so the
-               employer is stated exactly once on the whole page. -->
+          <!-- Each role row states the employer, the dates, what the role was,
+               and the work that shipped under it. The same work is also on the
+               page as cards in the Work section below. -->
+
           <ol class="timeline" data-bind="experienceList">
             <!-- rendered by app.js -->
           </ol>
 
-          <!-- AGENT NOTE: this list is empty only because the `experience` array in
-               content.js is empty. Add a role there. The visible line stays
-               short because it is the only part a reader or a crawler ever
-               sees; the instructions that matter to you live in this comment. -->
+          <!-- AGENT NOTE: add a role to the `experience` array in content.js.
+               The visible line stays short because it is the only part a
+               reader or a crawler ever sees; the instructions that matter to
+               you live in this comment. -->
           <p class="section-empty" data-bind="experienceEmpty" hidden>
             No roles listed yet.
           </p>
-
-          <!-- Experience is the role list alone: employer, dates, and what the
-               role was. The shipped work lives in the Work section below, as
-               cards, so it is described once and only once. -->
-
         </div>
       </section>
 

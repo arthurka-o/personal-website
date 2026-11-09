@@ -539,22 +539,18 @@
   }
 
   /* ------------------------------------------------------------ experience
-     Each role is a scan target: who, where, when, one line of summary, and a
-     link down to that employer's chapter. The heavy context lives in the
-     chapter block further down the page, so four roles fit one screen and the
-     detail is still one click away.
+     Each role is a scan target: who, where, when, one line of summary, and
+     the work that shipped under it, rendered inline.
 
-     A role with no shipped work has no chapter to link to, so it keeps its
-     own Details control inline. Either way a role's detail lives in exactly
-     one place — never in both. */
+     The work itself is also on the page as cards in the Work section, so the
+     same project is described in both places. That is deliberate: the role
+     says what the job was, the card says what was built, and a reader who
+     wants the second one should not have to open the first one to find it. */
   var expList = fill("experienceList");
   if (expList) {
     if (experience.length === 0) {
       show($('[data-bind="experienceEmpty"]'));
     } else {
-      /* Which employer each role speaks for. The org values on entries are
-         kumo | overlay, matched here rather than inferred from a URL, because
-         the page now nests entries under roles. */
       /* One point is one sentence, and it names its own subject.
 
          A highlight that came in as "Term — description" used to be split on

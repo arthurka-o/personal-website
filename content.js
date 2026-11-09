@@ -2,12 +2,17 @@
    PORTFOLIO CONTENT MODEL — the only file you need to edit to make this yours.
    ----------------------------------------------------------------------------
    SOURCE OF TRUTH
-   Every career fact below was taken from two files in your career-ops
-   repository:
-     • cv.md                  — work history, projects, skills, education
-     • config/profile.yml     — identity, contact, location
-   Nothing here is invented. If a fact is not in those files, it is not on the
-   page. When you update those files, update this file to match.
+   Two files in this repository hold the career facts, and they are the only
+   ones:
+     • this file ......................... the page, and everything generated
+                                         from it: llms.txt, llms-full.txt,
+                                         index.md, the JSON-LD, the PDF
+     • tools/cv/Arthur_Galiullin_CV.md ... the CV markdown, which the build
+                                         renders into cv.pdf
+   Nothing here is invented. When one of those two changes, the other has to
+   change with it — the page and the PDF describe the same career, and a
+   reader who gets a different story from each has been told one of them is
+   wrong.
 
    THE HERO IS DELIBERATELY SHORT
    The long positioning paragraph from the CV used to sit under your name and
@@ -34,8 +39,8 @@
      does not state them.
    - A skill written as a plain string renders as a text chip. A skill written
      as { name, logo } renders with its official mark beside it.
-   - links.resume ...... drop your PDF next to index.html as "resume.pdf" and
-     set this to "resume.pdf". Empty string keeps the row hidden.
+   - links.resume ...... the CV PDF, served next to index.html as "cv.pdf".
+     Empty string keeps the row hidden.
    ========================================================================= */
 
 window.PORTFOLIO = {
@@ -264,9 +269,9 @@ window.PORTFOLIO = {
       /* Current period, June 2026 to now: looking for work, and building
          personal projects while he looks.
 
-         TODO: `highlights` is empty, so this period reads as a sentence with
-         nothing under it. Project names and repo URLs wire it up as a link the
-         way Overlay and KUMO are. */
+         No highlights, and none are needed: this period has no shipped work
+         under it, and the projects being built belong in the Work section
+         above as cards, the same as everything else. */
       role: "Independent — Personal Projects",
       company: "",
       location: "Remote",
