@@ -66,15 +66,15 @@ On-chain insurance with automated claims and verification. Solidity, Foundry.
 
 ## Skills
 
-**Protocol:** Solidity, Foundry, Hardhat, EVM, UUPS, Diamond Pattern, OpenZeppelin, Safe, Zodiac, Merkle Trees, TypeChain
+**Protocol:** Solidity, Foundry, Hardhat, EVM, UUPS, Diamond Pattern, OpenZeppelin, Chainlink, Tellor, Safe, Zodiac, Merkle Trees, LayerZero, Chimera, TypeChain
 
-**Oracles & Risk:** Chainlink, Tellor, TWAP, invariant testing, Chimera, liquidation, collateral risk parameters
+**Backend:** TypeScript, Node.js, Ethers.js, Viem, NestJS, Express, Python, GraphQL, PostgreSQL, MongoDB, REST APIs, The Graph, Ruby on Rails, Pundit, Sidekiq, Kamal
 
-**Backend:** TypeScript, Node.js, Ethers.js, Viem, Ruby on Rails, PostgreSQL, MongoDB, GraphQL, The Graph, React, Next.js
+**Frontend:** React, Next.js, Tailwind CSS, wagmi
 
-**Testing:** Foundry (unit, invariant, fork), Chai, Mocha, Jest, Vitest, Playwright, Supertest, RSpec
+**Testing:** Jest, Vitest, Chai, Mocha, RSpec, Capybara
 
-**Infra:** AWS (Lambda, ECS, Terraform), Docker, GitHub Actions, CI/CD, Sidekiq, Git
+**Infrastructure:** Amazon Web Services, Terraform, Docker, GitHub Actions, CI/CD, Git
 
 ---
 

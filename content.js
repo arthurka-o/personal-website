@@ -80,12 +80,11 @@ window.PORTFOLIO = {
        colour for a ground it has contrast against, -inv (white) for the dark
        ground, and -mono (black) for a light ground the brand colour fails on. */
     /* Iconify. Unlike the Simple Icons marks above, these are multi-colour -
-       Hardhat has four paints and Playwright six - so -inv and -mono are
-       silhouettes (every paint collapsed to one ink) rather than recoloured
-       brand marks. That is what the contrast switch falls back to when the
-       brand colour fails on a ground. */
+       Hardhat has four paints - so -inv and -mono are silhouettes (every paint
+       collapsed to one ink) rather than recoloured brand marks. That is what
+       the contrast switch falls back to when the brand colour fails on a
+       ground. */
     hardhat: { title: "Hardhat", file: "hardhat", hex: "#FFEA00" },
-    playwright: { title: "Playwright", file: "playwright", hex: "#2EAD33" },
     rspec: { title: "RSpec", file: "rspec", hex: "#FE405F" },
     vitest: { title: "Vitest", file: "vitest", hex: "#729B1B" },
 
@@ -157,7 +156,6 @@ window.PORTFOLIO = {
     ethereum: { title: "Ethereum", file: "ethereum", hex: "#3c3c3d" },
     bnbchain: { title: "BNB Chain", file: "bnbchain", hex: "#f0b90b" },
     chainlink: { title: "Chainlink", file: "chainlink", hex: "#375bd2" },
-    polygon: { title: "Polygon", file: "polygon", hex: "#7B3FE4" },
     openzeppelin: { title: "OpenZeppelin", file: "openzeppelin", hex: "#4e5ee4" },
     typescript: { title: "TypeScript", file: "typescript", hex: "#3178c6" },
     react: { title: "React", file: "react", hex: "#61dafb" },
@@ -300,7 +298,7 @@ window.PORTFOLIO = {
         "Built the seasonal leaderboard (Node.js, MongoDB) tracking trader performance across configurable criteria, then extended it into a competition platform with filters for market, minimum collateral, and position lifetime.",
         "Wrote most of the protocol's indexing: rewrote the config so new factories and networks stopped being hand-edits to YAML, added the router and PowerCard entities, and built the Matchstick test suite over the handlers.",
       ],
-      stack: ["Solidity", "Foundry", "Safe", "Zodiac", "TypeScript", "Node.js", "MongoDB", "Ethers.js", "The Graph"],
+      stack: ["Solidity", "Foundry", "Safe", "Zodiac", "TypeScript", "Node.js", "NestJS", "MongoDB", "Ethers.js", "Viem", "The Graph", "Jest", "Vitest"],
       entries: [],
     },
     {
@@ -395,7 +393,6 @@ window.PORTFOLIO = {
       stack: [
         "Solidity",
         "Hardhat",
-        "Foundry",
         "Chainlink",
         "OpenZeppelin",
         "Diamond Pattern",
@@ -455,7 +452,7 @@ window.PORTFOLIO = {
         "Migrated the entity IDs to Bytes across the schema, which changed how every entity is keyed.",
         "Matchstick test suite so a handler change is proven by a test instead of by a careful read.",
       ],
-      stack: ["TypeScript", "The Graph", "Ethereum"],
+      stack: ["TypeScript", "The Graph", "Ethereum", "Jest"],
       links: [
         { label: "Source", url: "https://github.com/overlay-market/v1-subgraph" },
       ],
@@ -502,7 +499,7 @@ window.PORTFOLIO = {
         "Minimum trading volume enforced before a referral counts, and aliases are normalised so one person can't claim under several identities.",
         "Migration scripts to move existing affiliate records from MongoDB on-chain.",
       ],
-      stack: ["Solidity", "Node.js", "OpenZeppelin"],
+      stack: ["Solidity", "NestJS", "Node.js", "TypeScript", "Merkle Trees", "Viem", "TypeChain", "Jest", "OpenZeppelin"],
       links: [
         { label: "Source", url: "https://github.com/overlay-market/Referral" },
       ],
@@ -518,8 +515,9 @@ window.PORTFOLIO = {
         "USDT's 6 decimals handled against the 18 most tokens assume — getting this wrong returns values off by 1e12.",
         "Versioned factories with deprecation, so a caller is never silently moved onto a contract being retired.",
         "Graceful handling of state the SDK doesn't expect instead of throwing.",
+        "The package's CI workflow and test suite: unit and integration runs, with the integration tests pulling fixtures from the subgraph.",
       ],
-      stack: ["TypeScript"],
+      stack: ["TypeScript", "Viem", "Vitest", "GitHub Actions"],
       links: [
         {
           label: "Source",
@@ -538,7 +536,7 @@ window.PORTFOLIO = {
         "Built the prediction-market screens: market groups, routing, data model and multi-line probability charts.",
         "Referral guardrails: actions disabled for funded and avatar accounts, thresholds and rates correct after a successful claim.",
       ],
-      stack: ["TypeScript", "React", "Next.js"],
+      stack: ["TypeScript", "React", "Next.js", "wagmi", "Viem", "Jest"],
       links: [
         {
           label: "Source",
@@ -671,8 +669,7 @@ window.PORTFOLIO = {
         { name: "Jest", logo: "jest" },
         { name: "Vitest", logo: "vitest" },
         { name: "Chai", logo: "chai" },
-        { name: "Playwright", logo: "playwright" },
-        "Supertest",
+        "Mocha",
         { name: "RSpec", logo: "rspec" },
         "Capybara",
       ],
@@ -682,6 +679,7 @@ window.PORTFOLIO = {
       label: "Infrastructure",
       items: [
         { name: "Amazon Web Services", logo: "amazonwebservices" },
+        "Terraform",
         { name: "Docker", logo: "docker" },
         { name: "GitHub Actions", logo: "github" },
         "CI/CD",
