@@ -1320,21 +1320,22 @@ html.js .brand-name.is-brand-shown {
   transform: rotateY(180deg);
 }
 
-/* Hovering lifts the card toward the reader by a hair, which is what makes it
-   feel like an object with two sides instead of a region of the page. The
-   depth is small enough that 1600px barely scales it, so a lifted card cannot
-   overlap its neighbour. The flipped selector is second and more specific, and
-   translates before rotating — after a 180° turn the local Z axis points away
-   from the reader, so the other order would push the card backwards. */
-@media (hover: hover) {
-  .card:hover .card-inner {
-    transform: translateZ(14px);
-  }
+/* No hover lift on the card.
 
-  .card.is-flipped:hover .card-inner {
-    transform: translateZ(14px) rotateY(180deg);
-  }
-}
+   There used to be one: `translateZ(14px)` under the 1600px perspective, which
+   scaled the card by 1600 / (1600 - 14) = 1.0088 and so magnified it by just
+   under a percent. The reasoning behind it was that "1600px barely scales it",
+   and at that magnitude the overlap with a neighbouring card was indeed
+   negligible — but the browser does not scale a 3D-transformed layer as a
+   continuous image. It rasterizes the card at one size and then rescales that
+   bitmap, so every glyph on the card went through a resample on hover and the
+   text came out visibly soft. A sub-percent magnification is exactly the case
+   that looks wrong and is impossible to fix, because there is no sharper
+   rendering to fall back to.
+
+   The card still reads as an object with two sides: the turn itself is the
+   depth cue, and `.card:hover` keeps the accent border so the card is still
+   obviously interactive. */
 
 /* A flex column, not a grid, because the foot is pinned with an auto margin and
    that needs a flex line to absorb it. As a grid with `align-content: start`
@@ -1927,13 +1928,5 @@ html.js .brand-name.is-brand-shown {
      performs. Reduced-motion users get the change, not the choreography. */
   .card-inner {
     transition: none;
-  }
-
-  /* The hover lift is the one movement here the reader did not ask for, so it
-     is dropped. Both states are pinned back explicitly — leaving them to fall
-     back on `.card-inner` would snap a flipped card flat under the cursor. */
-  .card:hover:not(.is-flipped) .card-inner,
-  .card.is-flipped:hover .card-inner {
-    transform: rotateY(0deg);
   }
 }
