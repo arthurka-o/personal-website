@@ -49,6 +49,12 @@ window.PORTFOLIO = {
     name: "Arthur Galiullin",
     initials: "AG",
     role: "Smart Contract & Backend Engineer",
+    /* "Eight years" is elapsed time, not the sum of the roles below.
+       Summing them gives 109 months, but the Flatstack and KUMO periods
+       overlap by 8 months — March to November 2022 — because the Rails role
+       was still running when the Solidity work started. Counted once, that is
+       101 months, or 8.4 years. The four years of Solidity are KUMO (22
+       months) and Overlay (24 months), which do not overlap each other. */
     summary:
       "One of six core engineers on an exotic perps DEX, from testnet through TGE. Four years of Solidity, eight years of production engineering.",
     location: "Warsaw, Poland",
@@ -310,16 +316,16 @@ window.PORTFOLIO = {
       start: "March 2022",
       end: "January 2024",
       summary:
-        "Lending protocol secured by carbon credits. Selected for the ABN AMRO + Techstars Future of Finance Accelerator. One of two Solidity developers.",
+        "Lending protocol secured by carbon credits. Selected for the ABN AMRO + Techstars Future of Finance Accelerator. One of two Solidity developers. Started while still on the Rails role below.",
       highlights: [
-        "Joined KUMO on a Liquity fork retargeted at carbon removal, and threaded the asset parameter through the protocol to make it multi-asset: every function that touches a position now takes the asset it is working with, plus a factory that creates a savings pool per asset rather than hand-copying deployed contracts.",
+        "Joined KUMO on a Liquity fork retargeted at carbon removal, and threaded the asset parameter through the protocol to make it multi-asset: every function that touches a position now takes the asset it is working with, plus a factory that creates a stability pool per asset rather than hand-copying deployed contracts.",
         "Helped redesign the tokenomics to remove the protocol token while preserving the system's incentives — simpler economics without breaking existing functionality.",
         "Added Tellor alongside Chainlink as a second price source, so a single oracle outage or manipulation cannot sink the protocol. Upstream contribution, reviewed and merged by the original team.",
         "The core contract's functions had outgrown the EVM's stack limit, so the upgradeability question had to be settled. Researched the Diamond pattern (EIP-2535) and prototyped the split; the protocol shipped on UUPS instead, because the upgradeable-proxy ecosystem around it was the more mature one at the time.",
         "Added a per-asset cap on stablecoin creation, and fixed a bug where the \"how much room is left\" calculation wrapped around to report enormous headroom instead of none.",
-        "Wrote the test suites across the migration, plus custom Hardhat tasks for deployment and monitoring.",
+        "Wrote the test suites across the migration, with Chai and Mocha on Hardhat, plus custom Hardhat tasks for deployment and monitoring.",
       ],
-      stack: ["Solidity", "Hardhat", "Chainlink", "OpenZeppelin", "Diamond Pattern", "UUPS", "Ethers.js"],
+      stack: ["Solidity", "Hardhat", "Chainlink", "OpenZeppelin", "Diamond Pattern", "UUPS", "Ethers.js", "Chai", "Mocha"],
       entries: [],
     },
     {
@@ -328,15 +334,16 @@ window.PORTFOLIO = {
       location: "Remote",
       start: "2016",
       end: "2022",
-      summary: "Six years of backend and full-stack engineering across three companies and products.",
+      summary:
+        "Six years of backend and full-stack engineering across three companies and products, overlapping the first year of the web3 work below.",
       highlights: [],
       stack: ["Ruby on Rails", "PostgreSQL", "React", "TypeScript", "RSpec", "AWS", "Sidekiq"],
       entries: [
         {
           title: "Flatstack / Galvanize",
-          period: "2020 – 2022",
+          period: "2020 – November 2022",
           detail:
-            "Enterprise GRC platform, used by Canadian Government. Built the public API, async processing pipelines and performance optimisation (N+1 fixes). Production monitoring with DataDog and Airbrake. AWS Lambda, Terraform, ECS.",
+            "Enterprise GRC platform, used by Canadian Government. Built the public API, async processing pipelines and performance optimisation (N+1 fixes). Production monitoring with DataDog and Airbrake. AWS Lambda, Terraform, ECS, and the CI/CD pipeline that shipped it. Ran alongside KUMO from March 2022.",
         },
         {
           title: "meyvn",
@@ -384,7 +391,7 @@ window.PORTFOLIO = {
       description:
         "KUMO's protocol was a fork of the Liquity lending protocol, retargeted at carbon removal, and the work below was done in my own fork of KUMO's. A certified carbon credit is locked as collateral and stablecoins are drawn against it immediately, instead of waiting for the credit to be sold. My work on it was the multi-asset rework, the upgradeability work and the oracle work below.",
       highlights: [
-        "Made it multi-asset: every function that touches a position now takes the asset it is working with, plus a factory that creates a savings pool per asset rather than hand-copying deployed contracts.",
+        "Made it multi-asset: every function that touches a position now takes the asset it is working with, plus a factory that creates a stability pool per asset rather than hand-copying deployed contracts.",
         "Split the core contract's functions after they outgrew the EVM's stack limit. The Diamond pattern (EIP-2535) was researched and prototyped for this, but the protocol shipped on UUPS instead — the upgradeable-proxy ecosystem around it was the more mature one at the time.",
         "Added a per-asset cap on stablecoin creation, and fixed a bug where the \"how much room is left\" calculation wrapped around to report enormous headroom instead of none.",
         "Thirty-plus commits repairing the existing test suite across the migration. The structural change is the interesting commit; the green suite afterwards is the work.",

@@ -48,7 +48,7 @@ Lending protocol secured by carbon credits. Selected for **ABN AMRO + Techstars 
 ---
 
 ### Ruby on Rails Developer *(2016 – 2022)*
-**Flatstack / Galvanize** (2020–2022) — Enterprise GRC platform used by the Canadian Government: public API, async pipelines, N+1 performance work, DataDog and Airbrake monitoring. **meyvn** (2018–2020) — HR platform and news scoring engine; led the migration from a monolithic Rails app to a React SPA with a Rails API backend. **Technokratos** (2016–2017) — Virtual goods marketplace and photo albums: REST APIs, PDF generation, OpenCV face detection.
+**Flatstack / Galvanize** (2020–November 2022) — Enterprise GRC platform used by the Canadian Government: public API, async pipelines, N+1 performance work, DataDog and Airbrake monitoring. Ran alongside KUMO from March 2022. **meyvn** (2018–2020) — HR platform and news scoring engine; led the migration from a monolithic Rails app to a React SPA with a Rails API backend. **Technokratos** (2016–2017) — Virtual goods marketplace and photo albums: REST APIs, PDF generation, OpenCV face detection.
 
 ---
 
