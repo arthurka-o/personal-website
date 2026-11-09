@@ -49,12 +49,11 @@ window.PORTFOLIO = {
     name: "Arthur Galiullin",
     initials: "AG",
     role: "Smart Contract & Backend Engineer",
-    /* "Eight years" is elapsed time, not the sum of the roles below.
-       Summing them gives 109 months, but the Flatstack and KUMO periods
-       overlap by 8 months — March to November 2022 — because the Rails role
-       was still running when the Solidity work started. Counted once, that is
-       101 months, or 8.4 years. The four years of Solidity are KUMO (22
-       months) and Overlay (24 months), which do not overlap each other. */
+    /* "Eight years" is elapsed time, not the sum of the roles below: the
+       Flatstack and KUMO periods overlap by 8 months, March to November 2022,
+       because the Rails role was still running when the Solidity work began.
+       Counted once, 101 months. The four years of Solidity are KUMO and
+       Overlay, which do not overlap each other. */
     summary:
       "One of six core engineers on an exotic perps DEX, from testnet through TGE. Four years of Solidity, eight years of production engineering.",
     location: "Warsaw, Poland",

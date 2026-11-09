@@ -404,7 +404,7 @@ writeFileSync(join(DIST, "index.html"), html);
 // The CV is rebuilt first if it has fallen behind its markdown, so the copy
 // is the fresh one rather than the stale one.
 refreshCvPdf();
-for (const file of ["404.html", "CNAME", ".nojekyll", "styles.css", "content.js", "app.js", "cv.pdf"]) {
+for (const file of ["404.html", "CNAME", "styles.css", "content.js", "app.js", "cv.pdf"]) {
   const src = join(ROOT, file);
   if (existsSync(src)) cpSync(src, join(DIST, file));
 }

@@ -551,18 +551,12 @@
     if (experience.length === 0) {
       show($('[data-bind="experienceEmpty"]'));
     } else {
-      /* One point is one sentence, and it names its own subject.
-
-         A highlight that came in as "Term — description" used to be split on
-         the em dash and the term set bold above the sentence it introduced.
-         That gave every point a heading, and it gave the reader a second
-         thing to read before the point itself. It also split on any em dash
-         in the sentence, not only the one at the front, so a point that used
-         an em dash as punctuation lost the second half of its meaning to a
-         stray bold line.
-
-         The term is gone. Each point is written to stand on its own, and the
-         marker in the margin is what marks the item. */
+      /* One point is one sentence, and it names its own subject. The term is
+         gone: splitting on the em dash gave every point a heading, and it
+         split on any em dash in the sentence, not only the one at the front,
+         so a point that used an em dash as punctuation lost the second half of
+         its meaning to a stray bold line. The marker in the margin is what
+         marks the item. */
       function buildPoints(list) {
         var wrap = el("div", "role-points");
         list.forEach(function (h) {

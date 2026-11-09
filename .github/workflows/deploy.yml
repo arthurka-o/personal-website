@@ -1,20 +1,12 @@
 name: Deploy
 
-# The page is rendered from content.js before it is published, because a crawler
-# that never runs JavaScript would otherwise receive a page with no work
-# history, no projects and no skills — 840 characters, most of it placeholder
-# text saying the site was empty. Google runs a second JavaScript pass, but the
-# first one sees nothing.
+# The page is rendered to static HTML before it is published, because a crawler
+# that never runs JavaScript would otherwise see an empty page. So: build to
+# static HTML, publish it, and never commit it — nothing generated is a source
+# file, so nothing generated can drift from what it was generated from.
 #
-# So: build to static HTML, publish it, and never commit it. Nothing generated
-# is a source file, so there is nothing generated that can drift out of step
-# with what it was generated from. Editing content.js and pushing is the whole
-# workflow.
-#
-# Pages is configured to deploy from GitHub Actions (Settings -> Pages ->
-# Source: GitHub Actions). The default, "deploy from a branch", publishes main
-# verbatim — which would publish the template with every list empty, so the
-# switch to this source is required, not cosmetic.
+# Pages must be set to deploy from GitHub Actions, not from a branch: a branch
+# deploy publishes main verbatim, which is the template with every list empty.
 
 on:
   push:
@@ -33,35 +25,32 @@ permissions:
   pages: write
   id-token: write
 
-# A pull request only needs to prove the page builds. Publishing is for main.
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      # The full history, not just the tip: the staleness check below compares
-      # when the CV markdown and the CV PDF were last committed, and with a
-      # shallow clone both look like they came from the same commit.
-      - uses: actions/checkout@v4
+      # Full history, not just the tip: the staleness check below compares
+      # commit times, and with a shallow clone both files look like they came
+      # from the same commit.
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
       # The Node version comes from .nvmrc, the one file that names it, so the
-      # runtime the build runs on is the one that was chosen on purpose. It
-      # is pinned rather than tracking a major: a floating "22" silently
-      # changes the runtime under the build, and a runtime carries its own
-      # security fixes, which are not something to inherit by accident.
-      # .nvmrc names a release that carries the fix for CVE-2026-111497, the
-      # out-of-bounds write in the Brotli decoder that Node bundles.
-      - uses: actions/setup-node@v4
+      # runtime is the one that was chosen on purpose. A floating "22" would
+      # silently change it under the build, and a runtime carries its own
+      # security fixes. The pinned release carries the fix for
+      # CVE-2026-111497, the out-of-bounds write in Node's Brotli decoder.
+      - uses: actions/setup-node@v5
         with:
           node-version-file: ".nvmrc"
           cache: npm
 
       - run: npm ci
 
-      # cv.pdf is a committed binary, and a runner has no WeasyPrint to rebuild
-      # it with, so the build cannot refresh it here. What it can do is refuse
-      # to publish a PDF that no longer matches its markdown — which is exactly
+      # cv.pdf is a committed binary and a runner has no WeasyPrint to rebuild
+      # it with, so the build cannot refresh it. What it can do is refuse to
+      # publish a PDF that no longer matches its markdown — which is exactly
       # how a stale one got published in the first place.
       - name: The CV PDF must not be stale
         run: |
@@ -76,10 +65,10 @@ jobs:
       - name: Build the site
         run: npm run build
 
-      - uses: actions/configure-pages@v5
+      - uses: actions/configure-pages@v6
 
       # A broken build must not replace a working live site.
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-pages-artifact@v4
         with:
           path: dist
 
@@ -92,11 +81,10 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
 
-  # A pull request is checked, not published. The build job above has already
-  # run by the time this is reached; this exists so a broken build shows up as a
-  # failed check rather than passing silently.
+  # A pull request is checked, not published: a broken build should show up as
+  # a failed check rather than pass silently.
   pr-check:
     needs: build
     if: github.event_name == 'pull_request'

@@ -873,12 +873,10 @@ html.js .brand-name.is-brand-shown {
   flex: none;
 }
 
-/* The padding this used to carry was subtracted from the mark rather than
-   added to it: box-sizing is border-box, so 4px of inset on an 18px chip left
-   the artwork 10px and made every tiled mark read as visibly smaller than the
-   un-tiled ones beside it. The tile is there to back a white-ink raster, not to
-   frame it — so the mark now fills its box and is the same size as every other
-   chip. */
+/* The tile backs a white-ink raster, it does not frame it: box-sizing is
+   border-box, so 4px of inset on an 18px chip left the artwork 10px and made
+   every tiled mark read as visibly smaller than the un-tiled ones beside it.
+   The mark fills its box instead, the same size as every other chip. */
 .chip-mark.is-tiled {
   background: var(--mark-tile);
   border-radius: 4px;
@@ -1097,9 +1095,8 @@ html.js .brand-name.is-brand-shown {
    bold term carrying the item — the en dash in the margin marks it, the same
    glyph and the same accent the project cards use.
 
-   The points are set at full contrast. The bold term used to be what gave
-   this block its weight against the muted page; without it, muted grey would
-   have left the substance of the role reading as an aside. */
+   The points are set at full contrast: without it, muted grey would leave the
+   substance of the role reading as an aside. */
 
 .role-points {
   display: grid;
@@ -1320,22 +1317,10 @@ html.js .brand-name.is-brand-shown {
   transform: rotateY(180deg);
 }
 
-/* No hover lift on the card.
-
-   There used to be one: `translateZ(14px)` under the 1600px perspective, which
-   scaled the card by 1600 / (1600 - 14) = 1.0088 and so magnified it by just
-   under a percent. The reasoning behind it was that "1600px barely scales it",
-   and at that magnitude the overlap with a neighbouring card was indeed
-   negligible — but the browser does not scale a 3D-transformed layer as a
-   continuous image. It rasterizes the card at one size and then rescales that
-   bitmap, so every glyph on the card went through a resample on hover and the
-   text came out visibly soft. A sub-percent magnification is exactly the case
-   that looks wrong and is impossible to fix, because there is no sharper
-   rendering to fall back to.
-
-   The card still reads as an object with two sides: the turn itself is the
-   depth cue, and `.card:hover` keeps the accent border so the card is still
-   obviously interactive. */
+/* No hover lift on the card. A 3D-transformed layer is rasterized at one size
+   and then rescaled, so even a sub-percent magnification resamples the text
+   and it comes out soft. The turn is the depth cue; the accent border on
+   .card:hover keeps the card obviously interactive. */
 
 /* A flex column, not a grid, because the foot is pinned with an auto margin and
    that needs a flex line to absorb it. As a grid with `align-content: start`
