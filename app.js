@@ -675,10 +675,23 @@
     if (projects.length === 0) {
       show($('[data-bind="projectEmpty"]'));
     } else {
+      /* The cards used to turn over to show their detail, with a chevron in the
+         corner to turn them. The control was one more thing between the reader
+         and the copy, and the Work section reads fine without it — each card
+         already carries a description, the stack and the links.
+
+         The detail text stays in content.js, unused, so the flip can come back
+         without rewriting any of it. The highlight bullets are still published
+         in llms-full.txt either way; this only governs the card UI.
+
+         Flip this to true to bring the turn control and the highlight bullets
+         back. Everything below it is unchanged and still works. */
+      var CARD_FLIP = false;
+
 projects.forEach(function (proj, idx) {
         var li = el("li", "card");
 
-        var hasMore = proj.highlights && proj.highlights.length;
+        var hasMore = CARD_FLIP && proj.highlights && proj.highlights.length;
 
         var inner = el("div", "card-inner");
         var front = el("div", "card-face card-front");
@@ -831,6 +844,66 @@ projects.forEach(function (proj, idx) {
       sec.appendChild(list);
       groupsWrap.appendChild(sec);
     });
+  }
+
+  /* ----------------------------------------------------------- ai tooling */
+  /* A band inside Skills rather than a section of its own: it is a short list
+     of tools, not a body of work with dates and links behind it.
+
+     Two labelled rows and a set of highlights. No prose — a reader who wants
+     to know which agents and models are in play should get that from a glance,
+     not from a paragraph. */
+  var ai = DATA.aiTools || {};
+  var aiWrap = fill("aiTools");
+  if (aiWrap) {
+    var groups = (ai.groups || []).filter(function (g) {
+      return g && filled(g.label) && (g.items || []).length;
+    });
+    var highlights = (ai.highlights || []).filter(function (h) {
+      return h && filled(h.label);
+    });
+
+    if (!groups.length && !highlights.length) {
+      aiWrap.hidden = true;
+    } else {
+      if (filled(ai.title)) {
+        aiWrap.appendChild(el("h3", "ai-title", ai.title));
+      }
+      if (filled(ai.lede)) {
+        aiWrap.appendChild(el("p", "ai-lede", ai.lede));
+      }
+
+      groups.forEach(function (g) {
+        var row = el("div", "ai-row");
+        row.appendChild(el("span", "ai-row-label", g.label));
+        var list = el("ul", "ai-row-items");
+        (g.items || []).forEach(function (item) {
+          var li = el("li", "chip");
+          var logo = skillLogo(item);
+          if (logo) li.appendChild(markImg(logo, 16));
+          li.appendChild(el("span", "chip-name", skillName(item)));
+          list.appendChild(li);
+        });
+        row.appendChild(list);
+        aiWrap.appendChild(row);
+      });
+
+      highlights.forEach(function (h) {
+        var item = el("div", "ai-highlight");
+        var head = el("p", "ai-highlight-head");
+        var link = el("a", "ai-highlight-link", h.label);
+        if (filled(h.url)) {
+          link.href = h.url;
+          link.rel = "noopener";
+        }
+        head.appendChild(link);
+        item.appendChild(head);
+        if (filled(h.note)) {
+          item.appendChild(el("p", "ai-highlight-note", h.note));
+        }
+        aiWrap.appendChild(item);
+      });
+    }
   }
 
   /* A neutral glyph for a row that has no brand mark of its own. Same 20px

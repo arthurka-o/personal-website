@@ -19,7 +19,7 @@ Working independently on personal projects.
 ---
 
 ### Protocol Engineer — Overlay Protocol *(May 2024 – May 2026)*
-Exotic perps DEX on BSC ($2.9M raised, backed by Polychain Capital, 1kx, ParaFi; audited by Spearbit, Trail of Bits, Nethermind). One of 6 core engineers through testnet to TGE.
+Exotic perps DEX on BSC ($2.9M raised, backed by Polychain Capital, 1kx, ParaFi; audited by Spearbit, Trail of Bits, Nethermind). One of six core engineers through testnet to TGE.
 
 - **Shiva Router Contract** — Contributed to the proxy router in front of Overlay's immutable core contracts. It is also where the protocol states which systems may call which functions, which is what lets the core stay immutable. Verified on-chain, 30,000+ transactions processed.
 - **Immutable Price Oracle** — Rebuilt the feed on PancakeSwap V3 pools and removed its upgradeability in two steps until fully immutable, while every other contract stays upgradeable. A price bug sizes every loan wrong the moment it lands; resolution takes the worst of TWAP and spot, so manipulation can only ever hurt whoever performs it.
@@ -28,20 +28,20 @@ Exotic perps DEX on BSC ($2.9M raised, backed by Polychain Capital, 1kx, ParaFi;
 - **On-Chain Referral System** — Integrated an already-audited referral contract and built the verification layer around it: off-chain signed messages checked against on-chain state, with a fallback that rebuilds a missing record from chain, so a database cleanup can no longer permanently disqualify a real affiliate.
 - **Leaderboard & Trading Competitions** — Built the seasonal leaderboard (Node.js, MongoDB) as a configurable rule engine, so launching a new competition is a configuration change rather than a redeploy. The collateral floor is what stops a dust position from topping a board on leverage alone.
 - **Subgraph & SDK** — Most of the protocol's indexing is mine: rewrote the config so new factories and networks stopped needing YAML hand-edits, added the router and PowerCard entities, built the Matchstick suite over the handlers, and made the index multichain including Berachain. Also maintain `overlay-sdk`, where USDT's 6 decimals must be handled against the 18 most tokens assume.
-- **Frontend** — Contributor to the web app: fixed a 256-bit on-chain price coerced with `Number()`, silently losing precision in the two figures traders trust — value locked and unrealised PnL. Built the prediction-market screens.
+- **Frontend** — Contributor to the web app: fixed a 256-bit on-chain price coerced with `Number()`, silently losing precision in the two figures traders trust: value locked and unrealised PnL. Built the prediction-market screens.
 
 **Stack:** Solidity, Foundry, Safe, Zodiac, TypeScript, Node.js, MongoDB, Ethers.js, React, Next.js, The Graph
 
 ---
 
 ### Solidity Developer — KUMO *(March 2022 – January 2024)*
-Lending protocol secured by carbon credits. Selected for **ABN AMRO + Techstars Future of Finance Accelerator**; built and launched a pilot with ABN AMRO. One of 2 Solidity developers.
+Lending protocol secured by carbon credits. Selected for **ABN AMRO + Techstars Future of Finance Accelerator**; built and launched a pilot with ABN AMRO. One of two Solidity developers.
 
 - Joined KUMO on a **Liquity fork** retargeted at carbon credits and threaded the asset parameter through the protocol to make it multi-asset: every function touching a position now takes the asset it works with, plus a factory that creates a stability pool per asset instead of hand-copying contracts.
-- Split the core contract's oversized functions to get past the EVM's stack limit, and researched the **Diamond Pattern (EIP-2535)** as the fix, prototyping the split. The protocol shipped on **UUPS** instead — the upgradeable-proxy ecosystem around it was the more mature one at the time.
+- Split the core contract's oversized functions to get past the EVM's stack limit, and researched the **Diamond Pattern (EIP-2535)** as the fix, then prototyped the split. The protocol shipped on **UUPS** instead, because the upgradeable-proxy ecosystem around it was the more mature one at the time.
 - Added a **per-asset mint cap** on stablecoin creation. Writing the headroom calculation surfaced a real bug: when the cap sat below the amount already minted, the unsigned subtraction wrapped around and reported enormous room instead of none.
 - Integrated **Chainlink and Tellor** oracle feeds for multi-source price validation. Upstream contribution to the original protocol, reviewed and merged by their team.
-- Co-built the **carbon-credit lending contract** for the pilot, and I took most of it: a five-state loan lifecycle the contract refuses to leave out of order, explicit allowlists so money only moves between counterparties the bank approved, and liquidation proceeds routed to a treasury.
+- Co-built the **carbon-credit lending contract** for the pilot, and I took most of it: a five-state loan lifecycle where the contract only allows transitions in order, explicit allowlists so money only moves between counterparties the bank approved, and liquidation proceeds routed to a treasury.
 
 **Stack:** Solidity, Hardhat, Chainlink, Tellor, OpenZeppelin, Diamond Pattern, UUPS, Ethers.js
 
@@ -75,6 +75,18 @@ On-chain insurance with automated claims and verification. Solidity, Foundry.
 **Testing:** Jest, Vitest, Chai, Mocha, RSpec, Capybara
 
 **Infrastructure:** Amazon Web Services, Terraform, Docker, GitHub Actions, CI/CD, Git
+
+---
+
+## AI Tooling
+
+Agents write the code. The design and the review stay mine.
+
+**Agent CLIs:** Claude Code, OpenCode, Codex
+
+**Models:** Claude, GPT, MiniMax, DeepSeek
+
+**[Elephant-Goldfish Model](https://github.com/google/elephant-goldfish-model)** — Google's open-source plugin for designing and reviewing software with agents. The reviewer gets the spec but not the conversation that produced it, which is how unstated assumptions surface.
 
 ---
 

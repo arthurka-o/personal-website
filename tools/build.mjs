@@ -278,6 +278,14 @@ const skillNames = (P.skills || [])
   .flatMap((group) => (group.items || []).map((i) => (typeof i === "string" ? i : i.name)))
   .filter(Boolean);
 
+/* The AI tools are things the page says he works with, so they belong in
+   knowsAbout alongside the rest — otherwise the structured data describes a
+   person who has never heard of an agent. */
+const aiToolNames = (P.aiTools || {})
+  .groups?.flatMap((group) => (group.items || []).map((i) => (typeof i === "string" ? i : i.name)))
+  .filter(Boolean);
+const knowsAbout = [...new Set([...skillNames, ...aiToolNames])];
+
 const jsonLd = {
   "@context": "https://schema.org",
   "@graph": [
@@ -303,11 +311,11 @@ const jsonLd = {
         addressLocality: "Warsaw",
         addressCountry: "PL",
       },
-      knowsAbout: skillNames,
+      knowsAbout,
       hasOccupation: {
         "@type": "Occupation",
         name: profile.role,
-        skills: skillNames.join(", "),
+        skills: knowsAbout.join(", "),
       },
     },
     {

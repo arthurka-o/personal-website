@@ -54,7 +54,8 @@ KEYWORDS = (
     "protocol, Foundry, Hardhat, UUPS, Diamond Pattern, EIP-2535, OpenZeppelin, Safe, Zodiac, "
     "Chainlink, Tellor, Merkle trees, LayerZero, invariant testing, Chimera, The Graph, "
     "subgraph, TypeScript, Node.js, MongoDB, PostgreSQL, React, Next.js, Ruby on Rails, "
-    "AWS, Docker, Web3, blockchain, Warsaw"
+    "AWS, Docker, Web3, blockchain, AI-assisted development, LLM, Claude Code, OpenCode, "
+    "Codex, Claude, GPT, DeepSeek, MiniMax, prompt engineering, agent tooling, Warsaw"
 )
 
 body = markdown.markdown(

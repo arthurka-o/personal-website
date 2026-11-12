@@ -93,6 +93,23 @@ window.PORTFOLIO = {
     rspec: { title: "RSpec", file: "rspec", hex: "#FE405F" },
     vitest: { title: "Vitest", file: "vitest", hex: "#729B1B" },
 
+    /* The AI toolchain. Four of these are Simple Icons (CC0-1.0), the same
+       source as the marks above. OpenAI's and Codex's marks are NOT - Simple
+       Icons dropped OpenAI for brand reasons, so those two come from the
+       LobeHub icon set, which carries a dedicated Codex mark rather than
+       reusing the OpenAI knot.
+
+       All seven are a single path, so -inv and -mono are the same path
+       recoloured white and black rather than a silhouette - the silhouette
+       treatment exists for the multi-colour marks, and none of these are. */
+    claude: { title: "Claude", file: "claude", hex: "#D97757" },
+    claudecode: { title: "Claude Code", file: "claudecode", hex: "#D97757" },
+    codex: { title: "Codex", file: "codex", hex: "#000000" },
+    opencode: { title: "OpenCode", file: "opencode", hex: "#000000" },
+    openai: { title: "OpenAI", file: "openai", hex: "#10A37F" },
+    deepseek: { title: "DeepSeek", file: "deepseek", hex: "#5786FE" },
+    minimax: { title: "MiniMax", file: "minimax", hex: "#E73562" },
+
     /* Foundry's mark is the org's own profile asset (foundry-rs/.github), a
        200x200 raster, filed as foundry-mark so the URL differs from the
        cut it replaced - a same-path swap is served from cache. The ink is
@@ -223,17 +240,20 @@ window.PORTFOLIO = {
   logoRail: [
     "solidity",
     "ethereum",
+    "typescript",
+    "nodedotjs",
+    "claude",
+    "rubyonrails",
     "bnbchain",
     "chainlink",
     "openzeppelin",
-    "typescript",
-    "nodedotjs",
-    "rubyonrails",
     "postgresql",
     "mongodb",
     "amazonwebservices",
     "git",
     "github",
+    "codex",
+    "opencode",
   ],
 
   /* ------------------------------------------------------- 4. PROOF POINTS */
@@ -318,7 +338,7 @@ window.PORTFOLIO = {
         "Lending protocol secured by carbon credits. Selected for the ABN AMRO + Techstars Future of Finance Accelerator. One of two Solidity developers. Started while still on the Rails role below.",
       highlights: [
         "Joined KUMO on a Liquity fork retargeted at carbon removal, and threaded the asset parameter through the protocol to make it multi-asset: every function that touches a position now takes the asset it is working with, plus a factory that creates a stability pool per asset rather than hand-copying deployed contracts.",
-        "Helped redesign the tokenomics to remove the protocol token while preserving the system's incentives — simpler economics without breaking existing functionality.",
+        "Helped redesign the tokenomics to remove the protocol token while preserving the system's incentives, without breaking existing functionality.",
         "Added Tellor alongside Chainlink as a second price source, so a single oracle outage or manipulation cannot sink the protocol. Upstream contribution, reviewed and merged by the original team.",
         "The core contract's functions had outgrown the EVM's stack limit, so the upgradeability question had to be settled. Researched the Diamond pattern (EIP-2535) and prototyped the split; the protocol shipped on UUPS instead, because the upgradeable-proxy ecosystem around it was the more mature one at the time.",
         "Added a per-asset cap on stablecoin creation, and fixed a bug where the \"how much room is left\" calculation wrapped around to report enormous headroom instead of none.",
@@ -334,7 +354,7 @@ window.PORTFOLIO = {
       start: "2016",
       end: "2022",
       summary:
-        "Six years of backend and full-stack engineering across three companies and products, overlapping the first year of the web3 work below.",
+        "Six years of backend and full-stack engineering across three companies and products. It overlapped the first year of the web3 work below.",
       highlights: [],
       stack: ["Ruby on Rails", "PostgreSQL", "React", "TypeScript", "RSpec", "AWS", "Sidekiq"],
       entries: [
@@ -342,7 +362,7 @@ window.PORTFOLIO = {
           title: "Flatstack / Galvanize",
           period: "2020 – November 2022",
           detail:
-            "Enterprise GRC platform, used by Canadian Government. Built the public API, async processing pipelines and performance optimisation (N+1 fixes). Production monitoring with DataDog and Airbrake. AWS Lambda, Terraform, ECS, and the CI/CD pipeline that shipped it. Ran alongside KUMO from March 2022.",
+            "Enterprise GRC platform, used by the Canadian Government. Built the public API, async processing pipelines and performance optimisation (N+1 fixes). Production monitoring with DataDog and Airbrake. AWS Lambda, Terraform, ECS, and the CI/CD pipeline that shipped it. Ran alongside KUMO from March 2022.",
         },
         {
           title: "meyvn",
@@ -391,9 +411,9 @@ window.PORTFOLIO = {
         "KUMO's protocol was a fork of the Liquity lending protocol, retargeted at carbon removal, and the work below was done in my own fork of KUMO's. A certified carbon credit is locked as collateral and stablecoins are drawn against it immediately, instead of waiting for the credit to be sold. My work on it was the multi-asset rework, the upgradeability work and the oracle work below.",
       highlights: [
         "Made it multi-asset: every function that touches a position now takes the asset it is working with, plus a factory that creates a stability pool per asset rather than hand-copying deployed contracts.",
-        "Split the core contract's functions after they outgrew the EVM's stack limit. The Diamond pattern (EIP-2535) was researched and prototyped for this, but the protocol shipped on UUPS instead — the upgradeable-proxy ecosystem around it was the more mature one at the time.",
+        "Split the core contract's functions after they outgrew the EVM's stack limit. The Diamond pattern (EIP-2535) was researched and prototyped for this, but the protocol shipped on UUPS instead, because the upgradeable-proxy ecosystem around it was the more mature one at the time.",
         "Added a per-asset cap on stablecoin creation, and fixed a bug where the \"how much room is left\" calculation wrapped around to report enormous headroom instead of none.",
-        "Thirty-plus commits repairing the existing test suite across the migration. The structural change is the interesting commit; the green suite afterwards is the work.",
+        "Thirty-plus commits repairing the existing test suite across the migration. One of them split the core contract. The green suite afterwards is the work.",
         "Upstream contributor to the original protocol: added Tellor as a second price source alongside Chainlink so a single oracle outage or manipulation cannot sink the protocol.",
       ],
       stack: [
@@ -414,11 +434,11 @@ window.PORTFOLIO = {
       kind: "Pilot contract · BUSL-1.1",
       logo: "kumo",
       description:
-        "A contract for lending against carbon credits, built for a pilot with ABN AMRO, a Dutch bank. Two of us wrote it — I took most of it — and kept it deliberately plain: explicit allowlists and a strict loan lifecycle, written so a bank's risk team could review and sign it off without reverse-engineering the logic.",
+        "A contract for lending against carbon credits, built for a pilot with ABN AMRO, a Dutch bank. Two of us wrote it and I took most of it. Kept it plain: explicit allowlists and a strict loan lifecycle, written so a bank's risk team could review and sign it off without reverse-engineering the logic.",
       privateRepo: true,
       note: "Built for the ABN AMRO + Techstars accelerator.",
       highlights: [
-        "Five-state loan lifecycle — pending, active, repaid, liquidated, closed — where the contract refuses any transition that doesn't follow that path.",
+        "Five-state loan lifecycle: pending, active, repaid, liquidated, closed. The contract only allows transitions that follow that order.",
         "Explicit on-chain allowlists of lenders and borrowers. The protocol is permissioned on purpose: it only moves money between counterparties the bank has approved.",
         "Liquidation proceeds routed to a designated treasury, not back to the default recipient, because seized collateral often doesn't cover the debt.",
         "A V2 escape hatch so the pilot can hand off to a successor contract.",
@@ -432,11 +452,11 @@ window.PORTFOLIO = {
       kind: "Risk system",
       logo: "overlay",
       description:
-        "The safety system that automatically closes a protocol-sponsored trader's positions when they breach a loss limit, and pauses their account until a human looks at it. Sponsored traders risk none of their own money, so the protocol has to act as the risk manager; it cannot leave that to the trader's judgement.",
+        "The safety system that automatically closes a protocol-sponsored trader's positions when they breach a loss limit, and pauses their account until a human looks at it. Sponsored traders risk none of their own money, so the protocol is the risk manager; it cannot leave that to the trader's judgement.",
       privateRepo: true,
       highlights: [
         "Two independent limits: value below 50% of initial collateral, or a 25% drop since the first check of the day. The daily rule exists so a slow bleed cannot go unnoticed for a month.",
-        "When Safe's transaction service began rejecting the delegate calls Zodiac automation depends on, switched to the whitelisted call-only MultiSend variant — the one that still executes as the trader's Safe but cannot make arbitrary delegate calls.",
+        "When Safe's transaction service began rejecting the delegate calls Zodiac automation depends on, switched to the whitelisted call-only MultiSend variant. It still executes as the trader's Safe but cannot make arbitrary delegate calls.",
         "Split into two processes so the public-facing API server holds read-only database credentials. A compromised API server cannot corrupt the baselines the risk system depends on.",
         "Safe Global API v2 migration, retry-with-backoff client, Telegram alerting on kill-switch events, and a trader-reassignment operations script.",
       ],
@@ -454,7 +474,7 @@ window.PORTFOLIO = {
         "Made the index multichain, including Berachain mainnet.",
         "Added the PowerCard ERC1155 entities and their transfer handling.",
         "Made the referral address an indexed entity, so affiliate attribution is answered by the same subgraph, with no second source free to disagree with it.",
-        "Reworked several handlers where the recorded state was wrong — unwind, liquidate, emergency withdraw and build — including a funding-payment formula that was computing the wrong value.",
+        "Reworked several handlers where the recorded state was wrong: unwind, liquidate, emergency withdraw and build. One of them computed the funding payment with the wrong formula.",
         "Migrated the entity IDs to Bytes across the schema, which changed how every entity is keyed.",
         "Matchstick test suite so a handler change is proven by a test instead of by a careful read.",
       ],
@@ -468,9 +488,9 @@ window.PORTFOLIO = {
       kind: "Price oracle · same repo as Shiva Router",
       logo: "overlay",
       description:
-        "The protocol's price feed, rebuilt on PancakeSwap V3 pools and then deliberately locked down: non-upgradeable first, then fully immutable, while every other contract in the protocol stays upgradeable.",
+        "The protocol's price feed, rebuilt on PancakeSwap V3 pools and then locked down: non-upgradeable first, then fully immutable, while every other contract in the protocol stays upgradeable.",
       highlights: [
-        "Immutability chosen because the risk is asymmetric — a bug in a normal contract is fixable, but a bug in the price means every loan is sized wrong the moment it lands, and the upgrade key becomes the obvious target.",
+        "Immutability chosen because the risk is asymmetric: a bug in a normal contract is fixable, but a bug in the price means every loan is sized wrong the moment it lands, and the upgrade key becomes the obvious target.",
         "Resolves to the worst price available across spot and TWAP. Manipulation can therefore only ever hurt whoever performs it.",
         "Staleness guard rejects an old price outright.",
       ],
@@ -484,7 +504,7 @@ window.PORTFOLIO = {
       kind: "Product backend",
       logo: "overlay",
       description:
-        "Seasonal trading leaderboards and competitions. I built this backend from the ground up — schema, rules engine and all — as a configurable system, so launching a new competition is a change to configuration, not a redeploy.",
+        "Seasonal trading leaderboards and competitions. I built this backend from the ground up, schema and rules engine included, as a configurable system. Launching a new competition is a change to configuration rather than a redeploy.",
       privateRepo: true,
       highlights: [
         "Configurable rules: minimum USD collateral per market, exempt markets, and an OVL price fallback so ranking still works when the feed is down. The collateral floor stops a dust position from topping a leaderboard on leverage alone.",
@@ -538,7 +558,7 @@ window.PORTFOLIO = {
       description:
         "The protocol's web app — the surface traders actually use. I was one of its main contributors, working mostly in the portfolio view, the prediction-market screens and the charts.",
       highlights: [
-        "Found and fixed a bigint precision bug in the portfolio overview: a 256-bit on-chain price was being coerced to a JavaScript number, silently losing precision in exactly the two figures traders trust — value locked and unrealised PnL.",
+        "Found and fixed a bigint precision bug in the portfolio overview: a 256-bit on-chain price was being coerced to a JavaScript number, silently losing precision in exactly the two figures traders trust: value locked and unrealised PnL.",
         "Built the prediction-market screens: market groups, routing, data model and multi-line probability charts.",
         "Referral guardrails: actions disabled for funded and avatar accounts, thresholds and rates correct after a successful claim.",
       ],
@@ -557,7 +577,7 @@ window.PORTFOLIO = {
         "Cross-chain crypto donations for livestream creators. I built it solo in 36 hours at ETHGlobal Prague, won the LayerZero General Prize, and then kept working on it for another six weeks.",
       highlights: [
         "Won the LayerZero General Prize at ETHGlobal Prague 2025.",
-        "LayerZero cross-chain donations with a real-time OBS alert system — donations surface on stream via browser source while they land.",
+        "LayerZero cross-chain donations with a real-time OBS alert system. Donations surface on stream via browser source while they land.",
         "Solo build throughout, on my own repository.",
       ],
       stack: ["Solidity", "TypeScript", "Express.js", "Next.js", "LayerZero"],
@@ -571,7 +591,7 @@ window.PORTFOLIO = {
       description:
         "On-chain insurance with automated claims and verification. Built with a team; prize winner at ETHWarsaw 2025.",
       highlights: [
-        "Team project — the repository belongs to a collaborator, not to me.",
+        "Team project. The repository belongs to a collaborator.",
       ],
       stack: ["Solidity", "Foundry"],
       links: [
@@ -693,6 +713,44 @@ window.PORTFOLIO = {
       ],
     },
   ],
+
+  /* ------------------------------------------------------- 7b. AI TOOLING
+     The tools, not the story. Two lists — the agent CLIs and the models
+     behind them — plus anything else worth naming.
+
+     groups[] is a list of labelled rows; highlights[] is for the standalone
+     things that deserve a line of their own and a link. Both are open-ended,
+     so adding to them is a matter of one more entry. */
+  aiTools: {
+    title: "AI tooling",
+    lede: "Agents write the code. The design and the review stay mine.",
+    groups: [
+      {
+        label: "Agents",
+        items: [
+          { name: "Claude Code", logo: "claudecode" },
+          { name: "OpenCode", logo: "opencode" },
+          { name: "Codex", logo: "codex" },
+        ],
+      },
+      {
+        label: "Models",
+        items: [
+          { name: "Claude", logo: "claude" },
+          { name: "GPT", logo: "openai" },
+          { name: "MiniMax", logo: "minimax" },
+          { name: "DeepSeek", logo: "deepseek" },
+        ],
+      },
+    ],
+    highlights: [
+      {
+        label: "Elephant-Goldfish Model",
+        url: "https://github.com/google/elephant-goldfish-model",
+        note: "Google's open-source plugin for designing and reviewing software with agents. The reviewer gets the spec but not the conversation that produced it, which is how unstated assumptions surface.",
+      },
+    ],
+  },
 
   /* ----------------------------------------------------------- 8. EDUCATION */
   education: [

@@ -61,6 +61,29 @@ const skillLines = (P) =>
     .filter((g) => g && skillNames(g).length)
     .map((g) => `**${flat(g.label)}**: ${skillNames(g).join(", ")}`);
 
+/* The AI tooling block. The same shape the band renders on the page: the
+   tools in labelled rows, then anything worth a line of its own. */
+function aiLines(P) {
+  const ai = P.aiTools || {};
+  const groups = (ai.groups || []).filter((g) => g && flat(g.label) && (g.items || []).length);
+  const highlights = (ai.highlights || []).filter((h) => h && flat(h.label));
+  if (!groups.length && !highlights.length) return [];
+
+  const L = [];
+  if (flat(ai.lede)) L.push(flat(ai.lede), "");
+  for (const g of groups) {
+    L.push(`**${flat(g.label)}**: ${skillNames(g).join(", ")}`, "");
+  }
+  for (const h of highlights) {
+    const label = flat(h.label);
+    const link = flat(h.url)
+      ? `[${label}](${h.url})`
+      : label;
+    L.push(flat(h.note) ? `**${link}** — ${flat(h.note)}` : `**${link}**`, "");
+  }
+  return L;
+}
+
 function proofLines(P, origin) {
   return (P.proofPoints || [])
     .filter((p) => p && flat(p.title))
@@ -116,6 +139,9 @@ export function renderLlmsTxt(P, origin) {
 
   const skills = skillLines(P);
   if (skills.length) L.push("## Skills", "", bullets(skills), "");
+
+  const ai = aiLines(P);
+  if (ai.length) L.push("## AI tooling", "", ...ai);
 
   const edu = eduLines(P);
   if (edu.length) L.push("## Education", "", bullets(edu), "");
@@ -211,6 +237,9 @@ export function renderLlmsFull(P, origin) {
 
   const skills = skillLines(P);
   if (skills.length) L.push("## Skills", "", bullets(skills), "");
+
+  const ai = aiLines(P);
+  if (ai.length) L.push("## AI tooling", "", ...ai);
 
   const edu = eduLines(P);
   if (edu.length) L.push("## Education", "", bullets(edu), "");
