@@ -126,7 +126,7 @@ Margins collapse, so the numbers below are *effective gaps* between rendered box
 4. **Three pages, and the third one is deliberate.** The content box on each page
    ends at 799.37pt. Page 2 finishes at 775.68pt — 23.69pt of slack — and page 3
    carries the Relocation & Work Authorisation block, the Selected Public Work
-   list, Education and Languages, ending at 476.57pt.
+   list, Education and Languages, ending at 491.23pt.
 
    The third page used to be an accident. The AI Tooling section grew past the
    two-page fit and pushed Education, Languages and a links row onto a page that

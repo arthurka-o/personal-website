@@ -38,7 +38,7 @@ out_path = pathlib.Path(args[1]) if len(args) > 1 else REPO / "cv.pdf"
 # Keep in step with the header of Arthur_Galiullin_CV.md.
 NAME = "Arthur Galiullin"
 ROLE = "Solidity / Protocol Engineer"
-LOCATION = "Warsaw, Poland (Remote)"
+LOCATION = "Warsaw, Poland"
 LANG = "en-GB"
 DESCRIPTION = (
     f"{NAME} — {ROLE}, {LOCATION}. Four years of Solidity and eight years of production "
@@ -47,8 +47,9 @@ DESCRIPTION = (
     "on KUMO, a carbon-credit lending protocol selected for the ABN AMRO and Techstars "
     "Future of Finance Accelerator. Smart contracts, oracle and collateral risk design, "
     "on-chain plus off-chain protocol systems, and the data layer around them. Twice a "
-    "hackathon prize winner: ETHGlobal Prague 2025 and ETHWarsaw 2025. Open to "
-    "relocation: EU, UK, North America, UAE, Southeast Asia, East Asia."
+    "hackathon prize winner: ETHGlobal Prague 2025 and ETHWarsaw 2025. Remote now, hybrid "
+    "or office if relocating. Open to relocation: EU, UK, North America, UAE, Southeast "
+    "Asia, East Asia."
 )
 KEYWORDS = (
     "Solidity, Smart Contract Engineer, Protocol Engineer, DeFi, EVM, perps DEX, lending "
@@ -57,7 +58,8 @@ KEYWORDS = (
     "subgraph, TypeScript, Node.js, MongoDB, PostgreSQL, React, Next.js, Ruby on Rails, "
     "AWS, Docker, Web3, blockchain, AI-assisted development, LLM, Claude Code, OpenCode, "
     "Codex, Claude, GPT, DeepSeek, MiniMax, prompt engineering, agent tooling, Warsaw, "
-    "relocation, visa sponsorship, EU, UK, North America, UAE, Southeast Asia, East Asia"
+    "relocation, visa sponsorship, remote, hybrid, office-based, EU, UK, North America, "
+    "UAE, Southeast Asia, East Asia"
 )
 
 body = markdown.markdown(

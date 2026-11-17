@@ -60,9 +60,11 @@ window.PORTFOLIO = {
     email: "work@arthurka.eu",
     /* The <meta name="description">, used by crawlers that do not read
        Open Graph. A different string from summary on purpose: it carries the
-       keywords a search matches on, which reads badly as a link preview. */
+       keywords a search matches on, which reads badly as a link preview.
+       Search snippets cut it at around 160 characters, so it is written to
+       that length and stops there. */
     metaDescription:
-      "Arthur Galiullin — Smart Contract & Backend Engineer. Perps DEX from testnet to TGE, multi-asset lending protocol, hackathon prize winner. Warsaw, Poland. Open to relocation: EU, UK, North America, UAE, Southeast Asia, East Asia.",
+      "Arthur Galiullin — Smart Contract & Backend Engineer. Perps DEX from testnet to TGE. Remote or hybrid/office on relocation: EU, UK, North America, UAE, Southeast Asia, East Asia.",
   },
 
   /* ------------------------------------------------------------- 2. LINKS */
@@ -782,6 +784,11 @@ window.PORTFOLIO = {
      sponsorship is needed outside Poland, so the openness reads as a plan and
      not as a wish.
 
+     The Work mode row carries the same conditional as the CV's header line:
+     remote now, and hybrid or office in person if he relocates to where the
+     job is. "Remote" on its own reads as a constraint, which is the opposite
+     of what it is.
+
      The CV's third page also carries a Selected Public Work list: the public
      repositories only, one line each. It is the same work this page's Work
      section carries, narrowed to what a reader can open, and the site lists
@@ -791,7 +798,7 @@ window.PORTFOLIO = {
     { label: "Notice period", value: "Immediate" },
     { label: "Based in", value: "Warsaw, Poland" },
     { label: "Timezone", value: "CET/CEST (UTC+1/+2)" },
-    { label: "Work mode", value: "Remote" },
+    { label: "Work mode", value: "Remote now; hybrid or office if relocating" },
     { label: "Engagement", value: "B2B / contract or employment" },
     { label: "Relocation", value: "Open to EU, UK, North America, UAE, Southeast Asia, East Asia" },
     { label: "Work rights", value: "Authorised to work in Poland; visa sponsorship elsewhere" },

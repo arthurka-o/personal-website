@@ -1,5 +1,5 @@
 # Arthur Galiullin
-**Solidity / Protocol Engineer** — Warsaw, Poland (Remote)
+**Solidity / Protocol Engineer** — Warsaw, Poland (Remote now; hybrid or office if relocating)
 
 [work@arthurka.eu](mailto:work@arthurka.eu) | [github.com/arthurka-o](https://github.com/arthurka-o) | [linkedin.com/in/arthur-galiullin](https://www.linkedin.com/in/arthur-galiullin/) | [arthurka.eu](https://arthurka.eu)
 
@@ -92,9 +92,10 @@ Agents write the code. The design and the review stay mine.
 
 ## Relocation & Work Authorisation
 
-- **Based in:** Warsaw, Poland. Remote-first, on CET/CEST (UTC+1/+2).
+- **Based in:** Warsaw, Poland.
 - **Open to relocate to:** the EU, the UK, North America, the UAE, Southeast Asia and East Asia.
 - **Work rights:** authorised to work in Poland; visa sponsorship elsewhere.
+- **Work mode:** Remote now; hybrid or office if relocating.
 - **Timezone:** CET/CEST (UTC+1/+2) — the UK and EU working day in full, the Gulf in the afternoon, Asia-Pacific in the evening, and a partial overlap with the US.
 - **Engagement:** B2B contract or employment, with an immediate notice period.
 
