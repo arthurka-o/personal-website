@@ -62,7 +62,7 @@ window.PORTFOLIO = {
        Open Graph. A different string from summary on purpose: it carries the
        keywords a search matches on, which reads badly as a link preview. */
     metaDescription:
-      "Arthur Galiullin — Smart Contract & Backend Engineer. Perps DEX from testnet to TGE, multi-asset lending protocol, hackathon prize winner. Warsaw, Poland.",
+      "Arthur Galiullin — Smart Contract & Backend Engineer. Perps DEX from testnet to TGE, multi-asset lending protocol, hackathon prize winner. Warsaw, Poland. Open to relocation: EU, UK, North America, UAE, Southeast Asia, East Asia.",
   },
 
   /* ------------------------------------------------------------- 2. LINKS */
@@ -772,7 +772,20 @@ window.PORTFOLIO = {
   /* The single source for whether he is looking. The generated llms files lead
      their blockquote with the Availability row below rather than carrying a
      second copy, so the page and the markdown cannot disagree. No
-     compensation figure — it changes and goes stale. */
+     compensation figure — it changes and goes stale.
+
+     The Relocation row is the one place the list of regions is written. The CV
+     markdown carries the same list twice — in its header line, and in the
+     Relocation & Work Authorisation block on its third page — and the two have
+     to match the row below, because a reader who gets a different answer from
+     each has been told one of them is wrong. The Work rights row says
+     sponsorship is needed outside Poland, so the openness reads as a plan and
+     not as a wish.
+
+     The CV's third page also carries a Selected Public Work list: the public
+     repositories only, one line each. It is the same work this page's Work
+     section carries, narrowed to what a reader can open, and the site lists
+     the private repositories too. */
   workingSetup: [
     { label: "Availability", value: "Available now — actively seeking" },
     { label: "Notice period", value: "Immediate" },
@@ -780,8 +793,8 @@ window.PORTFOLIO = {
     { label: "Timezone", value: "CET/CEST (UTC+1/+2)" },
     { label: "Work mode", value: "Remote" },
     { label: "Engagement", value: "B2B / contract or employment" },
-    { label: "Relocation", value: "Not relocating" },
-    { label: "Work rights", value: "Authorised to work in Poland" },
+    { label: "Relocation", value: "Open to EU, UK, North America, UAE, Southeast Asia, East Asia" },
+    { label: "Work rights", value: "Authorised to work in Poland; visa sponsorship elsewhere" },
   ],
 
   languages: [

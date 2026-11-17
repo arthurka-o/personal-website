@@ -3,7 +3,7 @@
 
 [work@arthurka.eu](mailto:work@arthurka.eu) | [github.com/arthurka-o](https://github.com/arthurka-o) | [linkedin.com/in/arthur-galiullin](https://www.linkedin.com/in/arthur-galiullin/) | [arthurka.eu](https://arthurka.eu)
 
-CET/CEST (UTC+1/+2) · Not relocating · Authorised to work in Poland · Open to B2B or employment
+CET/CEST (UTC+1/+2) · Open to relocation: EU, UK, North America, UAE, Southeast Asia, East Asia · Authorised to work in Poland, visa sponsorship elsewhere · Open to B2B or employment
 
 ---
 
@@ -90,6 +90,29 @@ Agents write the code. The design and the review stay mine.
 
 ---
 
+## Relocation & Work Authorisation
+
+- **Based in:** Warsaw, Poland. Remote-first, on CET/CEST (UTC+1/+2).
+- **Open to relocate to:** the EU, the UK, North America, the UAE, Southeast Asia and East Asia.
+- **Work rights:** authorised to work in Poland; visa sponsorship elsewhere.
+- **Timezone:** CET/CEST (UTC+1/+2) — the UK and EU working day in full, the Gulf in the afternoon, Asia-Pacific in the evening, and a partial overlap with the US.
+- **Engagement:** B2B contract or employment, with an immediate notice period.
+
+---
+
+## Selected Public Work
+
+- **[Shiva Router](https://github.com/overlay-market/v1-shiva)** — the proxy router in front of Overlay's immutable core contracts, and the price feed it carries. [On-chain](https://bscscan.com/address/0xeB497c228F130BD91E7F13f81c312243961d894A)
+- **[Protocol subgraph](https://github.com/overlay-market/v1-subgraph)** — the on-chain index the frontend and the analytics read from, multichain including Berachain.
+- **[Referral system](https://github.com/overlay-market/Referral)** — affiliate attribution, with off-chain signed messages checked against on-chain state.
+- **[Overlay SDK](https://github.com/overlay-market/overlay-sdk)** — the published TypeScript package other teams import to read the protocol's state.
+- **[Protocol frontend](https://github.com/overlay-market/overlay-interface-v2)** — the web app traders use: portfolio view, prediction markets, charts.
+- **[KUMO protocol](https://github.com/arthurka-o/kumo-protocol)** — the multi-asset, UUPS-upgradeable lending protocol.
+- **[StreamBeam](https://github.com/arthurka-o/streambeam)** — cross-chain donations for livestream creators. ETHGlobal Prague 2025, LayerZero General Prize.
+- **[InSure](https://github.com/Eugenerio/InSure)** — on-chain insurance with automated claims and verification. ETHWarsaw 2025 prize; the repository belongs to a teammate.
+
+---
+
 ## Education
 
 **M.Sc. Computer Software Engineering** — KFU, Institute of Information Technology (2018–2020)
@@ -101,7 +124,3 @@ Agents write the code. The design and the review stay mine.
 ## Languages
 
 Russian (Native) | English (Professional) | Polish (Intermediate)
-
----
-
-[Shiva Router — BscScan](https://bscscan.com/address/0xeB497c228F130BD91E7F13f81c312243961d894A) | [v1-shiva](https://github.com/overlay-market/v1-shiva) | [v1-subgraph](https://github.com/overlay-market/v1-subgraph) | [overlay-sdk](https://github.com/overlay-market/overlay-sdk) | [KUMO protocol](https://github.com/arthurka-o/kumo-protocol) | [StreamBeam](https://github.com/arthurka-o/streambeam) | [InSure](https://github.com/Eugenerio/InSure)

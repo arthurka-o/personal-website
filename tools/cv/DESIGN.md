@@ -12,6 +12,8 @@ This folder holds the whole pipeline, and the markdown is the source of truth:
 | `build.py` | markdown → HTML → PDF |
 | `cv.css`  | the design (every value below comes from this file) |
 | `geom.py` | extracts/diffs text-run geometry from two PDFs — the verification tool |
+| `measure.py` | page count and the free space at the bottom of each page |
+| `lines.py` | how many lines a candidate paragraph takes in the CV's column |
 | `DESIGN.md` | this file |
 
 The built PDF is `cv.pdf` in the repository root, which is what the site serves.
@@ -57,7 +59,7 @@ change cannot desync them. WeasyPrint maps `<title>` and the `<meta>` tags onto 
 `/Info` keys and writes the root `lang` into the catalog's `/Lang`; `custom_metadata=True`
 stores the non-standard `<meta>` tags (`role`, `location`, `source`) as extra keys.
 
-Current values: title, author, a one-paragraph subject, 45 keywords, `/Lang en-GB`.
+Current values: title, author, a one-paragraph subject, 54 keywords, `/Lang en-GB`.
 Check with `pdfinfo cv.pdf` after any change — the July 2025 PDF had none of this.
 
 ---
@@ -121,11 +123,23 @@ Margins collapse, so the numbers below are *effective gaps* between rendered box
    of element* (e.g. a second `ul` after a paragraph, or an `h3` that is not preceded by
    `h2`/`hr`) changes which margin-collapsing rule applies and shifts everything below it.
    Re-run the diff (§4) after any structural edit.
-4. **Two pages, and it is tight.** The content box on each page ends at 799.37pt. In the
-   current revision page 2 finishes at 791.8pt — **7.5pt of slack**, less than half a
-   line. One more sentence anywhere in the lower half of page 2 pushes the links
-   row onto a third page. The cheapest places to reclaim space, in order: the KUMO
-   pilot-contract bullet, the StreamBeam description, the Rails paragraph.
+4. **Three pages, and the third one is deliberate.** The content box on each page
+   ends at 799.37pt. Page 2 finishes at 775.68pt — 23.69pt of slack — and page 3
+   carries the Relocation & Work Authorisation block, the Selected Public Work
+   list, Education and Languages, ending at 476.57pt.
+
+   The third page used to be an accident. The AI Tooling section grew past the
+   two-page fit and pushed Education, Languages and a links row onto a page that
+   was 17% full, which reads as a spillover rather than a plan. It is now a back
+   page with two sections on it. The links row it replaced became Selected
+   Public Work, carrying the same seven repositories with a line about what each
+   one is.
+
+   If the copy ever has to come back to two pages, the cheapest places to
+   reclaim space, in order: the KUMO pilot-contract bullet, the StreamBeam
+   description, the Rails paragraph. That is about 9 lines — roughly 120pt — and
+   the AI Tooling block is the other candidate, since it is the section that
+   pushed the document over in the first place.
 
    The vertical margin was 1.6cm until the skills list grew past what 1.6cm left
    room for; it is 1.5cm now, which buys 5.7pt on every page. That is the last
@@ -167,9 +181,28 @@ Baseline for an **unchanged** rebuild (same content, same machine):
 Anything above that means the stylesheet drifted. Compare `geom.py` output first: it
 tells you which line moved and by how much.
 
+### The two measuring tools
+
+`geom.py` compares two PDFs. These two do one job each, and both exist because
+guessing at the layout is how the third page happened in the first place:
+
+| tool | what it answers |
+|---|---|
+| `measure.py` | How many pages is this, and where does each page's content end? Prints the free space at the bottom of every page, so a trim can be sized instead of guessed at. Run it on every rebuild. |
+| `lines.py` | How many lines does this paragraph take? Renders a candidate string in the CV's own column — 498.24pt wide, 9.8pt on a 1.42 line-height — and counts the lines. `--indent` measures it as a list item, which is a narrower column. Use it before editing a bullet, to find out whether the rewrite is actually shorter. |
+
+```bash
+cd tools/cv
+python3 measure.py ../../cv.pdf
+python3 lines.py "**A bullet** — with the wording you are considering."
+```
+
 ## 5. History
 
 * **Jul 2025** — the original. WeasyPrint 69.0, no metadata, the CSS was not kept.
 * **Oct 2026** — content refreshed (see `git log` for `cv.pdf`), metadata added, and this
   pipeline reconstructed from the PDF itself so the next revision does not start from
   scratch. `cv.css` gained one rule since: `h1 + p + p + p` for the work-authorisation line.
+* **Nov 2026** — relocation opened up, and the document went to three pages on purpose.
+  The Relocation & Work Authorisation block and the Selected Public Work list now sit
+  on page 3, replacing a links row that was the only thing there before.

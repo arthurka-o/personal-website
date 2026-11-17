@@ -47,7 +47,8 @@ DESCRIPTION = (
     "on KUMO, a carbon-credit lending protocol selected for the ABN AMRO and Techstars "
     "Future of Finance Accelerator. Smart contracts, oracle and collateral risk design, "
     "on-chain plus off-chain protocol systems, and the data layer around them. Twice a "
-    "hackathon prize winner: ETHGlobal Prague 2025 and ETHWarsaw 2025."
+    "hackathon prize winner: ETHGlobal Prague 2025 and ETHWarsaw 2025. Open to "
+    "relocation: EU, UK, North America, UAE, Southeast Asia, East Asia."
 )
 KEYWORDS = (
     "Solidity, Smart Contract Engineer, Protocol Engineer, DeFi, EVM, perps DEX, lending "
@@ -55,7 +56,8 @@ KEYWORDS = (
     "Chainlink, Tellor, Merkle trees, LayerZero, invariant testing, Chimera, The Graph, "
     "subgraph, TypeScript, Node.js, MongoDB, PostgreSQL, React, Next.js, Ruby on Rails, "
     "AWS, Docker, Web3, blockchain, AI-assisted development, LLM, Claude Code, OpenCode, "
-    "Codex, Claude, GPT, DeepSeek, MiniMax, prompt engineering, agent tooling, Warsaw"
+    "Codex, Claude, GPT, DeepSeek, MiniMax, prompt engineering, agent tooling, Warsaw, "
+    "relocation, visa sponsorship, EU, UK, North America, UAE, Southeast Asia, East Asia"
 )
 
 body = markdown.markdown(
